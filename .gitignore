@@ -1,0 +1,14 @@
+*sublime*
+__pycache__
+*.pyc
+*.iml
+node_modules
+pipcache
+frontend/dist/*
+nginx/static/*
+nginx/ssl/*
+*.log
+backups/*.bak
+.idea
+nginx/ssl/
+.DS_Store
