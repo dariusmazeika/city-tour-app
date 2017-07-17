@@ -1,17 +1,18 @@
 import { takeLatest } from 'redux-saga';
 import { call, put } from  'redux-saga/effects';
 import {testRequest} from '../../../api/api';
+import types from '../../../actions/types';
+
 import {
-    TEST_REQUEST,
     testFailed,
     testSuccess
 } from '../../../actions/actions';
 
 
-function* testSaga(action) {
+function* testSaga() {
     try {
         const items = yield call(testRequest);
-        yield put(testSuccess());
+        yield put(testSuccess(items));
     } catch (e) {
         yield put(testFailed());
     }
@@ -19,6 +20,6 @@ function* testSaga(action) {
 
 export function* homeSagas() {
     yield [
-        takeLatest(TEST_REQUEST, testSaga),
-    ]
+        takeLatest(types.TEST.REQUEST, testSaga),
+    ];
 }

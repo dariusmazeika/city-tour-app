@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 import {RouteWithSubRoutes} from '../utils/router_utils';
 
 export const CoreLayout = ({routes}) => (
@@ -8,15 +8,13 @@ export const CoreLayout = ({routes}) => (
             HEADER
         </div>
         <div className="page-layout__viewport">
-            {routes.map((route, i) => (
-                <RouteWithSubRoutes key={i} {...route}/>
-            ))}
+            {routes.map((route, i) => (<RouteWithSubRoutes key={i} {...route}/>))}
         </div>
         <div>FOOTER</div>
     </div>
 );
 CoreLayout.propTypes = {
-    children: PropTypes.node,
+    children: PropTypes.node
 };
 
-export default CoreLayout
+export default CoreLayout;

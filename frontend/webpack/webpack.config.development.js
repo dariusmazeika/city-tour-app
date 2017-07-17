@@ -21,7 +21,6 @@ export default {
 
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
         new webpack.LoaderOptionsPlugin({
             debug: true,
             options: {

@@ -1,14 +1,10 @@
-export const TEST_REQUEST = 'TEST_REQUEST';
+import types from './types';
 export function testRequest() {
-    return {type: TEST_REQUEST};
+    return {type: types.TEST.REQUEST};
 }
-
-export const TEST_RESPONSE_SUCCESSFUL = 'TEST_RESPONSE_SUCCESSFUL';
 export function testSuccess() {
-    return {type: TEST_RESPONSE_SUCCESSFUL};
+    return {type: types.TEST.SUCCESS};
 }
-
-export const TEST_RESPONSE_FAILED = 'TEST_RESPONSE_FAILED';
 export function testFailed() {
-    return {type: TEST_RESPONSE_FAILED};
+    return {type: types.TEST.FAILURE};
 }

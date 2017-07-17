@@ -1,24 +1,22 @@
-import {
-    TEST_RESPONSE_FAILED,
-    TEST_RESPONSE_SUCCESSFUL
-} from '../../../actions/actions';
+import types from '../../../actions/types';
 
-export function testSuccess(state, action) {
-    return {...state, testSuccess: true}
+
+export function testSuccess(state) {
+    return {...state, testSuccess: true};
 }
 
-export function testFailed(state, action) {
-    return {...state, testSuccess: true}
+export function testFailed(state) {
+    return {...state, testSuccess: true};
 }
 
 const ACTION_HANDLERS = {
-    [TEST_RESPONSE_FAILED]: (state, action) => testFailed(state, action),
-    [TEST_RESPONSE_SUCCESSFUL]: (state, action) => testFailed(state, action),
+    [types.TEST.FAILURE]: (state, action) => testFailed(state, action),
+    [types.TEST.SUCCESS]: (state, action) => testFailed(state, action),
 };
 
 const initialState = {};
 
 export default (state = initialState, action) => {
-    const handler = ACTION_HANDLERS[action.type]
-    return handler ? handler(state, action) : state
-}
+    const handler = ACTION_HANDLERS[action.type];
+    return handler ? handler(state, action) : state;
+};

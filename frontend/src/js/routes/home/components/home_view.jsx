@@ -7,12 +7,11 @@ export class home_view extends React.Component {
 
     }
 
-    test = () => {
+    test() {
         this.props.testRq();
-    };
+    }
 
     render() {
-        console.log(this.props)
         return (
             <div >
                 VALUE - {this.props.success ? 'dfsdfsd' : '12312'}
@@ -20,8 +19,8 @@ export class home_view extends React.Component {
                     <button onClick={this.test}>test</button>
                 </div>
             </div>
-        )
+        );
     }
 }
 
-export default home_view
+export default home_view;

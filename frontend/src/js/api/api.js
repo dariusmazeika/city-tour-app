@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import {Promise} from 'es6-promise'
+import {Promise} from 'es6-promise';
 
 const API = 'http://httpbin.org';
 

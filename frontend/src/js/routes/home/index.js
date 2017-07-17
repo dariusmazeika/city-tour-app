@@ -1,4 +1,4 @@
-import Home from './containers/home_view_container'
+import Home from './containers/home_view_container';
 
 export default {
     path: '/home',
@@ -6,4 +6,4 @@ export default {
     routes: [
 
     ]
-}
+};
