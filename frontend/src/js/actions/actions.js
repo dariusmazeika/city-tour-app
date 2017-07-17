@@ -1,6 +1,3 @@
-/**
- * Created by tomasgobionis on 6/5/17.
- */
 export const TEST_REQUEST = 'TEST_REQUEST';
 export function testRequest() {
     return {type: TEST_REQUEST};

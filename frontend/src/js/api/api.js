@@ -1,6 +1,3 @@
-/**
- * Created by tomasgobionis on 6/6/17.
- */
 import fetch from 'isomorphic-fetch';
 import {Promise} from 'es6-promise'
 

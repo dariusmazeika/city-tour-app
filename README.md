@@ -23,7 +23,7 @@ https://docs.docker.com/compose/
 Pull seed to your project:
 ```sh
 git init
-git remote add starter https://github.com/domasx2/docker-django-webpack-starter.git
+git remote add starter https://github.com/CornerCaseTechnologies/conercase-react-django-starter
 git pull starter master
 ```
 

@@ -1,6 +1,3 @@
-/**
- * Created by tomasgobionis on 6/5/17.
- */
 import {
     TEST_RESPONSE_FAILED,
     TEST_RESPONSE_SUCCESSFUL

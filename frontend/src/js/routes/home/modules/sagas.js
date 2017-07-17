@@ -1,6 +1,3 @@
-/**
- * Created by tomasgobionis on 6/5/17.
- */
 import { takeLatest } from 'redux-saga';
 import { call, put } from  'redux-saga/effects';
 import {testRequest} from '../../../api/api';

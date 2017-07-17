@@ -1,6 +1,3 @@
-/**
- * Created by tomasgobionis on 6/5/17.
- */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {AppContainer} from 'react-hot-loader'
@@ -24,9 +21,9 @@ const renderRoot = Component => ReactDOM.render(
 
 renderRoot(App);
 
-if (window.devToolsExtension) {
-    window.devToolsExtension.open()
-}
+// if (window.devToolsExtension) {
+//     window.devToolsExtension.open()
+// }
 
 if (module.hot) {
     module.hot.accept(() => {
@@ -35,4 +32,3 @@ if (module.hot) {
         renderRoot(App)
     });
 }
-

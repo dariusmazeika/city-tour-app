@@ -1,6 +1,3 @@
-/**
- * Created by tomasgobionis on 6/6/17.
- */
 import React from 'react'
 import {
     Route,
