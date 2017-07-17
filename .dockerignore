@@ -1,0 +1,13 @@
+backend
+content
+testutils
+backups
+data
+bin
+logs
+*.pyc
+__pycache__
+node_modules
+.git
+frontend/node_modules
+frontend/src
