@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {RouteWithSubRoutes} from '../utils/router_utils';
+import {RouteWithSubRoutes} from '../utils/router-utils';
 
 export const CoreLayout = ({routes}) => (
     <div className="container text-center">

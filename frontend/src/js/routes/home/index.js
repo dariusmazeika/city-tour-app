@@ -1,4 +1,4 @@
-import Home from './containers/home_view_container';
+import Home from './containers/home-view-container';
 
 export default {
     path: '/home',

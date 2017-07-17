@@ -7,16 +7,18 @@ import combineReducers from '../reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export function configureStore(initialState) {
+export function configureStore(middlewares) {
     const sagaMiddleware = createSagaMiddleware();
     const logger = createLogger();
-    const middleware = [sagaMiddleware, thunk, logger];
+    const middleware = [sagaMiddleware, thunk, logger, ...middlewares];
     return {
         ...createStore(combineReducers,
-            initialState,
             composeEnhancers(applyMiddleware(...middleware))),
         runSaga: sagaMiddleware.run
     };
 }
-export const store = configureStore();
-store.runSaga(RootSaga);
+export function buildStore(middlewares){
+    const store = configureStore(middlewares);
+    store.runSaga(RootSaga);
+    return store;
+}
