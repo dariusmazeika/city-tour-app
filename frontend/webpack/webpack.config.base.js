@@ -30,6 +30,15 @@ export default {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/
             }, {
+                test: /\.svg$/,
+                use: ['babel-loader', {
+                    loader: 'svg-react-loader',
+                    query: {
+                        jsx: true
+                    }
+                }]
+            },
+            {
                 test: /\.scss$/,
                 use: ['style-loader', 'css-loader', {
                     loader: 'postcss-loader',

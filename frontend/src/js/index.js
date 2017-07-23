@@ -14,7 +14,7 @@ import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
 const middleware = routerMiddleware(history);
 
-const MOUNT_NODE = document.getElementById('root');
+const MOUNT_NODE = document.getElementById('mount');
 const store = buildStore(middleware);
 
 const renderRoot = Component => ReactDOM.render(

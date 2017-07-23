@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {RouteWithSubRoutes} from '../utils/router-utils';
+import {Switch} from 'react-router';
+import {Redirect} from 'react-router-dom';
 
 export const CoreLayout = ({routes}) => (
     <div className="container text-center">
-        <div>
-            HEADER
-        </div>
         <div className="page-layout__viewport">
-            {routes.map((route, i) => (<RouteWithSubRoutes key={i} {...route}/>))}
+            <Switch>
+                {routes.map((route, i) => (<RouteWithSubRoutes key={i} {...route}/>))}
+                <Redirect to="/"/>
+            </Switch>
         </div>
-        <div>FOOTER</div>
     </div>
 );
 CoreLayout.propTypes = {
