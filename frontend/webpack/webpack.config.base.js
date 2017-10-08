@@ -21,7 +21,7 @@ export default {
                     loader: 'babel-loader',
                     options: {
                         presets: [
-                            ["es2015", {
+                            ["env", {
                                 "loose": true,
                                 "modules": false
                             }], 'react', 'stage-0'],

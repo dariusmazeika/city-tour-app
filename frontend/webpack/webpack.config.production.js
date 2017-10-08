@@ -8,7 +8,7 @@ export default {
 
     output: {
         ...base_config.output,
-        filename: '[hash]_bundle.js'
+        filename: '[chunkhash]_bundle.js'
     },
 
     module: {
@@ -50,7 +50,7 @@ export default {
             minimize: true,
             debug: false
         }),
-        new ExtractTextPlugin("[hash]_styles.css"),
+        new ExtractTextPlugin("[chunkhash]_styles.css"),
         new AssetsWebpackPlugin({
             path: base_config.output.path,
             filename: 'assets.json'

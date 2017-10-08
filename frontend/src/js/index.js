@@ -6,7 +6,7 @@ import {buildStore} from './store/store';
 import App from './app/app';
 
 import '../style/index.scss';
-import { ConnectedRouter, routerMiddleware } from 'react-router-redux';
+import {ConnectedRouter, routerMiddleware} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 
 
@@ -19,12 +19,12 @@ const store = buildStore(middleware);
 
 const renderRoot = Component => ReactDOM.render(
     <Provider store={store}>
-    <ConnectedRouter history={history}>
-        <AppContainer>
-            <Component store={store}/>
-        </AppContainer>
-    </ConnectedRouter>
-</Provider>, MOUNT_NODE);
+        <ConnectedRouter history={history}>
+            <AppContainer>
+                <Component store={store}/>
+            </AppContainer>
+        </ConnectedRouter>
+    </Provider>, MOUNT_NODE);
 
 renderRoot(App);
 
