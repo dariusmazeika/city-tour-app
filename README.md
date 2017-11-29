@@ -4,13 +4,13 @@ This is a starter project for a django app with webpack built frontend that uses
 Docker and docker-compose is all you need to develop, build & deploy, run development or production mode with a single command.
 
 ## stack
-python 3.5  
-node 5.10  
-Postgres 9.5  
-Django  1.10.5
-Webpack  
-Stylus   
-Nginx  
+python 3.5
+node 8.9
+Postgres 10.1
+Django  1.11.6
+Webpack
+Sass
+Nginx
 Gunicorn
 
 
