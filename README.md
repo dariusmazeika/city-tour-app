@@ -10,7 +10,7 @@ Postgres 10.1
 Django  1.11.7
 Webpack
 Sass
-Nginx
+Nginx 1.13.7
 Gunicorn
 
 
