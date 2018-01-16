@@ -1,7 +1,6 @@
-import { takeLatest } from 'redux-saga';
-import { call, put } from  'redux-saga/effects';
+import {call, put, takeLatest} from 'redux-saga/effects';
 import types from '../../../actions/types';
-import {callGet} from '../../../utils/api';
+import API from '../../../utils/api';
 
 import {
     testFailed,
@@ -11,7 +10,7 @@ import {
 
 function* testSaga() {
     try {
-        const items = yield call(callGet, '/get');
+        const items = yield call(API.callGet, '/get');
         yield put(testSuccess(items));
     } catch (e) {
         yield put(testFailed());

@@ -1,6 +1,7 @@
 import types from '../../../actions/types';
-import BaseReducer from '../../../reducers/base-reducer';
-class HomePageReducer extends BaseReducer {
+import {Reducers} from 'cct-react-commons';
+
+class HomePageReducer extends Reducers.BaseReducer {
     constructor() {
         super();
         this.initialState = {};
@@ -11,16 +12,19 @@ class HomePageReducer extends BaseReducer {
     }
 
     testFailed(state) {
-        return { ...state,
+        return {
+            ...state,
             testSuccess: false
         };
     }
 
     testSuccess(state) {
-        return { ...state,
+        return {
+            ...state,
             testSuccess: true
         };
     }
 
 }
+
 export default new HomePageReducer().handleActions;
