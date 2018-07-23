@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-export class HomeView extends React.Component {
+export class HomeView extends Component {
     static propTypes = {
         testRq: PropTypes.func,
         success: PropTypes.bool
