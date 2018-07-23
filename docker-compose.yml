@@ -3,7 +3,7 @@ volumes:
     data:
 services:
     db:
-        image: postgres:10.1
+        image: postgres:10.4
         environment:
             POSTGRES_USER: django
             POSTRES_PASSWORD: django
@@ -12,7 +12,7 @@ services:
         ports:
             - "9432:5432"
     frontend:
-        image: node:8.9
+        image: node:10.7
         working_dir: /frontend
         command: npm run-script develop
         volumes:

@@ -1,9 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Icon from './icon';
+import PropTypes from 'prop-types';
 
-export default function Button(props) {
+const Button = (props) => {
     const {
         type = 'primary',
         to = null,
@@ -16,7 +17,7 @@ export default function Button(props) {
 
     const btnprops = {
         ...restprops,
-        className: classnames(className, 'btn', `btn-${type}`, {'btn-loading': loading}),
+        className: classnames(className, 'btn', `btn-${type}`, { 'btn-loading': loading }),
         type: submit
             ? 'submit'
             : 'button'
@@ -42,4 +43,17 @@ export default function Button(props) {
             {children}
         </button>
     );
-}
+};
+
+Button.propTypes = {
+    type: PropTypes.string,
+    to: PropTypes.string,
+    className: PropTypes.string,
+    submit: PropTypes.bool,
+    loading: PropTypes.bool,
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node
+    ])
+};
+export default Button;

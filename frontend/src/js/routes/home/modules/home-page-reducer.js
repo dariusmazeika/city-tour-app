@@ -1,5 +1,5 @@
 import types from '../../../actions/types';
-import {Reducers} from 'cct-react-commons';
+import { Reducers } from 'cct-react-commons';
 
 class HomePageReducer extends Reducers.BaseReducer {
     constructor() {

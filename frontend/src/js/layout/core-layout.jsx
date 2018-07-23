@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RouterUtils from '../utils/router-utils';
-import {Switch} from 'react-router';
-import {Redirect} from 'react-router-dom';
+import { Switch } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
-export const CoreLayout = ({routes}) => (
+export const CoreLayout = ({ routes }) => (
     <div className="container text-center">
         <div className="page-layout">
             <Switch>
@@ -15,7 +15,11 @@ export const CoreLayout = ({routes}) => (
     </div>
 );
 CoreLayout.propTypes = {
-    children: PropTypes.node
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node
+    ]),
+    routes: PropTypes.array
 };
 
 export default CoreLayout;

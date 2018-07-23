@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 
 const sizes = {
     ss: {
@@ -28,12 +29,18 @@ const sizes = {
     }
 };
 
-export default function Icon(props) {
+const Icon = (props) => {
 
-    const { icon, size='m', className=null, spin=false, ...restprops} = props;
+    const { icon, size = 'm', className = null, spin = false, ...restprops } = props;
 
     const Ic = require(`../../images/icons/${icon}.svg`);
-
-
-    return <Ic {...sizes[size]} {...restprops} className={classnames('icon', `icon-${size}`, `icon-${icon}`, {'icon-spin': !!spin}, className)}/>;
-}
+    return <Ic {...sizes[ size ]} {...restprops}
+               className={classnames('icon', `icon-${size}`, `icon-${icon}`, { 'icon-spin': !!spin }, className)}/>;
+};
+Icon.propTypes = {
+    icon: PropTypes.string,
+    size: PropTypes.string,
+    className: PropTypes.string,
+    spin: PropTypes.bool
+};
+export default Icon;

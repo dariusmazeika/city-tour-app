@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {AppContainer} from 'react-hot-loader';
-import {Provider} from 'react-redux';
-import {buildStore} from './store/store';
+import { AppContainer } from 'react-hot-loader';
+import { Provider } from 'react-redux';
+import { buildStore } from './store/store';
 import App from './app/app';
 
 import '../style/index.scss';
-import {ConnectedRouter, routerMiddleware} from 'react-router-redux';
+import { ConnectedRouter, routerMiddleware } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 
 

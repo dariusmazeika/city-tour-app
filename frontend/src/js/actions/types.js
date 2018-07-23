@@ -1,4 +1,4 @@
-import {Types} from 'cct-react-commons';
+import { Types } from 'cct-react-commons';
 
 const types = {
     TEST: 'async'
