@@ -5,6 +5,10 @@ from rest_framework.response import Response
 
 
 class CustomPagination(pagination.LimitOffsetPagination):
+    """
+    If request is sent to ListView with url parameter ?all=true - response is returned not paginated.
+    This was done to not duplicate ListViews for paginated or not paginated responses
+    """
     NOT_PAGINATED_KEYWORD = 'all'
     NOT_PAGINATED_VALUE = 'true'
 
