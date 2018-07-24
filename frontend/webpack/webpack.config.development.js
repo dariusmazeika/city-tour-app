@@ -18,15 +18,6 @@ export default {
     ],
 
     plugins: [
-        function () {
-            this.plugin('done', function (stats) {
-                if (stats.compilation.errors && stats.compilation.errors.length &&
-                    process.argv.indexOf('--watch') == -1) {
-                    console.log(stats.compilation.errors);
-                }
-            });
-        },
-
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
         new webpack.LoaderOptionsPlugin({
@@ -37,8 +28,6 @@ export default {
                 }
             }
         }),
-
-        // ...base_config.plugins,
         new webpack.DefinePlugin({
             '__DEV__': true,
             'process.env': JSON.stringify('development')

@@ -1,9 +1,9 @@
-// import webpack from 'webpack';
 import path from 'path';
 import postCssConfig from './postcss.config';
 import 'react-hot-loader/patch';
 
 export default {
+    mode: 'development',
     entry: [
         'babel-polyfill',
         `${path.resolve(__dirname, '../', 'src', 'js')}/index`
@@ -59,8 +59,5 @@ export default {
     target: 'web',
     optimization: {
         noEmitOnErrors: true
-    },
-    plugins: [
-        // new webpack.NoErrorsPlugin()
-    ]
+    }
 };
