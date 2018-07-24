@@ -1,13 +1,13 @@
-import webpack  from 'webpack';
+import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import config  from './webpack.config.development';
+import config from './webpack.config.development';
 
 new WebpackDevServer(webpack(config), {
     publicPath: config.output.publicPath,
     filename: config.output.filename,
     inline: true,
     hot: true,
-    stats: false,
+    stats: true,
     historyApiFallback: true,
     headers: {
         'Access-Control-Allow-Origin': '*',

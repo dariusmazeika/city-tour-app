@@ -1,4 +1,4 @@
-import {API, Cookies} from 'cct-react-commons';
+import { API, Cookies } from 'cct-react-commons';
 
 function addHeaders(options) {
     let headers = {

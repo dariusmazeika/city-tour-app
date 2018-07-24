@@ -18,7 +18,6 @@ export default {
     ],
 
     plugins: [
-
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
         new webpack.LoaderOptionsPlugin({
@@ -29,8 +28,6 @@ export default {
                 }
             }
         }),
-
-        // ...base_config.plugins,
         new webpack.DefinePlugin({
             '__DEV__': true,
             'process.env': JSON.stringify('development')

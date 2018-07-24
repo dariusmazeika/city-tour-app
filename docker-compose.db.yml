@@ -1,7 +1,7 @@
 version: '2'
 services:
     dbclient:
-        image: postgres:10.1
+        image: postgres:10.4
         depends_on:
           - db
         volumes:
