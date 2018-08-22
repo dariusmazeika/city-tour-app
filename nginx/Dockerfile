@@ -1,4 +1,4 @@
-FROM nginx:1.13.7
+FROM nginx:1.15
 
 ADD ./nginx/ssl /etc/nginx/ssl
 
