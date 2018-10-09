@@ -2,13 +2,10 @@
 psycopg2-binary==2.7.5
 
 # django framework itself
-Django==2.1
+Django==2.1.2
 
 #app server for prod
 gunicorn==19.9.0
-
-#selenium for e2e tests
-selenium==3.13.0
 
 
 djangorestframework==3.8.2
