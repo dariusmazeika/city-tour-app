@@ -118,9 +118,6 @@ nginx/nginx_ssl.conf          - nginx conf for deploy with ssl
 
 ## tests
 
-For e2e tests, use `app.testutils.SeleniumTestCase` class it comes with chrome driver configure at `self.driver`. See `apps.home.tests` for an example.  
-See http://selenium-python.readthedocs.io/ for selenium driver api
-
 ```sh
 
 #run tests
@@ -128,12 +125,3 @@ See http://selenium-python.readthedocs.io/ for selenium driver api
 
 # skip frontend build (eg, running tests repeatedly)
 ./bin/test.sh --skipbuild
-
-
-To debug tests it's possible to vnc into selenium container while its running at localhost:5900 and view the browser. Password is `secret`.
-
-```sh
-sudo apt-get install vinagre # vnc client
-
-vinagre localhost:5900
-```

@@ -13,7 +13,7 @@ if not settings.WEBPACK_DEV_SERVER:
         raise Exception('failed to read %s. was frontend built?' % assets_json_fname)
 
 
-#use by base.html to figure out what statics to load
+# use by base.html to figure out what statics to load
 def static_resources(request):
     return {
         "WEBPACK_DEV_SERVER": settings.WEBPACK_DEV_SERVER,
