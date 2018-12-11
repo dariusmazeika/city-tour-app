@@ -27,6 +27,11 @@ git remote add starter https://github.com/CornerCaseTechnologies/conercase-react
 git pull starter master
 ```
 
+PyLint configuration file is in .pylintrc and the seed itself is configured to pass current PyLint configuration test without warnings. You can whether configure your IDE with this conf file or run PyLint manually:
+```sh
+pylint --rcfile=.pylintrc backend > pylint.log
+```
+
 Start dev server:
 ```sh
 ./bin/develop.sh
