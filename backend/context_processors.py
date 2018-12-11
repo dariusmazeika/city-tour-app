@@ -1,21 +1,27 @@
-from django.conf import settings
-import os.path
+"""
+context_processors.py
+This file is dedicated for loading the assets json file and reading the dedicated bundle's name.
+"""
 import json
+from os import path
 
-static_assets = None
+from django.conf import settings
+
+STATIC_ASSETS = None
 
 if not settings.WEBPACK_DEV_SERVER:
-    assets_json_fname = os.path.join(settings.STATIC_ASSETS_JSON)
+    ASSETS_JSON_FNAME = path.join(settings.STATIC_ASSETS_JSON)
     try:
-        with open(assets_json_fname, 'r') as f:
-            static_assets = json.load(f)['main']
+        with open(ASSETS_JSON_FNAME, 'r') as f:
+            STATIC_ASSETS = json.load(f)['main']
     except Exception:
-        raise Exception('failed to read %s. was frontend built?' % assets_json_fname)
+        raise Exception('failed to read %s. was frontend built?' % ASSETS_JSON_FNAME)
 
 
-# use by base.html to figure out what statics to load
+# pylint: disable=unused-argument
 def static_resources(request):
+    """ used by base.html to figure out what statics to load """
     return {
         "WEBPACK_DEV_SERVER": settings.WEBPACK_DEV_SERVER,
-        "static_assets": static_assets
+        "static_assets": STATIC_ASSETS
     }

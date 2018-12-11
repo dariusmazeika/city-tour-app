@@ -1,3 +1,8 @@
+"""
+pagination.py
+Dedicated for a global CustomPagination class, which allows the response data to be paginated or to return the full
+response list.
+"""
 import math
 
 from rest_framework import pagination
@@ -15,6 +20,7 @@ class CustomPagination(pagination.LimitOffsetPagination):
     def paginate_queryset(self, queryset, request, view=None):
         not_paginated = request.query_params.get(self.NOT_PAGINATED_KEYWORD)
         if not_paginated == self.NOT_PAGINATED_VALUE:
+            # pylint: disable= attribute-defined-outside-init
             self.request = request
             return list(queryset)
         return super(CustomPagination, self).paginate_queryset(queryset, request, view)
