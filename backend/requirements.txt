@@ -2,7 +2,7 @@
 psycopg2-binary==2.7.6.1
 
 # django framework itself
-Django==2.1.4
+Django==2.1.5
 
 #app server for prod
 gunicorn==19.9.0
