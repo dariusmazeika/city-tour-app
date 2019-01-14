@@ -1,0 +1,42 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",        // path to output directory
+        "sourceMap": true,          // allow sourcemap support
+        "strictNullChecks": true,   // enable strict null checks as a best practice
+        "module": "es6",            // specify module code generation
+        "jsx": "react",             // use typescript to transpile jsx to js
+        "target": "es5",            // specify ECMAScript target version
+        "allowJs": true,             // allow a partial TypeScript and JavaScript codebase,
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        
+        "lib": [
+            "dom",
+            "es2015",
+            "es2017.object",
+          ],
+
+        //Impo
+        "allowSyntheticDefaultImports": true, // no errors on commonjs default import
+        "checkJs": false, // typecheck js files
+        "declaration": false, // don't emit declarations
+        "importHelpers": true, // importing helper functions from tslib
+        "noEmitHelpers": true, // disable emitting inline helper functions
+        
+        // "module": "commonjs", // "es2015" for tree-shaking
+        "noEmitOnError": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": false,
+        "noUnusedLocals": false,
+        "pretty": true,
+        "removeComments": true,
+
+    },
+    "include": [
+        "./src/"
+    ],
+    "exclude": [
+        "node_modules"
+      ]
+}
