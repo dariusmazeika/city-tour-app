@@ -8,7 +8,7 @@ export function* loginSaga(action: Action<LoginActionPayload>) {
   yield handleFormSubmit('login', action, login);
 }
 export function* logoutSaga() {
-  yield console.log('ASAS');
+  yield console.log('Will logout');
 }
 
 export function* watchAuthSaga() {

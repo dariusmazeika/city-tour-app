@@ -2,6 +2,7 @@ import * as React from 'react';
 import FormField from './formField';
 import { WrappedFieldProps } from 'redux-form';
 
+// TODO https://github.com/DefinitelyTyped/DefinitelyTyped/issues/26253#
 export interface TextInputProps extends WrappedFieldProps{
   placeholder?: string;
   disabled: boolean;
@@ -9,12 +10,6 @@ export interface TextInputProps extends WrappedFieldProps{
   label: string;
   showError: boolean;
 }
-// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/26253#
-
-// interface MyFieldCustomProps {
-//   foo: string;
-// }
-// type MyFieldProps = MyFieldCustomProps & WrappedFieldProps;
 
 const textInput: React.FunctionComponent<any> = ({ input, label, type, meta, showError, disabled = false, placeholder }) => {
   return (

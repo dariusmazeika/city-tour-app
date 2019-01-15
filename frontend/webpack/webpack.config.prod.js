@@ -47,7 +47,6 @@ export default {
       {
         test: /\.(t|j)sx?$/, use: { loader: 'awesome-typescript-loader' },
         exclude: /node_modules/,
-        // use: ['babel-loader']
       },
       {
         test: /\.eot(\?v=\d+.\d+.\d+)?$/,

@@ -4,12 +4,12 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import routes from '../routes';
 
-class App extends React.Component<any, any> {
+class App extends React.Component<{}, {}> {
   render() {
     return (
       <div>
         <Switch>
-          {routes.map((route, i) => (
+          {routes.map(route => (
               <Route path={route.path} exact key={route.path}><route.component /></Route>),
           )}
           <Redirect to="/"/>

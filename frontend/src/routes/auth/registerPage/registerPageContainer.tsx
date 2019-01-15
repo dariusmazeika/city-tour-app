@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-const lomePage = () => {
+const registerPageContainer = () => {
   return (
     <div>
       I am register Page
@@ -9,4 +9,4 @@ const lomePage = () => {
   );
 };
 
-export default lomePage;
+export default registerPageContainer;

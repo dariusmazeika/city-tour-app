@@ -32,10 +32,6 @@ describe('Math Helper', () => {
       expect(addArray([])).toEqual(0);
     });
 
-    // it('returns null when passed null', () => {
-    //  should.not.exist(MathHelper.addArray(null));
-    // });
-
     it('returns 6 when passed [2,4]', () => {
       expect(addArray([2, 4])).toEqual(6);
     });

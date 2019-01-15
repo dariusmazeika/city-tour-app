@@ -26,12 +26,13 @@ function addHeaders(options: object) {
     'Content-Type': 'application/json',
   };
 
+// TODO add implementation
 //   const token = getToken();
   const token = null;
   if (token) {
     headers['Authorization'] = token;
   }
-
+// TODO add implementation
 //   const langCookie = getCookie('lang');
 //   if (langCookie) {
 //     headers[ 'Content-Language' ] = langCookie;

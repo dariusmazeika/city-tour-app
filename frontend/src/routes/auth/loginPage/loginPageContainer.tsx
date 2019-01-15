@@ -1,10 +1,10 @@
 import * as React from 'react';
 import LoginForm from './components/loginForm';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { RootState } from '../../../store/reducers';
-import { bindActionToPromise } from '../../../utils/redux';
-import { authActions } from '../../../store/actions';
+import {connect} from 'react-redux';
+import {Dispatch} from 'redux';
+import {RootState} from '../../../store/reducers';
+import {bindActionToPromise} from '../../../utils/redux';
+import {authActions} from '../../../store/actions';
 
 export interface LandingPageContainerProps {
   actions: {
@@ -15,9 +15,9 @@ export interface LandingPageContainerProps {
 export class LoginPageContainer extends React.PureComponent<LandingPageContainerProps, {}> {
   render() {
     return (
-            <div>
-                <LoginForm onSubmit={this.props.actions.login}/>
-            </div>
+      <div>
+        <LoginForm onSubmit={this.props.actions.login}/>
+      </div>
     );
   }
 }
@@ -33,6 +33,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
+  mapStateToProps,
+  mapDispatchToProps,
 )(LoginPageContainer);
