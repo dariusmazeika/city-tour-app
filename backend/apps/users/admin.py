@@ -25,7 +25,7 @@ class UserAdmin(UserAdmin):
                     'last_login']
     ordering = ('-id',)
     search_fields = ('first_name', 'last_name', 'email')
-    exclude = ('',)
+    exclude = []
 
 
 admin.site.register(User, UserAdmin)

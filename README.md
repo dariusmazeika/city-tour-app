@@ -88,6 +88,15 @@ Copy your .key and .crt files to `nginx/ssl` and run `./bin/deploy.sh`.
 
 ```
 
+## translations
+```sh
+# dump to fixture
+./bin/django.sh dumpdata --indent 4 --natural-primary translations > backend/apps/translations/fixtures/initial.json
+
+# load from fixture
+./bin/django.sh loaddata initial.json
+```
+
 ## layout
 
 ```

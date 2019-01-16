@@ -131,7 +131,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+DEFAULT_LANGUAGE = 'lt'
 TRANSLATIONS_BASE_LANGUAGE = ('lt', 'Lithuanian')
 MANIFEST_JS_MAX_AGE = 0
 

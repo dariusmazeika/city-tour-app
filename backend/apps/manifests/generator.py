@@ -9,7 +9,7 @@ logger = logging.getLogger('id.manifest')
 
 
 def get_translations(language):
-    translations = Translation.objects.all().filter(language=language)
+    translations = Translation.objects.filter(language=language)
     return dict([(trans.message.message_id, trans.text) for trans in translations])
 
 
@@ -29,19 +29,9 @@ def get_enabled_languages(config):
         } for lang in config.enabled_languages.all()
     )
 
-
-def get_enabled_languages(config):
-    return list(
-        {
-            'code': lang.pk.upper(),
-            'name': lang.name
-        } for lang in config.enabled_languages.all()
-    )
-
-
 def get_page_translations(page, add_content=False):
     if page is None:
-        return ''
+        return {}
     translations = {}
     icon = None
     if page.icon:
@@ -64,7 +54,7 @@ def generate_manifest():
     config = {
         'enabled_languages': get_enabled_languages(site_config),
         'enabled_inform_languages': get_enabled_languages(site_config),
-        'default_language': 'lt',
+        'default_language': settings.DEFAULT_LANGUAGE,
         'default_language': site_config.default_language.code.upper(),
     }
 

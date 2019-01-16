@@ -26,3 +26,4 @@ class ConfigAdmin(TabbedModelAdmin, SingletonModelAdmin):
 
     regenerate_cache.short_description = 'Regenerate cache'
     regenerate_cache.allow_tags = True
+    
