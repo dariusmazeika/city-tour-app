@@ -3,7 +3,6 @@ from solo.models import SingletonModel
 
 
 class SiteConfiguration(SingletonModel):
-    enabled_languages = models.ManyToManyField('translations.Language')
     enabled_languages = models.ManyToManyField('translations.Language', related_name='enabled_inform_languages')
     default_language = models.ForeignKey(
         'translations.Language',
