@@ -30,6 +30,7 @@ WEBPACK_DEV_SERVER = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 
@@ -41,10 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+    'rest_framework.authtoken',
+    'solo',
+    'tabbed_admin',
+
     'apps.home',
     'apps.api',
-    'rest_framework'
-
+    'apps.translations',
+    'apps.users',
 ]
 
 MIDDLEWARE = [
@@ -124,6 +130,10 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+TRANSLATIONS_BASE_LANGUAGE = ('lt', 'Lithuanian')
+MANIFEST_JS_MAX_AGE = 0
 
 
 # Static files (CSS, JavaScript, Images)
