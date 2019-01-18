@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 
 from apps.users.serializers import LoginSerializer
 
+
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = LoginSerializer

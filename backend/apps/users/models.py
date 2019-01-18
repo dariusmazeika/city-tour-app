@@ -1,12 +1,6 @@
-import datetime
-import logging
-import uuid
-
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
+from django.contrib.postgres.fields import CIEmailField
 
-from apps.home.models import SiteConfiguration
 
 
 class UserManager(BaseUserManager):
@@ -46,7 +40,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
 
-    email = models.EmailField(max_length=255, unique=True)
+    email = CIEmailField(max_length=255, unique=True)
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()

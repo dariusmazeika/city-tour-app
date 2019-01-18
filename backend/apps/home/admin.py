@@ -5,6 +5,7 @@ from tabbed_admin import TabbedModelAdmin
 
 from apps.home.models import SiteConfiguration
 
+
 @admin.register(SiteConfiguration)
 class ConfigAdmin(TabbedModelAdmin, SingletonModelAdmin):
     readonly_fields = ('manifest_version', 'regenerate_cache')
@@ -16,7 +17,6 @@ class ConfigAdmin(TabbedModelAdmin, SingletonModelAdmin):
         }),
     )
 
-
     tabs = [
         ('General', tab_general),
     ]
@@ -26,4 +26,3 @@ class ConfigAdmin(TabbedModelAdmin, SingletonModelAdmin):
 
     regenerate_cache.short_description = 'Regenerate cache'
     regenerate_cache.allow_tags = True
-    

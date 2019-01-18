@@ -5,7 +5,6 @@ from django.urls import path
 from apps.manifests.views import RegenerateManifest
 from apps.users.views import LoginView, LogoutView
 
-
 urlpatterns = [
     path('admin/regenerate_cache/', RegenerateManifest.as_view()),
     path('admin/', admin.site.urls),
