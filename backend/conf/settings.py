@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -30,6 +29,7 @@ WEBPACK_DEV_SERVER = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 
@@ -41,10 +41,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+    'rest_framework.authtoken',
+    'solo',
+    'tabbed_admin',
+
     'apps.home',
     'apps.api',
-    'rest_framework'
-
+    'apps.translations',
+    'apps.users',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +83,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -91,7 +95,6 @@ DATABASES = {
         'PORT': 5432,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -125,6 +128,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_LANGUAGE = 'lt'
+TRANSLATIONS_BASE_LANGUAGE = ('lt', 'Lithuanian')
+MANIFEST_JS_MAX_AGE = 0
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
