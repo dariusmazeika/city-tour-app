@@ -16,6 +16,14 @@ exports[`<LocalizedMessage /> Shoud find className if one is present 2`] = `
 </span>
 `;
 
+exports[`<LocalizedMessage /> Should find a translation  1`] = `
+<span
+  className="this-is-css-class"
+>
+  translation
+</span>
+`;
+
 exports[`<LocalizedMessage /> should match snapshot 1`] = `
 <span>
   msg_key
