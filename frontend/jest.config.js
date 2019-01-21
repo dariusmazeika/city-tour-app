@@ -17,6 +17,10 @@ module.exports = {
   "transform": {
     "^.+\\.(t|j)sx?$": "ts-jest"
   },
+  "globals": {
+    "_app_messages": {},
+    "_app_conf": {}
+  },
 
   "automock": false,
 

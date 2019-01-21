@@ -1,33 +1,21 @@
+import { ChangeLanguagePayload } from './localization.types';
+import { changeLanguage } from './localization.actions';
 
 describe('Localization actions', () => {
 
-  describe('Login action', () => {
+  describe('Change language action', () => {
 
-    // const actionPayload: LoginActionPayload = {
-    //   email: 'myemail@mail.com',
-    //   password: 'helloPassword',
-    //   resolve: () => {},
-    //   reject: () => {},
-    // };
-    //
-    // it('should create an action to start login', () => {
-    //   const dispatch = jest.fn();
-    //   const expected = { payload: actionPayload, type: 'LOGIN_STARTED' };
-    //   expect(typeof (login.started(actionPayload))).toEqual('object');
-    //   dispatch(login.started(actionPayload));
-    //   expect(dispatch).toBeCalledWith(expected);
-    // });
-    //
-    // it('should create an action for success login', () => {
-    //   const dispatch = jest.fn();
-    //   const result:UserAuth = {
-    //     token: 'I am user token',
-    //   };
-    //   const expected = { payload: { result, params: actionPayload }, type: 'LOGIN_DONE' };
-    //   expect(typeof (login.done({ result, params: actionPayload }))).toEqual('object');
-    //   dispatch(login.done({ result, params: actionPayload }));
-    //   expect(dispatch).toBeCalledWith(expected);
-    // });
+    const actionPayload: ChangeLanguagePayload = {
+      lang: 'be',
+    };
+
+    it('should create an action to change language', () => {
+      const dispatch = jest.fn();
+      const expected = { payload: actionPayload, type: 'CHANGE_LANGUAGE' };
+      expect(typeof (changeLanguage(actionPayload))).toEqual('object');
+      dispatch(changeLanguage(actionPayload));
+      expect(dispatch).toBeCalledWith(expected);
+    });
 
   });
 

@@ -5,8 +5,8 @@ import { changeLanguage } from './localization.actions';
 import { ChangeLanguagePayload } from './localization.types';
 import { Cookies } from '../../config/constants';
 
-export function* changeLanguageSaga(data: Action<ChangeLanguagePayload>) {
-  yield setCookie(Cookies.defaultLang, data.payload.lang);
+export function* changeLanguageSaga(action: Action<ChangeLanguagePayload>) {
+  yield setCookie(Cookies.defaultLang, action.payload.lang);
 }
 
 export default function* languageSagas() {

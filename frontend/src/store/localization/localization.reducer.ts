@@ -10,10 +10,9 @@ export const initialState: LocalizationState = {
   currentLanguage: getDefaultLanguage(),
 };
 
-const languageReducer = createReducer(initialState, {
-  [changeLanguage.type]: (state: LocalizationState, action: Action<{ result: ChangeLanguagePayload }>) => {
-    const user = action.payload.result;
-    return dotProp.set(state, 'currentLanguage', user);
+const localizationReducer = createReducer(initialState, {
+  [changeLanguage.type]: (state: LocalizationState, action: Action<ChangeLanguagePayload>) => {
+    return dotProp.set(state, 'currentLanguage', action.payload.lang);
   },
 });
-export default languageReducer;
+export default localizationReducer;
