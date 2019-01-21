@@ -8,14 +8,6 @@ exports[`<LocalizedMessage /> Shoud find className if one is present 1`] = `
 </span>
 `;
 
-exports[`<LocalizedMessage /> Shoud find className if one is present 2`] = `
-<span
-  className="this-is-css-class"
->
-  translation
-</span>
-`;
-
 exports[`<LocalizedMessage /> Should find a translation  1`] = `
 <span
   className="this-is-css-class"

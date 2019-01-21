@@ -1,4 +1,4 @@
-from apps.utils.tests import BaseTestCase
+from apps.utils.tests_utils import BaseTestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token

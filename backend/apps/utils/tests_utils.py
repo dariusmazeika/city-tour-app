@@ -20,7 +20,6 @@ class BaseTestCase(TestCase):
             name='test',
             code='en'
         )
-        self.user_data['user_language'] = self.language
         self.user = User.objects.create_user(**self.user_data)
         self.client = APIClient()
 

@@ -23,7 +23,8 @@
         "open:src": "babel-node tools/srcServer.js",
         "clean-dist": "npm run remove-dist && mkdir dist",
         "remove-dist": "rimraf ./dist",
-        "build": "babel-node tools/build.js"
+        "build": "babel-node tools/build.js",
+        "validate": "npm run lint && npm run test"
     },
     "author": "",
     "license": "MIT",
