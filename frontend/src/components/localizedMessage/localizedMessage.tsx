@@ -16,7 +16,7 @@ export interface LocalizedMessageProps {
 }
 export class LocalizedMessage extends React.PureComponent<LocalizedMessageProps, {}> {
   render() {
-    const { params, html, msg, className, currentLanguage } = this.props;
+    const { params, html = false, msg, className, currentLanguage } = this.props;
     let translatedMessage = getMessageKeyTranslation(msg, currentLanguage);
 
     if (params) {
@@ -30,7 +30,7 @@ export class LocalizedMessage extends React.PureComponent<LocalizedMessageProps,
       );
     }
     return (
-      <span>{translatedMessage}</span>
+      <span className={className}>{translatedMessage}</span>
     );
   }
 }
