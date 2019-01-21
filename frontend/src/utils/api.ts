@@ -1,6 +1,7 @@
 import { fetch } from 'whatwg-fetch';
 import { getCookie } from './cookies';
-import {Cookies} from "../config/constants";
+import { Cookies, LocalStorage } from '../config/constants';
+import { getFromLocalStorage } from './localStorage';
 
 const API_URL = '';
 
@@ -15,10 +16,6 @@ export class FetchError extends Error {
   status?: number;
 }
 
-// import {
-//   getToken
-// } from '../utils/localStorage';
-
 function addHeaders(options: object) {
 
   const headers = {
@@ -26,9 +23,7 @@ function addHeaders(options: object) {
     'Content-Type': 'application/json',
   };
 
-// TODO add implementation
-//   const token = getToken();
-  const token = null;
+  const token = getFromLocalStorage(LocalStorage.userToken);
   if (token) {
     headers['Authorization'] = token;
   }

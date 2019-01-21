@@ -5,6 +5,11 @@ export interface LoginActionPayload extends PayloadWithPromises  {
   password: string;
 }
 
+export interface LoginActionSuccess {
+  params: LoginActionPayload;
+  result: UserAuth;
+}
+
 export type UserAuth = {
   token: string,
 };

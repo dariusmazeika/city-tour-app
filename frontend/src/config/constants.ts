@@ -5,5 +5,8 @@ export enum Forms {
 export enum Cookies {
   crfToken = 'csrftoken',
   defaultLang = 'lang',
+}
 
+export enum LocalStorage {
+  userToken = 'userToken',
 }
