@@ -1,12 +1,17 @@
 import AuthRoutes from './auth/authRoutes';
 import StaticRoutes from './static/staticRoutes';
+import UserRoutes from './user/userRoutes';
+
 export type RouteInfo = {
   path: string;
   component: any;
 };
 
-const routes: RouteInfo[] = [
+export const publicRoutes: RouteInfo[] = [
   ...StaticRoutes,
   ...AuthRoutes,
 ];
-export default routes;
+
+export const privateRoutes: RouteInfo[] = [
+  ...UserRoutes,
+];
