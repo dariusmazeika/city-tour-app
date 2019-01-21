@@ -28,7 +28,8 @@ class AuthentificationTestCase(BaseTestCase):
             },
             format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()[0], 'msg_bad_credentials')
+        self.assertTrue('non_field_errors' in response.data)
+        self.assertTrue('msg_error_bad_credentials' in response.data['non_field_errors'])
 
     def test_invalid_email(self):
         response = self.client.post(
@@ -39,7 +40,8 @@ class AuthentificationTestCase(BaseTestCase):
             },
             format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()[0], 'msg_bad_credentials')
+        self.assertTrue('non_field_errors' in response.data)
+        self.assertTrue('msg_error_bad_credentials' in response.data['non_field_errors'])
 
     def test_missing_email(self):
         response = self.client.post(

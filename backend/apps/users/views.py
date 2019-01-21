@@ -1,8 +1,6 @@
-from django.contrib.auth import authenticate
 from django.contrib.auth.signals import user_logged_in
 from rest_framework import permissions, status
 from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,9 +15,7 @@ class LoginView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = authenticate(email=serializer.validated_data['email'], password=serializer.validated_data['password'])
-        if not user:
-            raise ValidationError('msg_bad_credentials')
+        user = serializer.validated_data['user']
         token, _ = Token.objects.get_or_create(user=user)
         response = {'token': token.key}
         user_logged_in.send(sender=self.__class__, request=request, user=user)
