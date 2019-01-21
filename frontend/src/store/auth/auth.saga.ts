@@ -5,7 +5,7 @@ import { Action } from 'typescript-fsa';
 import { LoginActionPayload } from './auth.types';
 
 export function* loginSaga(action: Action<LoginActionPayload>) {
-  yield handleFormSubmit('login', action, login);
+  yield handleFormSubmit('/api/login/', action, login);
 }
 export function* logoutSaga() {
   yield console.log('Will logout');

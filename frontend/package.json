@@ -36,6 +36,7 @@
         "install": "^0.12.2",
         "jest-fetch-mock": "^2.1.0",
         "react": "16.7.0",
+        "react-cookie": "^3.0.8",
         "react-dom": "16.7.0",
         "react-redux": "6.0.0",
         "react-router-dom": "4.3.1",

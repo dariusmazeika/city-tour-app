@@ -1,18 +1,19 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import createBrowserHistory from 'history/createBrowserHistory';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { routerMiddleware } from 'connected-react-router';
 import createRootReducer from './reducers';
 import reduxSaga from 'redux-saga';
 import { initSagas } from '../utils/redux';
 import * as sagas from './sagas';
 
 export const history = createBrowserHistory();
-const connectRouterHistory = connectRouter(history);
 
 declare global {
   interface Window {
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
+    _app_conf: any;
+    _app_messages: any;
   }
 }
 

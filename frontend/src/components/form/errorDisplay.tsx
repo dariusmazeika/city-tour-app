@@ -5,8 +5,9 @@ export interface ErrorDisplayProps {
   msg: any;
 }
 
-const errorDisplay: React.SFC<ErrorDisplayProps> = ({ msg }) => {
+const errorDisplay: React.FunctionComponent<ErrorDisplayProps> = ({ msg }) => {
   let msgToDispay = msg;
+
   if (Array.isArray(msg)) {
     msgToDispay = msg[0];
   }

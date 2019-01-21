@@ -1,4 +1,6 @@
 import { fetch } from 'whatwg-fetch';
+import { getCookie } from './cookies';
+import {Cookies} from "../config/constants";
 
 const API_URL = '';
 
@@ -17,8 +19,6 @@ export class FetchError extends Error {
 //   getToken
 // } from '../utils/localStorage';
 
-// import { getCookie } from './cookies';
-
 function addHeaders(options: object) {
 
   const headers = {
@@ -32,11 +32,16 @@ function addHeaders(options: object) {
   if (token) {
     headers['Authorization'] = token;
   }
-// TODO add implementation
-//   const langCookie = getCookie('lang');
-//   if (langCookie) {
-//     headers[ 'Content-Language' ] = langCookie;
-//   }
+
+  const csrftoken = getCookie(Cookies.crfToken);
+  if (csrftoken) {
+    headers['X-CSRFToken'] = csrftoken;
+  }
+
+  const langCookie = getCookie(Cookies.defaultLang);
+  if (langCookie) {
+    headers['Content-Language'] = langCookie;
+  }
 
   return {
     ...options,

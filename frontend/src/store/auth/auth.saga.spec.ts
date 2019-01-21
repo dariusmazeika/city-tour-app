@@ -18,7 +18,7 @@ describe('Auth sagas', () => {
 
     const it = reduxSagaTesting(loginSaga(login.started(actionPayload)));
     it('Should start loading', (result) => {
-      expect(result).toEqual(handleFormSubmit('login', login.started(actionPayload), login));
+      expect(result).toEqual(handleFormSubmit('/api/login/', login.started(actionPayload), login));
     });
   });
 });
