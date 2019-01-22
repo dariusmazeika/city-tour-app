@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.serializers import LoginSerializer
+from apps.users.serializers import LoginSerializer, UserSerializer
 
 
 class LoginView(APIView):
@@ -28,3 +28,10 @@ class LogoutView(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class GetUserView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        return Response(UserSerializer(instance=request.user).data)
