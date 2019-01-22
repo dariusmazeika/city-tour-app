@@ -5,3 +5,5 @@ const actionCreator = typescriptFsa();
 
 export const login = actionCreator.async<LoginActionPayload, UserAuth>('LOGIN');
 export const logout = actionCreator.async<{}, {}>('LOGOUT');
+export const getUserData = actionCreator.async<{}, UserAuth>('GET_USER_DATA');
+
