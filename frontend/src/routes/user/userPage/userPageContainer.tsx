@@ -1,11 +1,28 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { RootState } from '../../../store/reducers';
+import { UserData } from '../../../store/auth/auth.types';
 
-const userPageContainer: React.FunctionComponent = () => {
-  return (
-    <div>
-     <h2>I am a user</h2>
-    </div>
-  );
+export interface UserPageContainerProps {
+  user: UserData,
+}
+
+class UserPageContainer extends React.PureComponent<UserPageContainerProps> {
+
+  render() {
+    return (
+      <div>
+        <h2>
+          {this.props.user ? this.props.user.email : <div>NO USER</div>}
+        </h2>
+      </div>
+    );
+  }
+
 };
 
-export default userPageContainer;
+const mapStateToProps = (state: RootState) => ({
+  user: state.auth.userData
+});
+
+export default connect(mapStateToProps, null)(UserPageContainer);

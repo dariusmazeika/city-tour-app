@@ -21,7 +21,7 @@ export class LoginPageContainer extends React.PureComponent<LandingPageContainer
         <a onClick={() => {
           this.props.dispatch(changeLanguage({ lang: 'lt' }));
         }}>Change</a>
-        <LoginForm onSubmit={this.props.actions.login}/>
+        <LoginForm onSubmit={this.props.actions.login} />
       </div>
     );
   }

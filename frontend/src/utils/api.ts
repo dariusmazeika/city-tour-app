@@ -25,7 +25,7 @@ function addHeaders(options: object) {
 
   const token = getFromLocalStorage(LocalStorage.userToken);
   if (token) {
-    headers['Authorization'] = token;
+    headers['Authorization'] = `Token ${token}`;
   }
 
   const csrftoken = getCookie(Cookies.crfToken);
@@ -54,7 +54,7 @@ function callApi(url: string, options: object, isFile: boolean = false) {
 
     if (response.status >= 200 && response.status < 300) {
       return isJson ? Promise.resolve(
-            response.json()) : isFile ? Promise.resolve(response.blob()) : Promise.resolve(response.text(),
+        response.json()) : isFile ? Promise.resolve(response.blob()) : Promise.resolve(response.text(),
         );
     }
 
