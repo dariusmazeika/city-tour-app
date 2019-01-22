@@ -13,7 +13,7 @@ export function* loginSaga(action: Action<LoginActionPayload>) {
 
 export function* loginSuccessSaga(action: Action<LoginActionSuccess>) {
   yield setToLocalStorage(LocalStorage.userToken, action.payload.result.token);
-  yield put(locationChange({ path: "/user" }));
+  yield put(locationChange({ path: '/user' }));
 }
 
 export function* getUserDataSaga(action: Action<{}>) {
@@ -24,7 +24,6 @@ export function* logoutSaga(action) {
   yield callApiGet('/api/logout/', action, logout);
   yield setToLocalStorage(LocalStorage.userToken, null);
 }
-
 
 export function* watchAuthSaga() {
   yield all([

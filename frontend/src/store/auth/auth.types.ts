@@ -1,4 +1,4 @@
-import { PayloadWithPromises } from '../../utils/types';
+import { PayloadWithPromises, LoadableItem } from '../../utils/types';
 
 export interface LoginActionPayload extends PayloadWithPromises {
   email: string;
@@ -14,8 +14,10 @@ export type UserAuth = {
   token: string,
 };
 
-export type UserData = {
-  email: string;
-  first_name: string;
-  last_name: string;
-};
+export interface UserData extends LoadableItem {
+  item: {
+    email: string;
+    first_name: string;
+    last_name: string;
+  } | null;
+}

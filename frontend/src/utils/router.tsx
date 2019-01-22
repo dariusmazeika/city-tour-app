@@ -3,24 +3,23 @@ import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 import { getFromLocalStorage } from './localStorage';
 import { LocalStorage } from '../config/constants';
-import { authActions } from '../store/actions'
+import { authActions } from '../store/actions';
 import { Redirect } from 'react-router-dom';
-
 
 export interface AuthenticatedComponentProps {
   actions: {
     getUserData: typeof authActions.getUserData.started;
   };
-  dispatch: Dispatch
+  dispatch: Dispatch;
 }
 
 export const authenticatedOnlyComponent = (WrappedComponent: any) => {
 
   const mapDispatchToProps = (dispatch: Dispatch) => ({
     actions: {
-      getUserData: bindActionCreators(authActions.getUserData.started, dispatch)
+      getUserData: bindActionCreators(authActions.getUserData.started, dispatch),
     },
-    dispatch
+    dispatch,
   });
 
   class AuthenticatedComponent extends React.PureComponent<AuthenticatedComponentProps, {}>{
@@ -40,9 +39,8 @@ export const authenticatedOnlyComponent = (WrappedComponent: any) => {
         pathname: '/',
       }} />;
     }
-  };
+  }
 
-  return connect(null, mapDispatchToProps)(AuthenticatedComponent)
+  return connect(null, mapDispatchToProps)(AuthenticatedComponent);
 
 };
-

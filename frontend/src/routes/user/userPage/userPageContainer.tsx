@@ -4,25 +4,27 @@ import { RootState } from '../../../store/reducers';
 import { UserData } from '../../../store/auth/auth.types';
 
 export interface UserPageContainerProps {
-  user: UserData,
+  user: UserData;
+  newUser: any;
 }
 
 class UserPageContainer extends React.PureComponent<UserPageContainerProps> {
 
   render() {
+    const { isFetching, item } = this.props.user;
     return (
       <div>
         <h2>
-          {this.props.user ? this.props.user.email : <div>NO USER</div>}
+          {!item || isFetching ? <div>I am loading</div> : <div>{item.email}</div>}
         </h2>
       </div>
     );
   }
 
-};
+}
 
 const mapStateToProps = (state: RootState) => ({
-  user: state.auth.userData
+  user: state.auth.userData,
 });
 
 export default connect(mapStateToProps, null)(UserPageContainer);

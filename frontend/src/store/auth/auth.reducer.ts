@@ -3,15 +3,15 @@ import { login, logout, getUserData } from './auth.actions';
 import { createReducer } from '../../utils/redux';
 import * as dotProp from 'dot-prop-immutable';
 import { UserAuth, UserData } from './auth.types';
-
+import { singleItemReducerInitialState, singleItemReducer } from '../../utils/reducers';
 export type AuthState = {
   readonly user: UserAuth | null,
-  readonly userData: UserData | null,
+  readonly userData: UserData,
 };
 
 export const initialState: AuthState = {
   user: null,
-  userData: null,
+  userData: singleItemReducerInitialState,
 };
 
 const authReducer = createReducer(initialState, {
@@ -22,12 +22,9 @@ const authReducer = createReducer(initialState, {
     const user = action.payload.result;
     return dotProp.set(state, 'user', user);
   },
-  [getUserData.done.type]: (state: AuthState, action: Action<{ result: UserAuth }>) => {
-    const userData = action.payload.result;
-    return dotProp.set(state, 'userData', userData);
-  },
   [logout.started.type]: (state: AuthState) => {
     return dotProp.set(state, 'user', null);
   },
+  ...singleItemReducer(getUserData, 'userData'),
 });
 export default authReducer;
