@@ -13,13 +13,14 @@ export interface AuthenticatedComponentProps {
   dispatch: Dispatch;
 }
 
+/* tslint:disable: variable-name */
 export const authenticatedOnlyComponent = (WrappedComponent: any) => {
 
   const mapDispatchToProps = (dispatch: Dispatch) => ({
+    dispatch,
     actions: {
       getUserData: bindActionCreators(authActions.getUserData.started, dispatch),
     },
-    dispatch,
   });
 
   class AuthenticatedComponent extends React.PureComponent<AuthenticatedComponentProps, {}>{
@@ -44,3 +45,4 @@ export const authenticatedOnlyComponent = (WrappedComponent: any) => {
   return connect(null, mapDispatchToProps)(AuthenticatedComponent);
 
 };
+/* tslint:enable */
