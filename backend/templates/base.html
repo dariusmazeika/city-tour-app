@@ -13,6 +13,7 @@
 <body>
 {% block "content" %}{% endblock %}
 <div id="mount" style="height: 100%"></div>
+{% block "body_end" %}{% endblock %}
 {% if WEBPACK_DEV_SERVER %}
 <script src="http://localhost:3000/static/bundle.js"></script>
 {% else %}
