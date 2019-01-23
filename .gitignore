@@ -12,3 +12,4 @@ backups/*.bak
 .idea
 nginx/ssl/
 .DS_Store
+.vscode
