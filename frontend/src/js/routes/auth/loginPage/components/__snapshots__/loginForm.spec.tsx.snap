@@ -16,9 +16,9 @@ exports[`<LoginForm /> should match snapshot 1`] = `
         className="form-input"
       >
         <input
+          aria-label="msg_label_email"
           autoComplete="off"
           className=""
-          disabled={false}
           name="email"
           onBlur={[Function]}
           onChange={[Function]}
@@ -38,9 +38,9 @@ exports[`<LoginForm /> should match snapshot 1`] = `
         className="form-input"
       >
         <input
+          aria-label="msg_label_password"
           autoComplete="off"
           className=""
-          disabled={false}
           name="password"
           onBlur={[Function]}
           onChange={[Function]}
@@ -50,6 +50,13 @@ exports[`<LoginForm /> should match snapshot 1`] = `
           placeholder="msg_label_password"
           type="password"
           value=""
+        />
+        <svg
+          className="icon icon-ss icon-eye login-image"
+          data-file-name="SvgEye"
+          height={19}
+          onClick={[Function]}
+          width={19}
         />
       </div>
     </div>
