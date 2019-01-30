@@ -9,7 +9,6 @@ export default {
   },
   devtool: 'source-map',
   entry: [
-    'react-hot-loader/patch',
     `webpack-dev-server/client?${SERVER_HOST}`,
     'webpack/hot/only-dev-server',
     path.resolve(__dirname, '..', 'src/index.js')
@@ -63,15 +62,9 @@ export default {
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10000,
-              mimetype: 'image/svg+xml'
-            }
-          }
-        ]
+        use: {
+          loader: 'svg-react-loader',
+        },
       },
       {
         test: /\.(jpe?g|png|gif|ico)$/i,
