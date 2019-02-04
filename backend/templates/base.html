@@ -17,7 +17,8 @@
 {% if WEBPACK_DEV_SERVER %}
 <script src="http://localhost:3000/static/bundle.js"></script>
 {% else %}
-<script src="{{ static_assets.js }}"></script>
+  <script src="{{ static_vendor_assets.js }}"></script>
+  <script src="{{ static_assets.js }}"></script>
 {% endif %}
 </body>
 </html>

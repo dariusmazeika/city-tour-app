@@ -4,17 +4,20 @@ import { connect } from 'react-redux';
 import { RootState } from '../../store/reducers';
 import { getMessageKeyTranslation } from '../../config/appConfig';
 import { getCurrentLanguage } from '../../store/localization/localization.selector';
-export interface LocalizedMessageProps {
+export interface LocalizedMessageComponentProps {
   msg: string;
   html?: boolean;
-  currentLanguage: string;
   className?: string;
   params?: {
     key: string,
     value: string,
   };
 }
-export class LocalizedMessage extends React.PureComponent<LocalizedMessageProps, {}> {
+export interface LocalizedMessageStateProps {
+  currentLanguage: string;
+
+}
+export class LocalizedMessage extends React.PureComponent<LocalizedMessageComponentProps & LocalizedMessageStateProps, {}> {
   render() {
     const { params, html = false, msg, className, currentLanguage } = this.props;
     let translatedMessage = getMessageKeyTranslation(msg, currentLanguage);
@@ -26,7 +29,7 @@ export class LocalizedMessage extends React.PureComponent<LocalizedMessageProps,
     }
     if (html) {
       return (
-        <span dangerouslySetInnerHTML={{ __html: translatedMessage }} className={classnames('html-content', className)}/>
+        <span dangerouslySetInnerHTML={{ __html: translatedMessage }} className={classnames('html-content', className)} />
       );
     }
     return (
@@ -35,7 +38,7 @@ export class LocalizedMessage extends React.PureComponent<LocalizedMessageProps,
   }
 }
 
-export default connect((state: RootState) => {
+export default connect<LocalizedMessageStateProps, {}, LocalizedMessageComponentProps>((state: RootState) => {
   return {
     currentLanguage: getCurrentLanguage(state),
   };

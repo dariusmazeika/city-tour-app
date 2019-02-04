@@ -12,10 +12,10 @@ const GLOBALS = {
 
 export default {
   resolve: {
-    extensions: [ '*', '.js', '.jsx', '.json', '.ts', '.tsx' ]
+    extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx']
   },
   devtool: 'source-map', // more info:https://webpack.js.org/guides/production/#source-mapping and https://webpack.js.org/configuration/devtool/
-  entry: path.resolve(__dirname, '..', 'src/index'),
+  entry: path.resolve(__dirname, '..', 'src/js/index'),
   target: 'web',
   mode: 'production',
   output: {
@@ -87,16 +87,9 @@ export default {
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10000,
-              mimetype: 'image/svg+xml',
-              name: '[name].[ext]'
-            }
-          }
-        ]
+        use: {
+          loader: 'svg-react-loader',
+        },
       },
       {
         test: /\.(jpe?g|png|gif|ico)$/i,
@@ -130,7 +123,7 @@ export default {
           }, {
             loader: 'sass-loader',
             options: {
-              includePaths: [ path.resolve(__dirname, 'src', 'scss') ],
+              includePaths: [path.resolve(__dirname, 'src', 'scss')],
               sourceMap: true
             }
           }

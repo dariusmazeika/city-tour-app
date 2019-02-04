@@ -2,8 +2,9 @@ import * as React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
 import App from './app';
+import { hot } from 'react-hot-loader/root';
 
-export default class Root extends React.PureComponent<any, any> {
+class Root extends React.PureComponent<any, any> {
   render() {
     const { store, history } = this.props;
     return (
@@ -15,3 +16,5 @@ export default class Root extends React.PureComponent<any, any> {
     );
   }
 }
+
+export default hot(Root);
