@@ -1,5 +1,5 @@
-import { Action, AsyncActionCreators } from 'typescript-fsa';
 import * as dotProp from 'dot-prop-immutable';
+import { Action, AsyncActionCreators } from 'typescript-fsa';
 
 export const singleItemReducerInitialState = {
   item: null,

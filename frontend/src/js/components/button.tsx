@@ -1,6 +1,7 @@
-import * as React from 'react';
 import classnames from 'classnames';
+import * as React from 'react';
 import { Link } from 'react-router-dom';
+
 import Icon from './icon';
 
 export interface ButtonProps {

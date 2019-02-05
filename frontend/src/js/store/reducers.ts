@@ -1,8 +1,9 @@
+import { connectRouter } from 'connected-react-router';
 import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
+
 import authReducer, { AuthState } from './auth/auth.reducer';
 import localizationReducer from './localization/localization.reducer';
-import { reducer as formReducer } from 'redux-form';
-import { connectRouter } from 'connected-react-router';
 import { LocalizationState } from './localization/localization.types';
 
 export interface RootState {

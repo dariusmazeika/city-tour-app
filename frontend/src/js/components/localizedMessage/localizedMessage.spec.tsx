@@ -1,7 +1,8 @@
 import { shallow } from 'enzyme/build';
 import * as React from 'react';
-import { LocalizedMessage } from './localizedMessage';
 import { create } from 'react-test-renderer';
+
+import { LocalizedMessage } from './localizedMessage';
 
 describe('<LocalizedMessage />', () => {
 

@@ -1,4 +1,5 @@
 import typescriptFsa from 'typescript-fsa';
+
 import { ChangeLanguagePayload } from './localization.types';
 
 const actionCreator = typescriptFsa();

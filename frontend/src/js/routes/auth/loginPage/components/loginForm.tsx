@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Forms } from '../../../../config/constants';
-import { Field, reduxForm, InjectedFormProps, FormSubmitHandler } from 'redux-form';
-import TextInput from '../../../../components/form/inputs/textInput';
+import { Field, FormSubmitHandler, InjectedFormProps, reduxForm } from 'redux-form';
+
 import ErrorDisplay from '../../../../components/form/errorDisplay';
+import TextInput from '../../../../components/form/inputs/textInput';
+import { Forms } from '../../../../config/constants';
 interface LoginFormData {
   email?: string;
   password: string;

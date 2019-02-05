@@ -1,8 +1,9 @@
-import * as React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
-import { Provider } from 'react-redux';
-import App from './app';
+import * as React from 'react';
 import { hot } from 'react-hot-loader/root';
+import { Provider } from 'react-redux';
+
+import App from './app';
 
 class Root extends React.PureComponent<any, any> {
   render() {

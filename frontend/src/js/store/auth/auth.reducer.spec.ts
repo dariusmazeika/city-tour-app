@@ -1,5 +1,5 @@
-import authReducer, { AuthState, initialState } from './auth.reducer';
 import { login } from './auth.actions';
+import authReducer, { AuthState, initialState } from './auth.reducer';
 
 describe('Reducers::Auth reducer', () => {
 

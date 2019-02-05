@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import LocalizedMessage from '../localizedMessage/localizedMessage';
 
 export interface ErrorDisplayProps {

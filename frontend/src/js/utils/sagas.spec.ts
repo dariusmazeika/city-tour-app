@@ -1,9 +1,10 @@
-import reduxSagaTesting from 'redux-saga-testing';
-import { FetchError, callPost, callUpdate } from './api';
-import { call, put } from 'redux-saga/effects';
 import { SubmissionError } from 'redux-form';
-import { handleFormAction, handleFormSubmit, handleFormUpdate } from './sagas';
+import reduxSagaTesting from 'redux-saga-testing';
+import { call, put } from 'redux-saga/effects';
 import typescriptFsa from 'typescript-fsa';
+
+import { callPost, callUpdate, FetchError } from './api';
+import { handleFormAction, handleFormSubmit, handleFormUpdate } from './sagas';
 
 const actionCreator = typescriptFsa();
 

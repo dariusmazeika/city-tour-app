@@ -1,6 +1,6 @@
-import { LocalizationState } from './localization.types';
-import localizationReducer, { initialState } from './localization.reducer';
 import { changeLanguage } from './localization.actions';
+import localizationReducer, { initialState } from './localization.reducer';
+import { LocalizationState } from './localization.types';
 
 describe('Reducers::Localization reducer', () => {
 

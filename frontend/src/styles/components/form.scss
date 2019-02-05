@@ -1,74 +1,74 @@
 .form {
-    &__field {
-        &+.form-field {
-            margin-top: 20px;
-        }
-
-        &.error {
-            input {
-                box-shadow: 0 0 0 2pt $red;
-            }
-        }
+  &__field {
+    &+.form-field {
+      margin-top: 20px;
     }
 
-    &__label {
-        display: block;
-        margin-bottom: 20px;
-        font-size: 24px;
-        font-weight: 500;
+    &.error {
+      input {
+        box-shadow: 0 0 0 2pt $red;
+      }
+    }
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  &__input {
+    position: relative;
+    margin-bottom: 30px;
+
+    input {
+      width: 100%;
+      box-shadow: 0 0 0 1pt $gray;
+      border: none;
+      border-radius: $border-radius;
+      padding: 20px;
+      transition: border-color .3s, box-shadow .3s;
+      color: $black;
+      font-size: 20px;
+
+      @include placeholder {
+        color: $gray;
+        font-size: 20px;
+      }
+
+      &[type=text]:focus,
+      &[type=password]:focus,
+      &[type=email]:focus {
+        border-color: transparent;
+        box-shadow: 0 0 0 2pt $black;
+        outline: none;
+      }
     }
 
-    &__input {
-        position: relative;
-        margin-bottom: 30px;
+    svg {
+      cursor: pointer;
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: transform .3s;
 
-        input {
-            width: 100%;
-            box-shadow: 0 0 0 1pt $gray;
-            border: none;
-            border-radius: $border-radius;
-            padding: 20px;
-            transition: border-color .3s, box-shadow .3s;
-            color: $black;
-            font-size: 20px;
+      &:hover {
+        transform: translateY(-50%) scale(1.05);
+      }
 
-            @include placeholder {
-                color: $gray;
-                font-size: 20px;
-            }
-
-            &[type=text]:focus,
-            &[type=password]:focus,
-            &[type=email]:focus {
-                border-color: transparent;
-                box-shadow: 0 0 0 2pt $black;
-                outline: none;
-            }
-        }
-
-        svg {
-            cursor: pointer;
-            position: absolute;
-            right: 5%;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: transform .3s;
-
-            &:hover {
-                transform: translateY(-50%) scale(1.05);
-            }
-
-            &:active {
-                transform: translateY(-50%) scale(0.95);
-            }
-        }
-
-        .error-msg {
-            color: $red;
-            position: absolute;
-            bottom: 0;
-            transform: translateY(120%)
-        }
-
+      &:active {
+        transform: translateY(-50%) scale(0.95);
+      }
     }
+
+    .error-msg {
+      color: $red;
+      position: absolute;
+      bottom: 0;
+      transform: translateY(120%)
+    }
+
+  }
 }

@@ -1,6 +1,8 @@
 import { fetch } from 'whatwg-fetch';
-import { getCookie } from './cookies';
+
 import { Cookies, LocalStorage } from '../config/constants';
+
+import { getCookie } from './cookies';
 import { getFromLocalStorage } from './localStorage';
 
 const API_URL = '';

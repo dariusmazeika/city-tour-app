@@ -1,7 +1,8 @@
-import * as React from 'react';
-import FormField from '../formField';
 import classnames from 'classnames';
+import * as React from 'react';
 import { WrappedFieldProps } from 'redux-form';
+
+import FormField from '../formField';
 
 // TODO https://github.com/DefinitelyTyped/DefinitelyTyped/issues/26253#
 export interface ChckboxInputProps extends WrappedFieldProps {

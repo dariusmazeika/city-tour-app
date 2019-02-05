@@ -1,7 +1,8 @@
-import * as React from 'react';
 import classnames from 'classnames';
-import ErrorDisplay from './errorDisplay';
+import * as React from 'react';
 import { WrappedFieldMetaProps } from 'redux-form';
+
+import ErrorDisplay from './errorDisplay';
 
 export interface TextInputProps {
   className?: string;

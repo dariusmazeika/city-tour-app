@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { RootState } from '../../../store/reducers';
+
 import { UserData } from '../../../store/auth/auth.types';
+import { RootState } from '../../../store/reducers';
 
 export interface UserPageContainerProps {
   user: UserData;
