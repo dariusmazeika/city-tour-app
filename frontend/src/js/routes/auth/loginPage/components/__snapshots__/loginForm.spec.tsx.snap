@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LoginForm /> should match snapshot 1`] = `
+<form
+  className="form"
+  noValidate={true}
+  onSubmit={[Function]}
+>
+  <div
+    className="login-form"
+  >
+    <div
+      className="form-field"
+    >
+      <div
+        className="form-input"
+      >
+        <input
+          aria-label="msg_label_email"
+          autoComplete="off"
+          className=""
+          name="email"
+          onBlur={[Function]}
+          onChange={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          onFocus={[Function]}
+          placeholder="msg_label_email"
+          type="email"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      className="form-field"
+    >
+      <div
+        className="form-input"
+      >
+        <input
+          aria-label="msg_label_password"
+          autoComplete="off"
+          className=""
+          name="password"
+          onBlur={[Function]}
+          onChange={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          onFocus={[Function]}
+          placeholder="msg_label_password"
+          type="password"
+          value=""
+        />
+        <svg
+          className="icon icon-ss icon-eye login-image"
+          data-file-name="SvgEye"
+          height={19}
+          onClick={[Function]}
+          width={19}
+        />
+      </div>
+    </div>
+  </div>
+  <button
+    type="submit"
+  >
+    Save
+  </button>
+</form>
+`;

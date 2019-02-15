@@ -8,9 +8,10 @@ python 3.7
 node 10.7
 Postgres 10.5
 Django  2.1
+Typescipt
 Webpack
 Sass
-Nginx 1.15
+Nginx
 Gunicorn
 
 
@@ -93,6 +94,15 @@ Copy your .key and .crt files to `nginx/ssl` and run `./bin/deploy.sh`.
 
 ```
 
+## translations
+```sh
+# dump to fixture
+./bin/django.sh dumpdata --indent 4 --natural-primary translations > backend/apps/translations/fixtures/initial.json
+
+# load from fixture
+./bin/django.sh loaddata initial.json
+```
+
 ## layout
 
 ```
@@ -100,13 +110,6 @@ bin/                          - various utility scripts
 
 docker-compose.yml            - base docker compose config
 docker-compose.production.yml - production docker compose config
-
-frontend/                     - frontend stuff
-frontend/package.json         - npm package file with frotnend dependencies
-frontend/src/js/              - javascript code
-frontend/src/js/index.js      - js entry point. include other js deps here
-frontend/src/style/           - stylesheets       
-frontend/src/style/index.styl - stylesheet entry point. include other styl files here
 
 backend/                      - backend stuff
 backend/apps/                 - django apps
@@ -124,7 +127,7 @@ nginx/ssl/                    - put key & cert here if you use ssl
 nginx/nginx_nossl.conf        - nginx conf if no ssl is used
 nginx/nginx_ssl.conf          - nginx conf for deploy with ssl
 ```
-
+Frontend folder structure described in `frontend/README.MD`
 
 ## tests
 

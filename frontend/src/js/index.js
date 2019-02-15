@@ -1,41 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import { Provider } from 'react-redux';
-import { buildStore } from './store/store';
-import App from './app/app';
+import { setConfig } from 'react-hot-loader';
+setConfig({ pureSFC: false ,ignoreSFC: true, pureRender: false,disableHotRenderer:true});
 
-import '../style/index.scss';
-import { ConnectedRouter, routerMiddleware } from 'react-router-redux';
-import createHistory from 'history/createBrowserHistory';
+import * as React from 'react';
+import { render } from 'react-dom';
+import configureStore, { history } from './store/configureStore';
+import Root from './components/root';
+import '../styles/index.scss';
+const store = configureStore();
 
-
-// Create a history of your choosing (we're using a browser history in this case)
-const history = createHistory();
-const middleware = routerMiddleware(history);
-
-const MOUNT_NODE = document.getElementById('mount');
-const store = buildStore(middleware);
-
-const renderRoot = Component => ReactDOM.render(
-    <Provider store={store}>
-        <ConnectedRouter history={history}>
-            <AppContainer>
-                <Component store={store}/>
-            </AppContainer>
-        </ConnectedRouter>
-    </Provider>, MOUNT_NODE);
-
-renderRoot(App);
-
-// if (window.devToolsExtension) {
-//     window.devToolsExtension.open()
-// }
-
-if (module.hot) {
-    module.hot.accept(() => {
-        const reducers = require('./reducers').default;
-        store.replaceReducer(reducers(store.asyncReducers));
-        renderRoot(App);
-    });
-}
+render(<Root store={store} history={history} />, document.getElementById('mount'));
