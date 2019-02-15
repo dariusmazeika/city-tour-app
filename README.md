@@ -30,7 +30,12 @@ git pull starter master
 
 PyLint configuration file is in .pylintrc and the seed itself is configured to pass current PyLint configuration test without warnings. You can whether configure your IDE with this conf file or run PyLint manually:
 ```sh
-pylint --rcfile=.pylintrc backend > pylint.log
+pylint --rcfile=.pylintrc --load-plugins pylint-django backend > pylint.log
+```
+
+PEP8 configuration is in tox.ini and the seed itself is configured to pass current PEP8 analysis without warnings:
+```sh
+pycodestyle backend
 ```
 
 Start dev server:

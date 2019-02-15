@@ -10,8 +10,11 @@ gunicorn==19.9.0
 
 djangorestframework==3.9.0
 
-
 pylint==2.2.2
+
+pylint-django==2.0.5
+
+pycodestyle==2.5.0
 
 
 django-solo==1.1.3
