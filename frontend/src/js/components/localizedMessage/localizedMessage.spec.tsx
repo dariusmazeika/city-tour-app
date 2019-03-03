@@ -2,13 +2,13 @@ import { shallow } from 'enzyme/build';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 
-import { LocalizedMessage } from './localizedMessage';
+import { localizedMessage as LocalizedMessage } from './localizedMessage';
 
 describe('<LocalizedMessage />', () => {
 
   it('should match snapshot', () => {
     const wrapper = create(
-      <LocalizedMessage msg={'msg_key'} currentLanguage={'lt'}/>,
+      <LocalizedMessage msg={'msg_key'} localeContext={'lt'}/>,
     );
     const tree = wrapper.toJSON();
     expect(tree).toMatchSnapshot();
@@ -17,7 +17,7 @@ describe('<LocalizedMessage />', () => {
   it('Shoud render key <LocalizedMessage />', () => {
     const key = 'msg_key';
     const wrapper = shallow(
-        <LocalizedMessage msg={key} currentLanguage={'lt'}/>,
+        <LocalizedMessage msg={key} localeContext={'lt'}/>,
     );
 
     const text = wrapper.find('span').text();
@@ -27,7 +27,7 @@ describe('<LocalizedMessage />', () => {
 
   it('Shoud find className if one is present', () => {
     const wrapper = create(
-      <LocalizedMessage msg={'msg_key'} className={'this-is-css-class'} currentLanguage={'lt'}/>,
+      <LocalizedMessage msg={'msg_key'} className={'this-is-css-class'} localeContext={'lt'}/>,
     );
     const tree = wrapper.toJSON();
     expect(tree).toMatchSnapshot();
@@ -41,7 +41,7 @@ describe('<LocalizedMessage />', () => {
     };
 
     const wrapper = create(
-      <LocalizedMessage msg={'msg_key'} className={'this-is-css-class'} currentLanguage={'lt'}/>,
+      <LocalizedMessage msg={'msg_key'} className={'this-is-css-class'} localeContext={'lt'}/>,
     );
     const tree = wrapper.toJSON();
     expect(tree).toMatchSnapshot();

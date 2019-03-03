@@ -4,6 +4,8 @@ import { hot } from 'react-hot-loader/root';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
 
+import { AppContextProvider } from '@Config/localeContext';
+
 import App from './app';
 interface RootContainerProps {
   store: Store;
@@ -11,25 +13,14 @@ interface RootContainerProps {
 }
 const root: React.FunctionComponent<RootContainerProps> = ({ store, history }) => {
   return (
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <App />
-      </ConnectedRouter>
-    </Provider>
+    <AppContextProvider value={store.getState().localization.currentLanguage}>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <App />
+        </ConnectedRouter>
+      </Provider>
+    </AppContextProvider>
   );
 };
-
-// class Root extends React.PureComponent<any, any> {
-//   render() {
-//     const { store, history } = this.props;
-//     return (
-//       <Provider store={store}>
-//         <ConnectedRouter history={history}>
-//           <App />
-//         </ConnectedRouter>
-//       </Provider>
-//     );
-//   }
-// }
 
 export default hot(root);
