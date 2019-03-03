@@ -1,8 +1,8 @@
+import { SubmissionError } from 'redux-form';
+import { call, put } from 'redux-saga/effects';
 import { Action, AsyncActionCreators } from 'typescript-fsa';
 
-import { call, put } from 'redux-saga/effects';
-import { SubmissionError } from 'redux-form';
-import { callUpdate, callPost, callGet } from './api';
+import { callGet, callPost, callUpdate } from './api';
 
 export function* handleFormAction(url: string, action: Action<any>, actionType: AsyncActionCreators<{}, any, {}>, callAction) {
   try {

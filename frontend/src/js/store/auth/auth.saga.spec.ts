@@ -1,11 +1,12 @@
 import reduxSagaTesting from 'redux-saga-testing';
-import { loginSaga, logoutSaga } from './auth.saga';
-import { login, logout } from './auth.actions';
-import { LoginActionPayload } from './auth.types';
 
-import { callApiGet, handleFormSubmit } from '../../utils/sagas';
-import { setToLocalStorage } from '../../utils/localStorage';
 import { LocalStorage } from '../../config/constants';
+import { setToLocalStorage } from '../../utils/localStorage';
+import { callApiGet, handleFormSubmit } from '../../utils/sagas';
+
+import { login, logout } from './auth.actions';
+import { loginSaga, logoutSaga } from './auth.saga';
+import { LoginActionPayload } from './auth.types';
 
 describe('Auth sagas', () => {
 

@@ -7,6 +7,14 @@
       true,
       200
     ],
-    "import-name": false
+    "import-name": false,
+    "indent": [true, "spaces", 2],
+    "ordered-imports": [
+      true, {
+        "import-sources-order": "case-insensitive",
+        "named-imports-order": "case-insensitive",
+        "grouped-imports": true
+      }
+    ]
   }
 }

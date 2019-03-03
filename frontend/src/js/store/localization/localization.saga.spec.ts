@@ -1,9 +1,11 @@
 import reduxSagaTesting from 'redux-saga-testing';
-import { ChangeLanguagePayload } from './localization.types';
-import { changeLanguageSaga } from './localization.sagas';
-import { changeLanguage } from './localization.actions';
-import { setCookie } from '../../utils/cookies';
+
 import { Cookies } from '../../config/constants';
+import { setCookie } from '../../utils/cookies';
+
+import { changeLanguage } from './localization.actions';
+import { changeLanguageSaga } from './localization.sagas';
+import { ChangeLanguagePayload } from './localization.types';
 
 describe('Localization sagas', () => {
 

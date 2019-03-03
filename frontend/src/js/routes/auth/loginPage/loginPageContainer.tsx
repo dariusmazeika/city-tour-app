@@ -1,11 +1,13 @@
 import * as React from 'react';
-import LoginForm from './components/loginForm';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { RootState } from '../../../store/reducers';
-import { bindActionToPromise } from '../../../utils/redux';
+
 import { authActions } from '../../../store/actions';
 import { changeLanguage } from '../../../store/localization/localization.actions';
+import { RootState } from '../../../store/reducers';
+import { bindActionToPromise } from '../../../utils/redux';
+
+import LoginForm from './components/loginForm';
 
 export interface LandingPageContainerProps {
   dispatch: Dispatch<any>;

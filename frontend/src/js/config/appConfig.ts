@@ -1,4 +1,5 @@
 import { getCookie } from '../utils/cookies';
+
 import { Cookies } from './constants';
 
 export function configValue(param: string) {

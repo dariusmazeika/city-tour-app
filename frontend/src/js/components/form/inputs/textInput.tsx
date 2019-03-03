@@ -1,6 +1,7 @@
 import * as React from 'react';
-import FormField from '../formField';
+
 import Icon from '../../icon';
+import FormField from '../formField';
 
 export class TextInput extends React.PureComponent<any, { inputType: string }> {
   constructor(props: any) {

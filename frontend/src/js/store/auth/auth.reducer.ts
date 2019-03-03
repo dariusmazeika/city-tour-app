@@ -1,9 +1,11 @@
-import { Action } from 'typescript-fsa';
-import { login, logout, getUserData } from './auth.actions';
-import { createReducer } from '../../utils/redux';
 import * as dotProp from 'dot-prop-immutable';
+import { Action } from 'typescript-fsa';
+
+import { singleItemReducer, singleItemReducerInitialState } from '../../utils/reducers';
+import { createReducer } from '../../utils/redux';
+
+import { getUserData, login, logout } from './auth.actions';
 import { UserAuth, UserData } from './auth.types';
-import { singleItemReducerInitialState, singleItemReducer } from '../../utils/reducers';
 export type AuthState = {
   readonly user: UserAuth | null,
   readonly userData: UserData,

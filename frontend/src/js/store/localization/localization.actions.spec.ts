@@ -1,5 +1,5 @@
-import { ChangeLanguagePayload } from './localization.types';
 import { changeLanguage } from './localization.actions';
+import { ChangeLanguagePayload } from './localization.types';
 
 describe('Localization actions', () => {
 

@@ -1,11 +1,13 @@
 import { all, put, takeLatest } from 'redux-saga/effects';
-import { login, logout, getUserData } from './auth.actions';
-import { callApiGet, handleFormSubmit } from '../../utils/sagas';
 import { Action } from 'typescript-fsa';
-import { LoginActionPayload, LoginActionSuccess } from './auth.types';
-import { setToLocalStorage } from '../../utils/localStorage';
+
 import { LocalStorage } from '../../config/constants';
+import { setToLocalStorage } from '../../utils/localStorage';
+import { callApiGet, handleFormSubmit } from '../../utils/sagas';
 import { locationChange } from '../navigation/navigation.actions';
+
+import { getUserData, login, logout } from './auth.actions';
+import { LoginActionPayload, LoginActionSuccess } from './auth.types';
 
 export function* loginSaga(action: Action<LoginActionPayload>) {
   yield handleFormSubmit('/api/login/', action, login);

@@ -1,4 +1,5 @@
 import typescriptFsa from 'typescript-fsa';
+
 import { NavigationActionPayload } from './navigation.types';
 
 const actionCreator = typescriptFsa();

@@ -1,10 +1,11 @@
 import * as dotProp from 'dot-prop-immutable';
 import { Action } from 'typescript-fsa';
 
-import { createReducer } from '../../utils/redux';
-import { ChangeLanguagePayload, LocalizationState } from './localization.types';
 import { getDefaultLanguage } from '../../config/appConfig';
+import { createReducer } from '../../utils/redux';
+
 import { changeLanguage } from './localization.actions';
+import { ChangeLanguagePayload, LocalizationState } from './localization.types';
 
 export const initialState: LocalizationState = {
   currentLanguage: getDefaultLanguage(),

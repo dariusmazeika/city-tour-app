@@ -1,5 +1,6 @@
-import { privateRoutes, publicRoutes, RouteInfo } from './appRoutes';
 import { authenticatedOnlyComponent } from '../utils/router';
+
+import { privateRoutes, publicRoutes, RouteInfo } from './appRoutes';
 
 export default [...publicRoutes, ...privateRoutes.map((item: RouteInfo) => {
   return {
