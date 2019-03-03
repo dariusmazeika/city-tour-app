@@ -1,13 +1,18 @@
 import { all, put, takeLatest } from 'redux-saga/effects';
-import { login, logout, getUserData } from './auth.actions';
-import { callApiGet, handleFormSubmit } from '../../utils/sagas';
 import { Action } from 'typescript-fsa';
-import { LoginActionPayload, LoginActionSuccess } from './auth.types';
-import { setToLocalStorage } from '../../utils/localStorage';
-import { LocalStorage } from '../../config/constants';
+
+import { LocalStorage } from '@Config/constants';
+
+import { deleteFromLocalStorage, setToLocalStorage } from '@Utils/localStorage';
+import { callApiGet, callApiPost, handleFormSubmit } from '@Utils/sagas';
+
 import { locationChange } from '../navigation/navigation.actions';
 
+import { getUserData, login, logout } from './auth.actions';
+import { LoginActionPayload, LoginActionSuccess } from './auth.types';
+
 export function* loginSaga(action: Action<LoginActionPayload>) {
+  yield deleteFromLocalStorage(LocalStorage.userToken);
   yield handleFormSubmit('/api/login/', action, login);
 }
 
@@ -21,8 +26,9 @@ export function* getUserDataSaga(action: Action<{}>) {
 }
 
 export function* logoutSaga(action) {
-  yield callApiGet('/api/logout/', action, logout);
-  yield setToLocalStorage(LocalStorage.userToken, null);
+  yield callApiPost('/api/logout/', action, logout);
+  yield deleteFromLocalStorage(LocalStorage.userToken);
+
 }
 
 export function* watchAuthSaga() {

@@ -10,10 +10,15 @@ exports[`<LoginForm /> should match snapshot 1`] = `
     className="login-form"
   >
     <div
-      className="form-field"
+      className="form__field"
     >
+      <span
+        className="form__label"
+      >
+        msg_label_email
+      </span>
       <div
-        className="form-input"
+        className="form__input"
       >
         <input
           aria-label="msg_label_email"
@@ -32,10 +37,15 @@ exports[`<LoginForm /> should match snapshot 1`] = `
       </div>
     </div>
     <div
-      className="form-field"
+      className="form__field"
     >
+      <span
+        className="form__label"
+      >
+        msg_label_password
+      </span>
       <div
-        className="form-input"
+        className="form__input"
       >
         <input
           aria-label="msg_label_password"
@@ -52,7 +62,7 @@ exports[`<LoginForm /> should match snapshot 1`] = `
           value=""
         />
         <svg
-          className="icon icon-ss icon-eye login-image"
+          className="icon icon-ss icon-eye form__input__svg"
           data-file-name="SvgEye"
           height={19}
           onClick={[Function]}

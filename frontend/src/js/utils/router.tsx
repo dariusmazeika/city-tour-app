@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
-import { getFromLocalStorage } from './localStorage';
-import { LocalStorage } from '../config/constants';
-import { authActions } from '../store/actions';
 import { Redirect } from 'react-router-dom';
+import { bindActionCreators, Dispatch } from 'redux';
+
+import { authActions } from '../store/actions';
+import { LocalStorage } from '../config/constants';
+
+import { getFromLocalStorage } from './localStorage';
 
 export interface AuthenticatedComponentProps {
   actions: {

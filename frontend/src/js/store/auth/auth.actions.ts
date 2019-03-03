@@ -1,4 +1,5 @@
 import typescriptFsa from 'typescript-fsa';
+
 import { LoginActionPayload, UserAuth, UserData } from './auth.types';
 
 const actionCreator = typescriptFsa();

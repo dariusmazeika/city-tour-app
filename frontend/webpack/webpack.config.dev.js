@@ -1,11 +1,13 @@
 import webpack from 'webpack';
 import path from 'path';
 import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
+import alias from './alias';
 
 const SERVER_HOST = 'http://0.0.0.0:3000';
 export default {
   resolve: {
-    extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx']
+    extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
+    alias: alias
   },
   devtool: 'source-map',
   entry: [

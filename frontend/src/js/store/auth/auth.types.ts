@@ -1,5 +1,9 @@
-import { PayloadWithPromises, LoadableItem } from '../../utils/types';
+import { LoadableItem, PayloadWithPromises } from '../../utils/types';
 
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
 export interface LoginActionPayload extends PayloadWithPromises {
   email: string;
   password: string;

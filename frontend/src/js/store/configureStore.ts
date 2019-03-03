@@ -1,10 +1,12 @@
-import { createStore, compose, applyMiddleware } from 'redux';
-import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
-import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'connected-react-router';
-import createRootReducer from './reducers';
+import createBrowserHistory from 'history/createBrowserHistory';
+import { applyMiddleware, compose, createStore } from 'redux';
+import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import reduxSaga from 'redux-saga';
-import { initSagas } from '../utils/redux';
+
+import { initSagas } from '@Utils/redux';
+
+import createRootReducer from './reducers';
 import * as sagas from './sagas';
 
 export const history = createBrowserHistory();
@@ -26,7 +28,7 @@ function configureStoreProd(initialState: {} = {}) {
     reactRouterMiddleware,
   ];
 
-  const store =  createStore(
+  const store = createStore(
     createRootReducer(history),
     initialState,
     compose(applyMiddleware(...middlewares)),
@@ -56,7 +58,6 @@ function configureStoreDev(initialState: {} = {}) {
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('./reducers', () => {
-      const nextRootReducer = require('./reducers').default;
     });
   }
 

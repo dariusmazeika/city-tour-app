@@ -1,19 +1,22 @@
+import { shallow } from 'enzyme';
 import * as React from 'react';
-import { mount, shallow, render } from 'enzyme';
 import { Provider } from 'react-redux';
-import { create } from 'react-test-renderer';
-import LoginForm from './loginForm';
-import configureMockStore from 'redux-mock-store';
-import { Forms } from '../../../../config/constants';
-import initialTestingState from '../../../../__mocks__/initialTestingState';
 import { StaticRouter } from 'react-router';
+import { create } from 'react-test-renderer';
+import configureMockStore from 'redux-mock-store';
+
+import { Forms } from '@Config/constants';
+
+import initialTestingState from '../../../../__mocks__/initialTestingState';
+
+import LoginForm from './loginForm';
 describe('<LoginForm />', () => {
   let store;
   beforeAll(() => {
     store = configureMockStore([])({
       ...initialTestingState,
       form: {
-        [Forms.loginForm]: {
+        [ Forms.loginForm ]: {
           values: {
           },
         },

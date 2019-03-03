@@ -1,8 +1,8 @@
+import { SubmissionError } from 'redux-form';
+import { call, put } from 'redux-saga/effects';
 import { Action, AsyncActionCreators } from 'typescript-fsa';
 
-import { call, put } from 'redux-saga/effects';
-import { SubmissionError } from 'redux-form';
-import { callUpdate, callPost, callGet } from './api';
+import { callGet, callPatch, callPost, callUpdate } from './api';
 
 export function* handleFormAction(url: string, action: Action<any>, actionType: AsyncActionCreators<{}, any, {}>, callAction) {
   try {
@@ -28,6 +28,9 @@ export function* handleFormUpdate(url: string, action: Action<any>, actionType: 
 export function* handleFormSubmit(url: string, action: Action<any>, actionType: AsyncActionCreators<{}, any, {}>) {
   yield handleFormAction(url, action, actionType, callPost);
 }
+export function* handleFormPatch(url: string, action: Action<any>, actionType: AsyncActionCreators<{}, any, {}>) {
+  yield handleFormAction(url, action, actionType, callPatch);
+}
 
 export function* callApiGet(url: string, action: Action<any>, actionType: AsyncActionCreators<{}, any, {}>) {
   try {
@@ -41,6 +44,15 @@ export function* callApiGet(url: string, action: Action<any>, actionType: AsyncA
 export function* callApiPut(url: string, action: Action<any>, actionType: AsyncActionCreators<{}, any, {}>) {
   try {
     const result = yield call(callUpdate, url, action.payload);
+    yield put(actionType.done({ result, params: action.payload }));
+  } catch (error) {
+    yield put(actionType.failed({ error, params: action.payload }));
+  }
+}
+
+export function* callApiPost(url: string, action: Action<any>, actionType: AsyncActionCreators<{}, any, {}>) {
+  try {
+    const result = yield call(callPost, url, action.payload);
     yield put(actionType.done({ result, params: action.payload }));
   } catch (error) {
     yield put(actionType.failed({ error, params: action.payload }));

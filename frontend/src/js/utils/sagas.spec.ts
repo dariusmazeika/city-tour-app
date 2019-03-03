@@ -1,20 +1,21 @@
-import reduxSagaTesting from 'redux-saga-testing';
-import { FetchError, callPost, callUpdate } from './api';
-import { call, put } from 'redux-saga/effects';
 import { SubmissionError } from 'redux-form';
-import { handleFormAction, handleFormSubmit, handleFormUpdate } from './sagas';
+import reduxSagaTesting from 'redux-saga-testing';
+import { call, put } from 'redux-saga/effects';
 import typescriptFsa from 'typescript-fsa';
+
+import { callPost, callUpdate, FetchError } from './api';
+import { handleFormAction, handleFormSubmit, handleFormUpdate } from './sagas';
 
 const actionCreator = typescriptFsa();
 
 export const testAction = actionCreator.async<{}, {}>('TestAction');
 
 const URL = 'my-url';
-const ACTION_PAYLOAD = {
+const ACTION_PAYLOAD: any = {
   email: 'myemail@mail.com',
   password: 'helloPassword',
-  resolve: () => {},
-  reject: () => {},
+  resolve: () => { },
+  reject: () => { },
 };
 const ACTION_RESPONSE = {
   token: 'hello',

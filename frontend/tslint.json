@@ -3,10 +3,77 @@
     "tslint-config-airbnb"
   ],
   "rules": {
+    "indent": [
+      true,
+      "spaces",
+      2
+    ],
     "max-line-length": [
       true,
       200
     ],
-    "import-name": false
+    "import-name": false,
+    "align": [
+      true,
+      "elements",
+      "members",
+      "parameters",
+      "statements"
+    ],
+    "array-bracket-spacing": [
+      true,
+      "always"
+    ],
+    "ter-computed-property-spacing": [
+      true,
+      "always"
+    ],
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "case-insensitive",
+        "named-imports-order": "case-insensitive",
+        "module-source-path": "basename",
+        "grouped-imports": true,
+        "groups": [
+          {
+            "name": "Store",
+            "match": "^@Store",
+            "order": 21
+          },
+          {
+            "name": "Config",
+            "match": "^@Config",
+            "order": 22
+          },
+
+          {
+            "name": "Utils",
+            "match": "^@Utils",
+            "order": 23
+          },
+          {
+            "name": "Components",
+            "match": "^@Components",
+            "order": 24
+          },
+          {
+            "name": "Routes",
+            "match": "^@Routes",
+            "order": 25
+          },
+          {
+            "name": "Images",
+            "match": "^@Images",
+            "order": 26
+          },
+
+
+          { "name": "parent directories", "match": "^\\.\\.", "order": 30 },
+          { "name": "current directory", "match": "^\\.", "order": 40 },
+          { "name": "libraries", "match": ".*", "order": 10 }
+        ]
+      }
+    ]
   }
 }

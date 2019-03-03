@@ -1,9 +1,11 @@
-import * as React from 'react';
 import classnames from 'classnames';
+import * as React from 'react';
 import { connect } from 'react-redux';
-import { RootState } from '../../store/reducers';
-import { getMessageKeyTranslation } from '../../config/appConfig';
-import { getCurrentLanguage } from '../../store/localization/localization.selector';
+
+import { getCurrentLanguage } from '@Store/localization/localization.selector';
+import { RootState } from '@Store/reducers';
+
+import { getMessageKeyTranslation } from '@Config/appConfig';
 export interface LocalizedMessageComponentProps {
   msg: string;
   html?: boolean;
@@ -24,7 +26,7 @@ export class LocalizedMessage extends React.PureComponent<LocalizedMessageCompon
 
     if (params) {
       Object.keys(params).forEach((key) => {
-        translatedMessage = translatedMessage.replace(`{{${key}}}`, params[key]);
+        translatedMessage = translatedMessage.replace(`{{${key}}}`, params[ key ]);
       });
     }
     if (html) {
