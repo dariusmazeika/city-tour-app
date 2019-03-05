@@ -11,11 +11,11 @@ const actionCreator = typescriptFsa();
 export const testAction = actionCreator.async<{}, {}>('TestAction');
 
 const URL = 'my-url';
-const ACTION_PAYLOAD = {
+const ACTION_PAYLOAD: any = {
   email: 'myemail@mail.com',
   password: 'helloPassword',
-  resolve: () => {},
-  reject: () => {},
+  resolve: () => { },
+  reject: () => { },
 };
 const ACTION_RESPONSE = {
   token: 'hello',

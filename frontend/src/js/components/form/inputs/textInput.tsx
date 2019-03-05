@@ -1,32 +1,45 @@
 import * as React from 'react';
+import {  WrappedFieldProps } from 'redux-form';
 
-import Icon from '../../icon';
 import FormField from '../formField';
+import Icon from '../../icon';
 
-export class TextInput extends React.PureComponent<any, { inputType: string }> {
-  constructor(props: any) {
-    super(props);
-    this.state = { inputType: props.type };
-  }
-  render() {
-    const { input, label, type, meta, showError, disabled, placeholder } = this.props;
-    const toggleVisibility = () => this.state.inputType === 'password' ? this.setState({ inputType: 'text' }) : this.setState({ inputType: 'password' });
-    return (
-      <FormField label={label} meta={meta} showError={showError}>
-        <input
-          {...input}
-          aria-label={placeholder}
-          placeholder={placeholder}
-          disabled={disabled}
-          type={this.state.inputType}
-          autoComplete="off"
-          className={input.value ? 'with-value' : ''}
-        />
-        {type === 'password' ?
-          <Icon onClick={toggleVisibility} size={'ss'} icon={this.state.inputType === 'password' ? 'eye' : 'eye-disabled'}
-            className="login-image" /> : null}
-      </FormField>
-    );
-  }
+export interface TextInputProps  {
+  placeholder?: string;
+  required?: boolean;
+  disabled: boolean;
+  type: string;
+  label: string;
+  showError: boolean;
+  className?: string;
+  actions: object;
+  children: any;
 }
-export default TextInput;
+
+const textInput: React.FunctionComponent<TextInputProps & WrappedFieldProps>
+  = ({ input, label, type, meta, showError, disabled, className, placeholder, required, children }) => {
+
+    const [ inputType, changeInputType ] = React.useState(type);
+
+    const toggleVisibility = () => inputType === 'password' ? changeInputType('text') : changeInputType('password');
+    return (
+    <FormField className={className} label={label} meta={meta} showError={showError} required={required}>
+      <input
+        {...input}
+        aria-label={placeholder}
+        placeholder={placeholder}
+        disabled={disabled}
+        type={inputType}
+        autoComplete="off"
+        className={input.value ? 'with-value' : ''}
+      />
+      {children}
+      {type === 'password' &&
+      <Icon onClick={toggleVisibility} size={'ss'} icon={inputType === 'password' ? 'eye' : 'eye-disabled'}
+            className="form__input__svg" />
+      }
+    </FormField>
+    );
+
+  };
+export default textInput;

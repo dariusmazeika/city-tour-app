@@ -4,6 +4,7 @@ import webpack from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
+import alias from './alias';
 
 const GLOBALS = {
   'process.env.NODE_ENV': JSON.stringify('production'),
@@ -12,7 +13,8 @@ const GLOBALS = {
 
 export default {
   resolve: {
-    extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx']
+    extensions: [ '*', '.js', '.jsx', '.json', '.ts', '.tsx' ],
+    alias: alias
   },
   devtool: 'source-map', // more info:https://webpack.js.org/guides/production/#source-mapping and https://webpack.js.org/configuration/devtool/
   entry: path.resolve(__dirname, '..', 'src/js/index'),
@@ -123,7 +125,7 @@ export default {
           }, {
             loader: 'sass-loader',
             options: {
-              includePaths: [path.resolve(__dirname, 'src', 'scss')],
+              includePaths: [ path.resolve(__dirname, 'src', 'scss') ],
               sourceMap: true
             }
           }

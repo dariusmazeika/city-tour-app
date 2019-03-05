@@ -1,10 +1,9 @@
 import classnames from 'classnames';
 import * as React from 'react';
-import { connect } from 'react-redux';
 
-import { getMessageKeyTranslation } from '../../config/appConfig';
-import { getCurrentLanguage } from '../../store/localization/localization.selector';
-import { RootState } from '../../store/reducers';
+import { getMessageKeyTranslation } from '@Config/appConfig';
+import { LocaleContextType, withLocaleContext } from '@Config/localeContext';
+
 export interface LocalizedMessageComponentProps {
   msg: string;
   html?: boolean;
@@ -14,33 +13,23 @@ export interface LocalizedMessageComponentProps {
     value: string,
   };
 }
-export interface LocalizedMessageStateProps {
-  currentLanguage: string;
+export const localizedMessage: React.FunctionComponent<LocalizedMessageComponentProps & LocaleContextType> = (props) => {
+  const { params, html = false, msg, className, localeContext } = props;
+  let translatedMessage = getMessageKeyTranslation(msg, localeContext);
 
-}
-export class LocalizedMessage extends React.PureComponent<LocalizedMessageComponentProps & LocalizedMessageStateProps, {}> {
-  render() {
-    const { params, html = false, msg, className, currentLanguage } = this.props;
-    let translatedMessage = getMessageKeyTranslation(msg, currentLanguage);
-
-    if (params) {
-      Object.keys(params).forEach((key) => {
-        translatedMessage = translatedMessage.replace(`{{${key}}}`, params[key]);
-      });
-    }
-    if (html) {
-      return (
-        <span dangerouslySetInnerHTML={{ __html: translatedMessage }} className={classnames('html-content', className)} />
-      );
-    }
+  if (params) {
+    Object.keys(params).forEach((key) => {
+      translatedMessage = translatedMessage.replace(`{{${key}}}`, params[ key ]);
+    });
+  }
+  if (html) {
     return (
-      <span className={className}>{translatedMessage}</span>
+      <span dangerouslySetInnerHTML={{ __html: translatedMessage }} className={classnames('html-content', className)} />
     );
   }
-}
+  return (
+    <span className={className}>{translatedMessage}</span>
+  );
 
-export default connect<LocalizedMessageStateProps, {}, LocalizedMessageComponentProps>((state: RootState) => {
-  return {
-    currentLanguage: getCurrentLanguage(state),
-  };
-})(LocalizedMessage);
+};
+export default withLocaleContext(localizedMessage);

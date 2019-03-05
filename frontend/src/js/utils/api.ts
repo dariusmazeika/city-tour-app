@@ -27,17 +27,17 @@ function addHeaders(options: object) {
 
   const token = getFromLocalStorage(LocalStorage.userToken);
   if (token) {
-    headers['Authorization'] = `Token ${token}`;
+    headers[ 'Authorization' ] = `Token ${token}`;
   }
 
   const csrftoken = getCookie(Cookies.crfToken);
   if (csrftoken) {
-    headers['X-CSRFToken'] = csrftoken;
+    headers[ 'X-CSRFToken' ] = csrftoken;
   }
 
   const langCookie = getCookie(Cookies.defaultLang);
   if (langCookie) {
-    headers['Content-Language'] = langCookie;
+    headers[ 'Content-Language' ] = langCookie;
   }
 
   return {

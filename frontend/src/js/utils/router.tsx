@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { LocalStorage } from '../config/constants';
 import { authActions } from '../store/actions';
+import { LocalStorage } from '../config/constants';
 
 import { getFromLocalStorage } from './localStorage';
 

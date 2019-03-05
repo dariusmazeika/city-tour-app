@@ -17,14 +17,14 @@ export const initialState: AuthState = {
 };
 
 const authReducer = createReducer(initialState, {
-  [login.started.type]: (state: AuthState) => {
+  [ login.started.type ]: (state: AuthState) => {
     return dotProp.set(state, 'user', null);
   },
-  [login.done.type]: (state: AuthState, action: Action<{ result: UserAuth }>) => {
+  [ login.done.type ]: (state: AuthState, action: Action<{ result: UserAuth }>) => {
     const user = action.payload.result;
     return dotProp.set(state, 'user', user);
   },
-  [logout.started.type]: (state: AuthState) => {
+  [ logout.started.type ]: (state: AuthState) => {
     return dotProp.set(state, 'user', null);
   },
   ...singleItemReducer(getUserData, 'userData'),

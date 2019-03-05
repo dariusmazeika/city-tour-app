@@ -9,11 +9,11 @@
         "allowJs": true,             // allow a partial TypeScript and JavaScript codebase,
         "moduleResolution": "node",
         "noImplicitAny": false,
-        
+
         "lib": [
             "dom",
             "es2015",
-            "es2017.object",
+            "es2017.object"
           ],
 
         //Impo
@@ -22,16 +22,27 @@
         "declaration": false, // don't emit declarations
         "importHelpers": true, // importing helper functions from tslib
         "noEmitHelpers": true, // disable emitting inline helper functions
-        
+
         // "module": "commonjs", // "es2015" for tree-shaking
         "noEmitOnError": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "noImplicitThis": false,
-        "noUnusedLocals": false,
+        "noUnusedLocals": true,
         "pretty": true,
         "removeComments": true,
+        "noUnusedParameters": true,
 
+      "baseUrl": ".",
+      "paths": {
+        "@Components/*": [ "src/js/components/*" ],
+
+        "@Config/*": [ "src/js/config/*" ],
+        "@Routes/*": [ "src/js/routes/*" ],
+        "@Store/*": [ "src/js/store/*" ],
+        "@Utils/*": [ "src/js/utils/*" ],
+        "@Images/*": [ "src/images/*" ]
+      }
     },
     "include": [
         "./src/"

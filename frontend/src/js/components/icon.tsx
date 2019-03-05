@@ -47,7 +47,7 @@ const iconComponent: React.FunctionComponent<IconProps> = (props) => {
   const { icon, size = 'm', className = null, spin = false, ...restprops } = props;
 
   const IC = require(`../../images/icons/${icon}.svg`);
-  return <IC {...sizes[size]} {...restprops}
+  return <IC {...sizes[ size ]} {...restprops}
              className={classnames('icon', `icon-${size}`, `icon-${icon}`, { 'icon-spin': !!spin }, className)} />;
 };
 export default iconComponent;

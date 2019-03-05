@@ -14,7 +14,7 @@ export declare type Action = {
 export const createReducer = (initialState: any, handlers: {}) =>
   (state = initialState, actionC: MinimalAction | Action) => {
     if (Object.prototype.hasOwnProperty.call(handlers, actionC.type)) {
-      return handlers[actionC.type](state, actionC);
+      return handlers[ actionC.type ](state, actionC);
     }
     return state;
   };

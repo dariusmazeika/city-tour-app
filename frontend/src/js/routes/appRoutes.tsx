@@ -5,6 +5,7 @@ import UserRoutes from './user/userRoutes';
 export type RouteInfo = {
   path: string;
   component: any;
+  title: string;
 };
 
 export const publicRoutes: RouteInfo[] = [

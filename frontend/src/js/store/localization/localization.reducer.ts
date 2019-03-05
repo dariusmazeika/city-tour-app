@@ -12,7 +12,7 @@ export const initialState: LocalizationState = {
 };
 
 const localizationReducer = createReducer(initialState, {
-  [changeLanguage.type]: (state: LocalizationState, action: Action<ChangeLanguagePayload>) => {
+  [ changeLanguage.type ]: (state: LocalizationState, action: Action<ChangeLanguagePayload>) => {
     return dotProp.set(state, 'currentLanguage', action.payload.lang);
   },
 });

@@ -2,20 +2,25 @@ import { ConnectedRouter } from 'connected-react-router';
 import * as React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Provider } from 'react-redux';
+import { Store } from 'redux';
+
+import { AppContextProvider } from '@Config/localeContext';
 
 import App from './app';
-
-class Root extends React.PureComponent<any, any> {
-  render() {
-    const { store, history } = this.props;
-    return (
+interface RootContainerProps {
+  store: Store;
+  history: any;
+}
+const root: React.FunctionComponent<RootContainerProps> = ({ store, history }) => {
+  return (
+    <AppContextProvider value={store.getState().localization.currentLanguage}>
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <App />
         </ConnectedRouter>
       </Provider>
-    );
-  }
-}
+    </AppContextProvider>
+  );
+};
 
-export default hot(Root);
+export default hot(root);

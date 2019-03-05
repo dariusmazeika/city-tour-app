@@ -4,8 +4,7 @@ import { WrappedFieldProps } from 'redux-form';
 
 import FormField from '../formField';
 
-// TODO https://github.com/DefinitelyTyped/DefinitelyTyped/issues/26253#
-export interface ChckboxInputProps extends WrappedFieldProps {
+export interface ChckboxInputProps {
   placeholder?: string;
   customFieldClass?: string;
   disabled: boolean;
@@ -15,7 +14,7 @@ export interface ChckboxInputProps extends WrappedFieldProps {
   showError: boolean;
 }
 
-const checkboxInput: React.FunctionComponent<any> = (props: ChckboxInputProps) => {
+const checkboxInput: React.FunctionComponent<ChckboxInputProps & WrappedFieldProps> = (props) => {
   const { input, type = 'checkbox', placeholder, label, meta, customFieldClass, showError, disabled } = props;
   let checked = input.value;
   let id = customFieldClass || input.name;
@@ -24,7 +23,7 @@ const checkboxInput: React.FunctionComponent<any> = (props: ChckboxInputProps) =
     checked = null;
   }
   return (
-    <FormField label={false} meta={meta} showError={showError}>
+    <FormField label={''} meta={meta} showError={showError}>
       <label htmlFor={id} className="checkmark">{label}
         <input
           {...input}

@@ -1,46 +1,39 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 
-import { authActions } from '../../../store/actions';
-import { changeLanguage } from '../../../store/localization/localization.actions';
-import { RootState } from '../../../store/reducers';
-import { bindActionToPromise } from '../../../utils/redux';
+import { authActions, localizationActions } from '@Store/actions';
+
+import { bindActionToPromise } from '@Utils/redux';
+import { BindActionToPromiseActionType } from '@Utils/types';
 
 import LoginForm from './components/loginForm';
 
-export interface LandingPageContainerProps {
-  dispatch: Dispatch<any>;
+export interface LoginPageContainerActions {
   actions: {
-    login: (values: Partial<{}>, dispatch: Dispatch<any>, props: {}) => Promise<any>;
+    login: BindActionToPromiseActionType;
+    changeLanguage: any
   };
 }
 
-export class LoginPageContainer extends React.PureComponent<LandingPageContainerProps, {}> {
-  render() {
-    return (
+const loginPageContainer: React.FunctionComponent<LoginPageContainerActions> = ({ actions }) => {
+  return (
       <div>
         <a onClick={() => {
-          this.props.dispatch(changeLanguage({ lang: 'lt' }));
+          actions.changeLanguage({ lang: 'lt' });
         }}>Change</a>
-        <LoginForm onSubmit={this.props.actions.login} />
+        <LoginForm onSubmit={actions.login} />
       </div>
-    );
-  }
-}
-
-const mapStateToProps = (state: RootState) => ({
-  clickCount: state,
-});
+  );
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  dispatch,
   actions: {
     login: bindActionToPromise(dispatch, authActions.login.started),
+    ...bindActionCreators({ changeLanguage: localizationActions.changeLanguage }, dispatch),
   },
 });
-
-export default connect(
-  mapStateToProps,
+export default connect<{}, LoginPageContainerActions, {}>(
+  null,
   mapDispatchToProps,
-)(LoginPageContainer);
+)(loginPageContainer);

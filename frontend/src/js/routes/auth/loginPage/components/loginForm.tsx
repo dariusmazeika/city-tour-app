@@ -1,23 +1,19 @@
 import * as React from 'react';
-import { Field, FormSubmitHandler, InjectedFormProps, reduxForm } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 
-import ErrorDisplay from '../../../../components/form/errorDisplay';
-import TextInput from '../../../../components/form/inputs/textInput';
-import { Forms } from '../../../../config/constants';
-interface LoginFormData {
-  email?: string;
-  password: string;
-}
-interface TestFormComponentProps {
-  onSubmit: FormSubmitHandler;
-}
+import { LoginFormData } from '@Store/auth/auth.types';
 
-type InjectedProps = InjectedFormProps<{}, TestFormComponentProps>;
+import { Forms } from '@Config/constants';
 
-const loginForm: React.FunctionComponent<TestFormComponentProps & InjectedProps> =
-  ({ handleSubmit, onSubmit, submitting, error }) => {
+import { ReduxFormBase } from '@Utils/types';
+
+import ErrorDisplay from '@Components/form/errorDisplay';
+import TextInput from '@Components/form/inputs/textInput';
+
+const loginForm: React.FunctionComponent<ReduxFormBase> =
+  ({ handleSubmit, submitting, error }) => {
     return (
-    <form onSubmit={handleSubmit(onSubmit)} className="form" noValidate={true}>
+    <form onSubmit={handleSubmit} className="form" noValidate={true}>
      {error && <ErrorDisplay msg={error}/>}
         <div className="login-form">
           <Field name="email" component={TextInput}
@@ -32,7 +28,7 @@ const loginForm: React.FunctionComponent<TestFormComponentProps & InjectedProps>
     );
   };
 
-export default reduxForm({
+export default reduxForm<LoginFormData>({
   form: Forms.loginForm,
 
 })(loginForm);

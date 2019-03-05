@@ -6,6 +6,7 @@ const routes: RouteInfo[] = [
   {
     path: '/user',
     component: UserPageContainer,
+    title: 'msg_page_user',
   },
 ];
 

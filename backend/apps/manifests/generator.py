@@ -53,7 +53,7 @@ def generate_manifest():
     site_config = SiteConfiguration.get_solo()
     config = {
         'enabled_languages': get_enabled_languages(site_config),
-        'default_language': site_config.default_language.code.upper(),
+        'default_language': site_config.default_language.code,
     }
 
     js = """

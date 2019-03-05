@@ -6,6 +6,7 @@ const routes: RouteInfo[] = [
   {
     path: '/',
     component: LandingPageContainer,
+    title: 'msg_page_landing',
   },
 ];
 

@@ -7,10 +7,12 @@ const routes: RouteInfo[] = [
   {
     path: '/login',
     component: LoginPageContainer,
+    title: 'msg_page_login',
   },
   {
     path: '/register',
     component: RegisterPageContainer,
+    title: 'msg_page_register',
   },
 ];
 
