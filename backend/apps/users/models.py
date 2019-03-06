@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.postgres.fields import CIEmailField
 
 
-
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
 

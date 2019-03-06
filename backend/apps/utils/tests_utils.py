@@ -1,10 +1,11 @@
 import logging
 
-from apps.translations.models import Language
-from apps.users.models import User
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
+
+from apps.translations.models import Language
+from apps.users.models import User
 
 
 class BaseTestCase(TestCase):

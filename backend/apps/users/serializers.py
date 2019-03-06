@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate
-
 from rest_framework import serializers
 
 from apps.users.models import User
@@ -7,8 +6,7 @@ from apps.users.models import User
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=200)
-    password = serializers.CharField(max_length=255, required=True, style={
-                                     'input_type': 'password'})
+    password = serializers.CharField(max_length=255, required=True, style={'input_type': 'password'})
 
     def validate(self, attrs):
         email = attrs.get('email')

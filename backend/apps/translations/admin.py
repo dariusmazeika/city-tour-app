@@ -20,7 +20,7 @@ class BaseTranslationFormSet(BaseInlineFormSet):
             if form.cleaned_data.get('text'):
                 language = form.cleaned_data.get('language')
 
-                key = (language.pk)
+                key = language.pk
                 if key in uniq:
                     raise ValidationError('Cannot have multiple default {} messages'.format(language))
                 uniq.add(key)
@@ -40,9 +40,6 @@ class TranslationForm(ModelForm):
             'text': Textarea(attrs={'cols': 40, 'rows': 2}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
 
 class TranslationInline(admin.TabularInline):
     model = Translation
@@ -58,7 +55,8 @@ class MessageAdmin(admin.ModelAdmin):
         TranslationInline
     ]
 
-    def trans(self, obj):
+    @staticmethod
+    def trans(obj):
         return format_html_join('\n', '<b>{}:</b> "{}"<br/>',
                                 ((t.language.code, t.text) for t in obj.translation_set.all()))
 

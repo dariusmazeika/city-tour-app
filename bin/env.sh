@@ -26,3 +26,11 @@ dcprod() {
 dctest() {
     docker-compose -f docker-compose.yml -f $DOCKER_CONFIG_TEST "$@"
 }
+
+dcdeploy() {
+    docker-compose -f docker-compose.jenkins.yml "$@"
+}
+
+dcclean() {
+    docker-compose -f docker-compose.jenkins.yml down --rmi 'all'
+}
