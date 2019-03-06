@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'solo',
-    'tabbed_admin',
 
     'apps.home',
     'apps.api',
