@@ -8,7 +8,7 @@ python 3.7
 node 10.7
 Postgres 10.5
 Django  2.1
-Typescipt
+Typescript
 Webpack
 Sass
 Nginx
@@ -30,7 +30,7 @@ git pull starter master
 
 PyLint configuration file is in .pylintrc and the seed itself is configured to pass current PyLint configuration test without warnings. You can whether configure your IDE with this conf file or run PyLint manually:
 ```sh
-pylint --rcfile=.pylintrc --load-plugins pylint-django backend > pylint.log
+pylint --output-format=parseable --rcfile=.pylintrc --load-plugins pylint_django backend > pylint.log
 ```
 
 PEP8 configuration is in tox.ini and the seed itself is configured to pass current PEP8 analysis without warnings:

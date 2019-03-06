@@ -141,7 +141,8 @@ disable=parameter-unpacking,
         import-error,
         missing-docstring,
         too-few-public-methods,
-        abstract-method
+        abstract-method,
+        arguments-differ
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -221,8 +222,7 @@ spelling-store-unknown-words=no
 [MISCELLANEOUS]
 
 # List of note tags to take in consideration, separated by a comma.
-notes=FIXME,
-      TODO
+notes=FIXME
 
 
 [TYPECHECK]

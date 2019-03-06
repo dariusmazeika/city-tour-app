@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from apps.users.models import User
 
 
-class UserAdmin(UserAdmin):
+class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('password',)}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
@@ -28,4 +28,4 @@ class UserAdmin(UserAdmin):
     exclude = []
 
 
-admin.site.register(User, UserAdmin)
+admin.site.register(User, CustomUserAdmin)

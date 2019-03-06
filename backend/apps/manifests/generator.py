@@ -1,23 +1,17 @@
 import json
-import logging
+
+from django.conf import settings
 
 from apps.home.models import SiteConfiguration
 from apps.translations.models import Language, Translation
 
 
-logger = logging.getLogger('id.manifest')
-
-
 def get_translations(language):
-    translations = Translation.objects.filter(language=language)
-    return dict([(trans.message.message_id, trans.text) for trans in translations])
+    return {trans.message.message_id: trans.text for trans in Translation.objects.filter(language=language)}
 
 
 def generate_messages():
-    translations = {}
-    for language in Language.objects.all():
-        translations[language.pk] = get_translations(language)
-    return translations
+    return {language.pk: get_translations(language) for language in Language.objects.all()}
 
 
 def get_enabled_languages(config):
@@ -51,12 +45,13 @@ def generate_const():
 
 def generate_manifest():
     site_config = SiteConfiguration.get_solo()
+    site_default_lang = site_config.default_language
     config = {
         'enabled_languages': get_enabled_languages(site_config),
-        'default_language': site_config.default_language.code,
+        'default_language': site_default_lang.code if site_default_lang else settings.DEFAULT_LANGUAGE,
     }
 
-    js = """
+    js_vars = """
     window._app_messages = {};
     window._app_constants = {};
     window._app_conf = {}
@@ -65,4 +60,4 @@ def generate_manifest():
         json.dumps(generate_const()),
         json.dumps(config),
     )
-    return js
+    return js_vars

@@ -1,0 +1,17 @@
+version: '3'
+services:
+    db:
+        image: postgres:10.5
+        environment:
+            POSTGRES_USER: django
+            POSTRES_PASSWORD: django
+    django:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile-production
+        ports:
+            - "8082:8082"
+        environment:
+            DJANGO_SETTINGS_MODULE: conf.settings_test
+        depends_on:
+            - db

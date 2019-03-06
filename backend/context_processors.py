@@ -14,9 +14,9 @@ if not settings.WEBPACK_DEV_SERVER:
     ASSETS_JSON_FNAME = path.join(settings.STATIC_ASSETS_JSON)
     try:
         with open(ASSETS_JSON_FNAME, 'r') as f:
-            json_data = json.load(f)
-            STATIC_ASSETS = json_data['main']
-            STATIC_VENDOR_ASSETS = json_data['vendors~main']
+            JSON_DATA = json.load(f)
+            STATIC_ASSETS = JSON_DATA['main']
+            STATIC_VENDOR_ASSETS = JSON_DATA['vendors~main']
     except Exception:
         raise Exception('failed to read %s. was frontend built?' % ASSETS_JSON_FNAME)
 
