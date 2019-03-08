@@ -16,3 +16,6 @@ export interface ReduxFormBase {
 }
 
 export type BindActionToPromiseActionType = (values: Partial<{}>, dispatch: Dispatch<any>, props: {}) => Promise<any>;
+export interface ActionErrorType {
+  error: {status: number, response: object};
+}
