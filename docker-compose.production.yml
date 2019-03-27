@@ -3,7 +3,7 @@ volumes:
     data:
 services:
     db:
-        image: postgres:10.5
+        image: postgres
         environment:
             POSTGRES_USER: django
             POSTRES_PASSWORD: django
@@ -24,8 +24,6 @@ services:
             - "./logs/app:/tmp/logs/app"
             - "./logs/gunicorn:/tmp/logs/gunicorn"
         restart: always
-        ports:
-            - "8000:8000"
         depends_on:
             - db
     nginx:

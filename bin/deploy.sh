@@ -13,10 +13,14 @@ git pull
 #for init_db.sh
 export DOCKER_INIT_DB_CONFIG=$DOCKER_CONFIG_PROD
 
-if  [ $(docker-compose -f docker-compose.yml -f $DOCKER_INIT_DB_CONFIG ps | grep db | wc -l) == 0 ]; then
-  ./bin/init_db.sh
+if [ "$EXTERNAL_DB" != "true" ]; then
+  if  [ $(docker-compose -f docker-compose.yml -f $DOCKER_INIT_DB_CONFIG ps | grep db | wc -l) == 0 ]; then
+    ./bin/init_db.sh
+  else
+    ./bin/backup.sh
+  fi
 else
-  ./bin/backup.sh
+  echo "Using external db"
 fi
 
 ./bin/build_production.sh

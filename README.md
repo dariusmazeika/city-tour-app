@@ -6,12 +6,12 @@ Docker and docker-compose is all you need to develop, build & deploy, run develo
 ## stack
 python 3.7
 node 10.7
-Postgres 10.5
-Django  2.1
+Postgres latest
+Django  2.1.7
 Typescript
 Webpack
 Sass
-Nginx
+Nginx 1.15
 Gunicorn
 
 
@@ -60,6 +60,10 @@ export PROD_MODE=true # always true for production mode
 
 In prod mode sources are added to docker image rather than mounted from host. Nginx serves static files, proxy pass to gunicorn for django app. Logs in `logs` dir.
 
+In case production environment uses external database, set env variable to not backup database:
+```sh
+export EXTERNAL_DB=true
+```
 
 
 #### enable ssl
