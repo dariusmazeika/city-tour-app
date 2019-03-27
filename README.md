@@ -60,6 +60,10 @@ export PROD_MODE=true # always true for production mode
 
 In prod mode sources are added to docker image rather than mounted from host. Nginx serves static files, proxy pass to gunicorn for django app. Logs in `logs` dir.
 
+In case production environment uses external database, set env variable to not backup database:
+```sh
+export EXTERNAL_DB=true
+```
 
 
 #### enable ssl
