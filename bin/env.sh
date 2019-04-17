@@ -32,5 +32,5 @@ dcdeploy() {
 }
 
 dcclean() {
-    docker-compose -f docker-compose.jenkins.yml down --rmi 'all'
+    docker-compose -f docker-compose.jenkins.yml down --rmi 'all' -v
 }
