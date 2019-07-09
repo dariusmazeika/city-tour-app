@@ -15,3 +15,5 @@ services:
             DJANGO_SETTINGS_MODULE: conf.settings_test
         depends_on:
             - db
+	redis:
+		image: redis

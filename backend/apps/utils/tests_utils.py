@@ -22,6 +22,9 @@ class BaseTestCase(TestCase):
             code='en'
         )
         self.user = User.objects.create_user(**self.user_data)
+        self.user.is_verified = True
+        self.user.language = self.language
+        self.user.save()
         self.client = APIClient()
 
     def tearDown(self):
