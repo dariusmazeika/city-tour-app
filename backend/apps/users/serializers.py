@@ -79,11 +79,11 @@ class ForgottenPasswordSerializer(serializers.Serializer):
 
         if not user:
             # To prevent registered email checking we just do nothing here
-            return dict()
+            return {}
 
         PasswordKey.objects.filter(user=user).delete()
         user.create_new_password_token()
-        return dict()
+        return {}
 
 
 class VerificationEmailResendSerializer(serializers.Serializer):
@@ -94,7 +94,7 @@ class VerificationEmailResendSerializer(serializers.Serializer):
 
         if not user:
             # To prevent registered email checking we just do nothing here
-            return dict()
+            return {}
 
         user.create_activation_key()
-        return dict()
+        return {}
