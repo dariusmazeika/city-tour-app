@@ -7,11 +7,11 @@ Docker and docker-compose is all you need to develop, build & deploy, run develo
 python 3.7
 node 10.7
 Postgres latest
-Django  2.1.7
+Django  2.2
 Typescript
 Webpack
 Sass
-Nginx 1.15
+Nginx 1.17
 Gunicorn
 
 

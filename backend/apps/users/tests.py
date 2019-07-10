@@ -1,7 +1,17 @@
-from apps.utils.tests_utils import BaseTestCase
+import datetime
+from unittest.mock import patch
+from uuid import uuid4
+
+from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
+from model_mommy import mommy
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+
+from apps.translations.models import Language
+from apps.users.models import PasswordKey, ActivationKey
+from apps.utils.tests_utils import BaseTestCase
 
 
 class AuthentificationTestCase(BaseTestCase):
@@ -79,3 +89,130 @@ class AuthentificationTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(
             response.json()['detail'], 'Authentication credentials were not provided.')
+
+    @patch.object(PasswordKey, 'send_password_key')
+    def test_forgot_password(self, mock):
+        response = self.client.post(reverse('forgot'), data={'email': self.user.email})
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(self.user.password_keys.count(), 1)
+        self.assertEqual(PasswordKey.objects.count(), 1)
+        self.assertTrue(mock.called)
+
+    @patch.object(PasswordKey, 'send_password_key')
+    def test_forgot_password_non_existing_email(self, mock):
+        response = self.client.post(reverse('forgot'), data={'email': 'some@email.com'})
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(PasswordKey.objects.count(), 0)
+        self.assertFalse(mock.called)
+
+    @patch.object(PasswordKey, 'send_password_key')
+    def test_reset_password_after_forgot_password(self, mock):
+        del mock
+        self.user.create_new_password_token()
+        previous_psw = self.user.password
+        uuid = str(uuid4())
+        reset_key = self.user.create_new_password_token()
+        response = self.client.put(
+            reverse('reset-password', args=[reset_key]),
+            data={'password': uuid, 'confirm_password': uuid}
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.user.refresh_from_db()
+        self.assertNotEqual(previous_psw, self.user.password)
+        self.assertFalse(self.user.password_keys.count())
+        self.assertFalse(Token.objects.filter(user=self.user).count())
+
+    @patch.object(PasswordKey, 'send_password_key')
+    def test_expired_password_key(self, mock):
+        del mock
+        reset_key = self.user.create_new_password_token()
+        self.user.password_keys.update(
+            expires_at=timezone.now() - datetime.timedelta(hours=settings.PASSWORD_TOKEN_EXPIRATION_PERIOD + 1)
+        )
+        response = self.client.put(reverse('reset-password', args=[reset_key]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.password_keys.count())
+
+    def test_resend_verification_email_required_data(self):
+        response = self.client.post(reverse('resend-verification'))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()['email'][0], 'This field is required.')
+
+    @patch.object(ActivationKey, 'send_verification')
+    def test_resend_verification_email_to_verified_user(self, mock):
+        response = self.client.post(reverse('resend-verification'), data={'email': self.user.email})
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(mock.called)
+
+    @patch.object(ActivationKey, 'send_verification')
+    def test_resend_verification_email_to_unverified_user(self, mock):
+        self.user.is_verified = False
+        self.user.save()
+        response = self.client.post(reverse('resend-verification'), data={'email': self.user.email})
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertTrue(mock.called)
+
+    @patch.object(ActivationKey, 'send_verification')
+    def test_verify_user(self, mock):
+        del mock
+        self.user.is_verified = False
+        self.user.save()
+        verification_key = self.user.create_activation_key()
+        self.assertFalse(self.user.is_verified)
+        response = self.client.put(reverse('verify', args=[verification_key]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_verified)
+        self.assertFalse(self.user.activation_keys.count())
+
+    @patch.object(ActivationKey, 'send_verification')
+    def test_verify_user_again(self, mock):
+        del mock
+        verification_key = self.user.create_activation_key()
+        self.user.is_verified = True
+        self.user.save()
+        self.assertTrue(self.user.is_verified)
+        response = self.client.put(reverse('verify', args=[verification_key]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()[0], 'msg_error_already_verified')
+
+    def test_change_language(self):
+        lang = mommy.make(Language)
+        response = self.authorize().post(reverse('change-language'), data={'language': lang.code})
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.language, lang)
+
+    def test_change_to_invalid_language(self):
+        response = self.authorize().post(reverse('change-language'), data={'language': 'abc'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()['language'][0], 'msg_error_no_such_language')
+
+    def test_change_password(self):
+        uuid = str(uuid4())
+        previous_psw = self.user.password
+        response = self.authorize().post(
+            reverse('change-password'),
+            data={'old_password': self.credentials['password'], 'password': uuid, 'confirm_password': uuid}
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.user.refresh_from_db()
+        self.assertNotEqual(previous_psw, self.user.password)
+        self.assertFalse(Token.objects.filter(user=self.user).count())
+        self.assertFalse(self.user.password_keys.all().count())
+
+    def test_change_password_not_equal(self):
+        previous_psw = self.user.password
+        response = self.authorize().post(
+            reverse('change-password'),
+            data={
+                'old_password': self.credentials['password'],
+                'password': str(uuid4()),
+                'confirm_password': str(uuid4())
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.user.refresh_from_db()
+        self.assertEqual(previous_psw, self.user.password)
+        self.assertEqual(response.json()['non_field_errors'][0], 'msg_error_passwords_not_equal')

@@ -37,3 +37,5 @@ services:
             DB_PORT: 5432
         depends_on:
             - db
+    redis:
+        image: redis
