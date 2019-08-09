@@ -22,7 +22,7 @@ def send_email_task(email: str, template: str, category: str = None, context: di
 
         template = getattr(site_config, template)(language)
         html_message = render_email_template_with_base(html_content=template.content, context=context,
-                                                       subject=template.template.name)
-        send_email(email=email, subject=template.template.name, html_message=html_message, category=category)
+                                                       subject=template.subject)
+        send_email(email=email, subject=template.subject, html_message=html_message, category=category)
     except Exception as e:
         LOGGER.error('Error during sending %s: %s ', template, e)
