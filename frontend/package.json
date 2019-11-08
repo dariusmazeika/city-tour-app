@@ -33,7 +33,7 @@
         "react-document-title": "^2.0.3",
         "add": "^2.0.6",
         "classnames": "^2.2.6",
-      "connected-react-router": "6.2.0",
+        "connected-react-router": "6.2.0",
         "dot-prop-immutable": "^1.5.0",
         "install": "^0.12.2",
         "jest-fetch-mock": "^2.1.1",
