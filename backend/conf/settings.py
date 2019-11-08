@@ -24,9 +24,6 @@ SECRET_KEY = '^h85uo#*&q+5r=a1_l8i_&t$^$(sgsz-3*ijq8%22ayrbapxyk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Load frontend from webpack dev server rather than static
-WEBPACK_DEV_SERVER = True
-
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'users.User'
@@ -82,7 +79,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'context_processors.static_resources'
             ],
         },
     },
@@ -147,8 +143,6 @@ MANIFEST_JS_MAX_AGE = 0
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
-
-STATIC_ASSETS_JSON = os.path.join(STATIC_ROOT, 'assets.json')
 
 # user uploads
 MEDIA_URL = '/media/'
