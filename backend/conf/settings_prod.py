@@ -3,10 +3,6 @@ from .settings import *
 ALLOWED_HOSTS = ['*']
 
 DEBUG = False
-TEMPLATE_DEBUG = False
-WEBPACK_DEV_SERVER = False
-
-STATIC_ASSETS_JSON = os.path.join(BASE_DIR, 'assets.json')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
