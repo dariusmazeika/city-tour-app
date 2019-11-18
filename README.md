@@ -133,8 +133,32 @@ Frontend folder structure described in `frontend/README.MD`
 
 ```sh
 
-#run tests
+# run tests
 ./bin/test.sh
 
 # skip frontend build (eg, running tests repeatedly)
 ./bin/test.sh --skipbuild
+```
+
+## tests locally (using Pycharm IDE)
+
+```
+
+# setup dependiecies 
+
+create venv IDE project settings -> interpreter -> show all -> add (create somewhere outside project dir)
+pip install -r requirements.txt
+setup database if you have skipped creating docker based one from instructions above
+
+
+# setup tests
+
+run/debug configurations -> templates -> Django tests 
+-> set path to tests `Custom settings` (usually `/backend/conf/settings_test.py`) 
+-> set config to DB via `Enviroment variables` field. 
+Available variables are - 'DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PORT'. 
+If using docker database from instructions above DB_HOST=localhost;DB_PORT=9432; should be enough.
+Run tests from opened test file class or method by clicking on green arrow on the left 
+or whole directory/app tests by right clicking on them from IDE project view -> Run:test
+```
+
