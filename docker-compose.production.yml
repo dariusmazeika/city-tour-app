@@ -38,5 +38,5 @@ services:
             - "./backend/media:/media"
             - "./logs/nginx:/tmp/logs"
         restart: always
-  redis:
-    image: redis
+    redis:
+      image: redis
