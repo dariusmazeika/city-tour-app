@@ -16,6 +16,7 @@ services:
         volumes:
             - ./backend:/app
             - ./backend/media:/media
+            - ./static/:/static
         command: ./bin/develop.sh
         ports:
             - "8000:8000"

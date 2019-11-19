@@ -2,9 +2,9 @@
 source bin/env.sh
 
 if [ -z "$SKIP_BUILD" ]; then
-    ./bin/build_frontend.sh
+    ./bin/build_static.sh
 else
-    echo "skipping frontend build..."
+    echo "skipping static build..."
 fi
 
 dctest run --rm  django ./bin/test.sh "$@"

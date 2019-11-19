@@ -1,7 +1,7 @@
 # pylint: disable=invalid-name
 """
 Base URL configuration.
-This configuration is dedicated for loading frontend bundle onto the root path of the site.
+This configuration is dedicated for loading static bundle onto the root path of the site.
 """
 from django.urls import re_path
 
