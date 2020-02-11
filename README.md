@@ -1,6 +1,6 @@
 # docker-django-webpack-starter
 
-This is a starter project for a django app with webpack built frontend that uses docker for dev enironment.  
+This is a starter project for a django app with webpack built static that uses docker for dev enironment.  
 Docker and docker-compose is all you need to develop, build & deploy, run development or production mode with a single command.
 
 ## stack
@@ -67,9 +67,6 @@ Copy your .key and .crt files to `nginx/ssl` and run `./bin/deploy.sh`.
 
 ## install dependencies
 ```sh
-# frontend
-./bin/npm.sh install [package] --save-dev
-
 # backend
 ./bin/pipinstall.sh [pacakge] #will also add entry to backend/requirements.txt
 ```
@@ -127,7 +124,6 @@ nginx/ssl/                    - put key & cert here if you use ssl
 nginx/nginx_nossl.conf        - nginx conf if no ssl is used
 nginx/nginx_ssl.conf          - nginx conf for deploy with ssl
 ```
-Frontend folder structure described in `frontend/README.MD`
 
 ## tests
 
@@ -136,7 +132,7 @@ Frontend folder structure described in `frontend/README.MD`
 # run tests
 ./bin/test.sh
 
-# skip frontend build (eg, running tests repeatedly)
+# skip static build (eg, running tests repeatedly)
 ./bin/test.sh --skipbuild
 ```
 
