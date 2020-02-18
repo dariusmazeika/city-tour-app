@@ -22,7 +22,7 @@ describe('Auth actions', () => {
 
     it('should create an action for success login', () => {
       const dispatch = jest.fn();
-      const result:UserAuth = {
+      const result: UserAuth = {
         token: 'I am user token',
       };
       const expected = { payload: { result, params: actionPayload }, type: 'LOGIN_DONE' };

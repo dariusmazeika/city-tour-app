@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Icon from './icon';
 
 export interface ButtonProps {
-  type?: string;
+  type?: ButtonTypes;
   aria: string;
   to?: any;
   className?: string;
@@ -13,6 +13,12 @@ export interface ButtonProps {
   loading?: boolean;
   disabled?: boolean;
   children: object | string;
+}
+
+export enum ButtonTypes {
+  button = 'button',
+  submit = 'submit',
+  reset = 'reset',
 }
 
 const buttonComponent: React.FunctionComponent<ButtonProps> = (props) => {
@@ -31,21 +37,23 @@ const buttonComponent: React.FunctionComponent<ButtonProps> = (props) => {
     ...restprops,
     className: classnames(className, 'btn', `btn-${type}`, { 'btn-loading': loading }),
     type: submit
-      ? 'submit'
-      : 'button',
+      ? ButtonTypes.submit
+      : ButtonTypes.button,
   };
 
   if (to) {
     return (
       <Link aria-label={aria} to={to} {...btnprops}>
         {children}
-      </Link>);
+      </Link>
+    );
   }
   if (loading) {
     return (
-      <button aria-label={aria} {...btnprops} >
+      <button aria-label={aria} {...btnprops}>
         <Icon icon="spinner" spin={true} size="sm" />
-      </button>);
+      </button>
+    );
   }
 
   return (

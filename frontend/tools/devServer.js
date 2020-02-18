@@ -12,7 +12,7 @@ new WebpackDevServer(webpack(config), {
     inline: true,
     hot: true,
     host: '0.0.0.0',
-
+    port: 3000,
     stats: {
         colors: true
     },

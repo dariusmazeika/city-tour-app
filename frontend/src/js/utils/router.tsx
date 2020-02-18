@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { authActions } from '../store/actions';
 import { LocalStorage } from '../config/constants';
+import { authActions } from '../store/actions';
 
 import { getFromLocalStorage } from './localStorage';
 
@@ -25,7 +25,7 @@ export const authenticatedOnlyComponent = (WrappedComponent: any) => {
     },
   });
 
-  class AuthenticatedComponent extends React.PureComponent<AuthenticatedComponentProps, {}>{
+  class AuthenticatedComponent extends React.PureComponent<AuthenticatedComponentProps, {}> {
 
     componentDidMount() {
       if (this.isLoggedIn()) {
@@ -33,14 +33,18 @@ export const authenticatedOnlyComponent = (WrappedComponent: any) => {
       }
     }
 
+    // eslint-disable-next-line class-methods-use-this
     isLoggedIn() {
       return getFromLocalStorage(LocalStorage.userToken) !== null;
     }
 
     render() {
-      return this.isLoggedIn() ? <WrappedComponent {...this.props} /> : <Redirect to={{
-        pathname: '/',
-      }} />;
+      return this.isLoggedIn() ? <WrappedComponent {...this.props} /> : (
+        <Redirect to={{
+          pathname: '/',
+        }}
+        />
+      );
     }
   }
 

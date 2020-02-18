@@ -14,7 +14,7 @@ describe('Reducers::Localization reducer', () => {
     const state = localizationReducer(undefined, {
       type: changeLanguage.type,
       payload: {
-        lang: 'be' ,
+        lang: 'be',
       },
     });
     expect(state.currentLanguage).toEqual('be');

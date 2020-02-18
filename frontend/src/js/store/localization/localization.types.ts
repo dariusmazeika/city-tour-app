@@ -1,5 +1,5 @@
 export type LocalizationState = {
-  readonly currentLanguage: string,
+  readonly currentLanguage: string;
 };
 
 export interface ChangeLanguagePayload {
