@@ -21,8 +21,7 @@ class FetchError extends Error {
   status?: number;
 }
 const sendError = (data: { response?: string; non_field_errors?: string; message?: string }) => {
-  const error = new FetchError('Error', { data });
-  return error;
+  return new FetchError('Error', { data });
 };
 const actionCreator = typescriptFsa();
 

@@ -21,7 +21,7 @@ const loginPageContainer: React.FunctionComponent<LoginPageContainerActions> = (
         actions.changeLanguage({ lang: 'lt' });
       }}
       >
-        Change s
+        Change
       </button>
       <LoginForm onSubmit={actions.login} />
     </div>
