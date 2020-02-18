@@ -1,20 +1,20 @@
 import classnames from 'classnames';
 import * as React from 'react';
-import { WrappedFieldMetaProps } from 'redux-form';
+import { FieldRenderProps } from 'react-final-form';
 
 import LocalizedMessage from '@Components/localizedMessage';
 
 import ErrorDisplay from './errorDisplay';
+
 export interface FormFieldProps {
   className?: string;
   label?: string;
   showError?: boolean;
   name?: boolean;
   required?: boolean;
-  meta: WrappedFieldMetaProps;
 }
 
-const formField: React.FunctionComponent<FormFieldProps> = (props) => {
+const formField: React.FunctionComponent<FieldRenderProps<string, HTMLElement> & FormFieldProps & any> = (props) => {
   const {
     className = '',
     children = [],

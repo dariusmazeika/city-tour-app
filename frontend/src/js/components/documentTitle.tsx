@@ -14,17 +14,18 @@ export class DocumentTitleComponent extends React.PureComponent<DocumentTitleCom
     window.scrollTo(0, 0);
   }
 
-  buildTitle(text) {
+  buildTitle(text: string) {
     const root = getMessageKeyTranslation('page_title', this.props.localeContext) || '';
     if (text) {
       return `${`${text.charAt(0).toUpperCase()}${text.slice(1)}`} | ${root || ''}`;
     }
     return root;
   }
+
   render() {
     const { children, title, ...restprops } = this.props;
     return (
-      <DocumentTitle title={this.buildTitle(getMessageKeyTranslation(title, this.props.localeContext))} {...restprops } >
+      <DocumentTitle title={this.buildTitle(getMessageKeyTranslation(title, this.props.localeContext))} {...restprops}>
         { children }
       </DocumentTitle>
     );

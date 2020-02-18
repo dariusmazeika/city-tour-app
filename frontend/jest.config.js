@@ -8,7 +8,8 @@ module.exports = {
     "^@Routes/(.*)": "<rootDir>/src/js/routes/$1",
     "^@Store/(.*)": "<rootDir>/src/js/store/$1",
     "^@Utils/(.*)": "<rootDir>/src/js/utils/$1",
-    "^@Images/(.*)": "<rootDir>/src/images/$1"
+    "^@Images/(.*)": "<rootDir>/src/images/$1",
+    "^@Mocks/(.*)": "<rootDir>/__mocks__/$1"
 
   },
 

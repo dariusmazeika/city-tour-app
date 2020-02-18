@@ -17,7 +17,10 @@ export default {
     alias: alias
   },
   devtool: 'source-map', // more info:https://webpack.js.org/guides/production/#source-mapping and https://webpack.js.org/configuration/devtool/
-  entry: path.resolve(__dirname, '..', 'src/js/index'),
+  entry: [
+    '@babel/polyfill',
+    path.resolve(__dirname, '..', 'src/js/index')
+  ],
   target: 'web',
   mode: 'production',
   output: {
@@ -47,8 +50,27 @@ export default {
   module: {
     rules: [
       {
-        test: /\.(t|j)sx?$/, use: { loader: 'awesome-typescript-loader' },
+        test: /\.tsx?$/,
         exclude: /node_modules/,
+        loader: [ {
+          options: {
+            cacheDirectory: true,
+            babelrc: false,
+            presets: [
+              [
+                '@babel/preset-env',
+                { targets: { browsers: 'last 2 versions ' } }
+              ],
+              '@babel/preset-typescript',
+              '@babel/preset-react'
+            ],
+            plugins: [
+              '@babel/plugin-proposal-optional-chaining',
+              [ '@babel/plugin-proposal-class-properties', { loose: true } ],
+            ]
+          }, loader: 'babel-loader'
+        }],
+
       },
       {
         test: /\.eot(\?v=\d+.\d+.\d+)?$/,

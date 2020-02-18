@@ -7,6 +7,7 @@ import { Store } from 'redux';
 import { AppContextProvider } from '@Config/localeContext';
 
 import App from './app';
+
 interface RootContainerProps {
   store: Store;
   history: any;

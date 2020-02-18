@@ -16,10 +16,10 @@ export const singleItemReducer = (actionType: AsyncActionCreators<{}, any, {}>, 
     [ actionType.started.type ]: (state: any) => {
       return dotProp.set(state, `${stateName}.isFetching`, true);
     },
-    [ actionType.done.type ]: (state, action: any) => {
+    [ actionType.done.type ]: (state: any, action: any) => {
       return dotProp.set(state, stateName, { isFetching: false, item: action.payload.result });
     },
-    [ actionType.failed.type ]: (state) => {
+    [ actionType.failed.type ]: (state: any) => {
       return dotProp.set(state, `${stateName}.isFetching`, false);
     },
   };
@@ -30,10 +30,10 @@ export const multipleItemsReducer = (actionType: AsyncActionCreators<{}, any, {}
     [ actionType.started.type ]: (state: any) => {
       return dotProp.set(state, `${stateName}.isFetching`, true);
     },
-    [ actionType.done.type ]: (state, action: any) => {
+    [ actionType.done.type ]: (state: any, action: any) => {
       return dotProp.set(state, stateName, { isFetching: false, list: action.payload.result });
     },
-    [ actionType.failed.type ]: (state) => {
+    [ actionType.failed.type ]: (state: any) => {
       return dotProp.set(state, `${stateName}.isFetching`, false);
     },
   };

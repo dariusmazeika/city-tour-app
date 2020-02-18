@@ -3,23 +3,28 @@ import * as React from 'react';
 import LocalizedMessage from '@Components/localizedMessage';
 
 export interface ErrorDisplayProps {
-  msg: any;
+  msg: string | string[] | { message: string };
 }
 
-const errorDisplay: React.FunctionComponent<ErrorDisplayProps> = ({ msg }) => {
-  let msgToDispay = msg;
+const parseMessageToDisplay = (msg: string | string[] | { message: string }) => {
+  if (typeof msg === 'string') {
+    return msg;
+  }
 
   if (Array.isArray(msg)) {
-    msgToDispay = msg[ 0 ];
-  }
-  if (msg.message) {
-    msgToDispay = msg.message;
+    return msg[ 0 ];
   }
 
+  return msg.message;
+};
+
+const errorDisplay: React.FunctionComponent<ErrorDisplayProps> = ({ msg }) => {
+  const msgToDispay = parseMessageToDisplay(msg);
+
   return (
-      <div className="error-msg">
-          <LocalizedMessage msg={msgToDispay} />
-      </div>
+    <div className="error-msg">
+      <LocalizedMessage msg={msgToDispay} />
+    </div>
   );
 };
 

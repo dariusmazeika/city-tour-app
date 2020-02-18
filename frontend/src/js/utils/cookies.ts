@@ -5,7 +5,7 @@ export function getCookie(cookieName: string) {
   return cookies.get(cookieName);
 }
 
-export function setCookie(cookieName:string, value: string|object) {
+export function setCookie(cookieName: string, value: string|object) {
   const cookies = new Cookies();
   return cookies.set(cookieName, value);
 }

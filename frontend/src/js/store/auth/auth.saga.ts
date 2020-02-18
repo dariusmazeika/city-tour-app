@@ -2,7 +2,6 @@ import { all, put, takeLatest } from 'redux-saga/effects';
 import { Action } from 'typescript-fsa';
 
 import { LocalStorage } from '@Config/constants';
-
 import { deleteFromLocalStorage, setToLocalStorage } from '@Utils/localStorage';
 import { callApiGet, callApiPost, handleFormSubmit } from '@Utils/sagas';
 
@@ -25,7 +24,7 @@ export function* getUserDataSaga(action: Action<{}>) {
   yield callApiGet('/api/current-user/', action, getUserData);
 }
 
-export function* logoutSaga(action) {
+export function* logoutSaga(action: any) {
   yield callApiPost('/api/logout/', action, logout);
   yield deleteFromLocalStorage(LocalStorage.userToken);
 

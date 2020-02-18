@@ -16,7 +16,7 @@ describe('Localization sagas', () => {
     };
 
     const it = reduxSagaTesting(changeLanguageSaga(changeLanguage(actionPayload)));
-    it('Should set cookie', (result) => {
+    it('Should set cookie', (result: any) => {
       expect(result).toEqual(setCookie(Cookies.defaultLang, actionPayload.lang));
     });
   });

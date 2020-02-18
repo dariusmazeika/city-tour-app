@@ -1,13 +1,11 @@
-import { LoadableItem, PayloadWithPromises } from '../../utils/types';
+import { LoadableItem, PayloadWithPromises } from '@Utils/types';
 
 export interface LoginFormData {
   email: string;
   password: string;
 }
-export interface LoginActionPayload extends PayloadWithPromises {
-  email: string;
-  password: string;
-}
+export interface LoginActionPayload extends LoginFormData, PayloadWithPromises {}
+
 
 export interface LoginActionSuccess {
   params: LoginActionPayload;
@@ -15,7 +13,7 @@ export interface LoginActionSuccess {
 }
 
 export type UserAuth = {
-  token: string,
+  token: string;
 };
 
 export interface UserData extends LoadableItem {

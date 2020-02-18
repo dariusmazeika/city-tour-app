@@ -11,9 +11,10 @@ export default {
   },
   devtool: 'source-map',
   entry: [
+    '@babel/polyfill',
     `webpack-dev-server/client?${SERVER_HOST}`,
     'webpack/hot/only-dev-server',
-    path.resolve(__dirname, '..', 'src/js/index.js')
+    path.resolve(__dirname, '..', 'src/js/index.tsx')
   ],
   target: 'web',
   mode: 'development',
@@ -30,9 +31,29 @@ export default {
   module: {
     rules: [
       {
-        test: /\.(t|j)sx?$/, use: { loader: 'awesome-typescript-loader' },
+        test: /\.tsx?$/,
         exclude: /node_modules/,
+        loader: [ {
+          options: {
+            cacheDirectory: true,
+            babelrc: false,
+            presets: [
+              [
+                '@babel/preset-env',
+                { targets: { browsers: 'last 2 versions ' } }
+              ],
+              '@babel/preset-typescript',
+              '@babel/preset-react'
+            ],
+            plugins: [
+              '@babel/plugin-proposal-optional-chaining',
+              [ '@babel/plugin-proposal-class-properties', { loose: true } ],
+            ]
+          }, loader: 'babel-loader'
+        }],
+
       },
+
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       {
         test: /\.eot(\?v=\d+.\d+.\d+)?$/,
