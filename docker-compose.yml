@@ -6,7 +6,7 @@ services:
         image: postgres
         environment:
             POSTGRES_USER: django
-            POSTRES_PASSWORD: django
+            POSTGRES_PASSWORD: django
         volumes:
             - data:/var/lib/postgresql/data
         ports:
