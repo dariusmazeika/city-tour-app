@@ -13,5 +13,6 @@ services:
             - "8082:8082"
         environment:
             DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_TEST}
+            DB_PASSWORD: django
         depends_on:
             - db
