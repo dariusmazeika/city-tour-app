@@ -13,6 +13,7 @@ services:
             - "8082:8082"
         environment:
             DJANGO_SETTINGS_MODULE: conf.settings_test
+            DB_PASSWORD: django
         depends_on:
             - db
     redis:
