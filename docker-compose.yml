@@ -3,10 +3,10 @@ volumes:
     data:
 services:
     db:
-        image: postgres:10.1
+        image: postgres:latest
         environment:
             POSTGRES_USER: django
-            POSTRES_PASSWORD: django
+            POSTGRES_PASSWORD: django
         volumes:
             - data:/var/lib/postgresql/data
         ports:
@@ -33,6 +33,7 @@ services:
             DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_DEV}
             DB_NAME: django
             DB_USER: django
+            DB_PASSWORD: django
             DB_HOST: db
             DB_PORT: 5432
         depends_on:

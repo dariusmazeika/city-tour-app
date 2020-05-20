@@ -4,7 +4,7 @@ services:
         image: postgres
         environment:
             POSTGRES_USER: django
-            POSTRES_PASSWORD: django
+            POSTGRES_PASSWORD: django
     django:
         build:
             context: ./backend
@@ -13,6 +13,7 @@ services:
             - "8082:8082"
         environment:
             DJANGO_SETTINGS_MODULE: conf.settings_test
+            DB_PASSWORD: django
         depends_on:
             - db
     redis:
