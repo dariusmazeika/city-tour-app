@@ -60,4 +60,4 @@ class MessageAdmin(admin.ModelAdmin):
         return format_html_join('\n', '<b>{}:</b> "{}"<br/>',
                                 ((t.language.code, t.text) for t in obj.translation_set.all()))
 
-    trans.short_description = 'Translations'
+    trans.short_description = 'Translations'  # type: ignore

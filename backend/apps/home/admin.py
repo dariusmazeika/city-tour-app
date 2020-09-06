@@ -16,8 +16,10 @@ class ConfigAdmin(SingletonModelAdmin):
     def regenerate_cache(*args):
         return format_html('<a class="button" href="/admin/regenerate_cache/">Regenerate cache</a>', *args)
 
-    regenerate_cache.short_description = 'Regenerate cache'
-    regenerate_cache.allow_tags = True
+    # can only ignore here, the issue is known and is still open to this day
+    # https://github.com/python/mypy/issues/2087
+    regenerate_cache.short_description = 'Regenerate cache'  # type: ignore
+    regenerate_cache.allow_tags = True  # type: ignore
 
 
 class TemplateTranslationInline(admin.TabularInline):

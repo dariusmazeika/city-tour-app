@@ -1,10 +1,13 @@
-FROM python:3.7.0
+FROM python:3.8
 
 ENV PYTHONUNBUFFERED 1
+RUN apt-get update
 RUN pip3 install --upgrade pip
-COPY requirements.txt tmp/
-RUN pip3 install -r tmp/requirements.txt
+RUN pip3 install --upgrade pipenv
 
+COPY Pipfile.lock Pipfile tmp/
+WORKDIR tmp/
+RUN pipenv install --dev --system --deploy
 RUN mkdir -p /app/static /tmp/logs/app
 
 VOLUME /app

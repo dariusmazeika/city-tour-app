@@ -1,6 +1,12 @@
 #System  backups
 backups/*.bak
 
+# mypy cache
+backend/.mypy_cache
+
+# statics
+backend/static
+
 # Logs
 logs
 *.log*

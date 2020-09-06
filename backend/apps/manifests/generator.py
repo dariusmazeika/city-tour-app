@@ -13,13 +13,13 @@ def generate_messages():
 
 
 def get_enabled_languages(config):
-    return list(
+    return [
         {
             'code': lang.pk,
             'flag': lang.flag.url if lang.flag else '',
             'name': lang.name
         } for lang in config.enabled_languages.all()
-    )
+    ]
 
 
 def get_page_translations(page, add_content=False):
