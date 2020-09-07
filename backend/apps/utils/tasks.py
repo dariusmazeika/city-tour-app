@@ -41,8 +41,7 @@ def _get_translation(template: str, language: str) -> Optional[EmailTemplateTran
     site_config_member = getattr(site_config, template)
 
     if callable(site_config_member):
-        template_getter_method = site_config_member
-        return template_getter_method(language)
+        return site_config_member(language)
 
     template = site_config_member
     if template:
