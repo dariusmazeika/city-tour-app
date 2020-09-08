@@ -46,7 +46,6 @@ def _get_translation(template: str, language: str) -> Optional[EmailTemplateTran
     template = site_config_member
     if template:
         return site_config.get_localized_email_template(template, language)
-    else:
-        error_msg = f'No notification template {template}'
-        LOGGER.error(error_msg)
-        raise Exception(error_msg)
+    error_msg = f'No notification template {template}'
+    LOGGER.error(error_msg)
+    raise Exception(error_msg)
