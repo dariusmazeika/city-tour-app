@@ -57,7 +57,7 @@ class MessageAdmin(admin.ModelAdmin):
 
     @staticmethod
     def trans(obj):
-        return format_html_join('\n', '<b>{}:</b> "{}"<br/>',
-                                ((t.language.code, t.text) for t in obj.translation_set.all()))
-
-    trans.short_description = 'Translations'  # type: ignore
+        trans = format_html_join('\n', '<b>{}:</b> "{}"<br/>',
+                                 ((t.language.code, t.text) for t in obj.translation_set.all()))
+        trans.short_description = 'Translations'
+        return trans
