@@ -2,7 +2,7 @@
 
 jobs = 4
 max-line-length = 120
-max-complexity = 12
+max-complexity = 10
 application-import-names = apps
 import-order-style = google
 include = apps/
