@@ -82,3 +82,6 @@ class EmailTemplateTranslation(models.Model):
 
     class Meta:
         unique_together = (('template', 'language'),)
+
+    def __str__(self):
+        return f'{self.subject} {self.language}'

@@ -4,9 +4,9 @@ This is a starter project for a django app with webpack built static that uses d
 Docker and docker-compose is all you need to develop, build & deploy, run development or production mode with a single command.
 
 ## stack
-python 3.7
+python 3.8
 Postgres latest
-Django  2.2
+Django 3.1
 Nginx 1.17
 Gunicorn
 
@@ -24,14 +24,16 @@ git remote add starter https://github.com/CornerCaseTechnologies/conercase-react
 git pull starter master
 ```
 
-PyLint configuration file is in .pylintrc and the seed itself is configured to pass current PyLint configuration test without warnings. You can whether configure your IDE with this conf file or run PyLint manually:
+Flake8 configuration file is in backend/.flake8 and the seed itself is configured to pass current Flake8 configuration test without warnings. You can whether configure your IDE with this conf file or run Flake8 manually:
 ```sh
-pylint --output-format=parseable --rcfile=.pylintrc --load-plugins pylint_django backend > pylint.log
+# from backend dir
+flake8
 ```
 
-PEP8 configuration is in tox.ini and the seed itself is configured to pass current PEP8 analysis without warnings:
+MyPy configuration is in backend/.mypy and the seed itself is configured to pass current mypy analysis without warnings:
 ```sh
-pycodestyle backend
+# from backend dir
+mypy apps
 ```
 
 Start dev server:
@@ -62,13 +64,10 @@ export EXTERNAL_DB=true
 ```
 
 
-#### enable ssl
-Copy your .key and .crt files to `nginx/ssl` and run `./bin/deploy.sh`.
-
 ## install dependencies
 ```sh
 # backend
-./bin/pipinstall.sh [pacakge] #will also add entry to backend/requirements.txt
+./bin/install_package.sh [package]
 ```
 
 ## backup & restore database
@@ -114,15 +113,12 @@ backend/conf/                 - django settings files
 backend/conf/settings.py      - default config
 backend/conf/settings_prod.py - production config
 backend/templates/            - django global templates
-backend/requirements.txt      - python dependencies
 backend/gunicorn.conf.py      - gunicorn conf for production
 backend/media/                - user uploads
 
 logs/                         - in prod mode app, gunicorn, nginx, postgres logs go here
 nginx/                        - nginx stuff for prod mode
-nginx/ssl/                    - put key & cert here if you use ssl
-nginx/nginx_nossl.conf        - nginx conf if no ssl is used
-nginx/nginx_ssl.conf          - nginx conf for deploy with ssl
+nginx/nginx.conf              - nginx conf
 ```
 
 ## tests

@@ -14,10 +14,10 @@ class ConfigAdmin(SingletonModelAdmin):
 
     @staticmethod
     def regenerate_cache(*args):
-        return format_html('<a class="button" href="/admin/regenerate_cache/">Regenerate cache</a>', *args)
-
-    regenerate_cache.short_description = 'Regenerate cache'
-    regenerate_cache.allow_tags = True
+        hyper = format_html('<a class="button" href="/admin/regenerate_cache/">Regenerate cache</a>', *args)
+        hyper.short_description = 'Regenerate cache'
+        hyper.allow_tags = True
+        return hyper
 
 
 class TemplateTranslationInline(admin.TabularInline):

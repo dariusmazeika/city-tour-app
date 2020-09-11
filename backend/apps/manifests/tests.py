@@ -1,5 +1,5 @@
-from django.urls import reverse
 from django.conf import settings
+from django.urls import reverse
 from rest_framework import status
 
 from apps.home.models import SiteConfiguration

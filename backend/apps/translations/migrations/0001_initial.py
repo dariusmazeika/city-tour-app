@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('code', models.CharField(max_length=10, primary_key=True, serialize=False, unique=True)),
                 ('name', models.CharField(max_length=200)),
-                ('flag', models.ImageField(blank=True, null=True, upload_to='languages')),
+                ('flag', models.ImageField(blank=True, default='', upload_to='languages')),
             ],
         ),
         migrations.CreateModel(

@@ -1,4 +1,3 @@
-# pylint: disable=invalid-name
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
@@ -8,7 +7,7 @@ from django.urls import path
 
 from apps.manifests.views import RegenerateManifest
 
-urlpatterns = list()
+urlpatterns = []
 
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
