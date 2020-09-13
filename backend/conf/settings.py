@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
 
+    'tabbed_admin',
+
     # local
     # https://docs.djangoproject.com/en/3.1/ref/applications/#django.apps.AppConfig.ready
     'apps.home.apps.HomeConfig',
@@ -233,3 +235,5 @@ CELERY_TIMEZONE = TIME_ZONE
 VERIFICATION_BASE_URL = '{}verify/{}'
 RESET_PASSWORD_BASE_URL = '{}reset-password/{}'
 PASSWORD_TOKEN_EXPIRATION_PERIOD = 12  # in hours
+
+TABBED_ADMIN_USE_JQUERY_UI = True

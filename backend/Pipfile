@@ -16,6 +16,7 @@ Django = "*"
 Pillow = "*"
 django-cors-headers = "*"
 dj-database-url = "*"
+django-tabbed-admin = {editable = true, git = "https://github.com/CornerCaseTechnologies/django-tabbed-admin.git"}
 
 [dev-packages]
 flake8 = "*"
@@ -38,4 +39,4 @@ coverage = "*"
 model-bakery = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8.3"
