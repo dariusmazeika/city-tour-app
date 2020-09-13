@@ -6,6 +6,7 @@ backend/.mypy_cache
 
 # statics
 backend/static
+backend/media
 
 # Logs
 logs
