@@ -42,7 +42,14 @@ Start dev server:
 ```
 Wait for docker to set up container, then open [http://localhost:8000](http://localhost:8000)
 
-After new python dependency add to requirements.txt on dev mode we need to run `docker-compose build` do build container.
+For starting the whole structure just without backend container:
+```sh
+./bin/develop_local.sh
+cd backend/
+source .env-local
+python manage.py runserver
+```
+This will start initially DB and redis container while letting you to start backend service locally in the host for easier debugging and development
 
 ### setup production server
 
