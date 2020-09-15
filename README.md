@@ -141,7 +141,7 @@ nginx/nginx.conf              - nginx conf
 
 ## tests locally (using Pycharm IDE)
 
-```
+```sh
 
 # setup dependiecies 
 
