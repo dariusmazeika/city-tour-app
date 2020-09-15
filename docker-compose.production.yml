@@ -12,7 +12,7 @@ services:
     django:
         build:
             context: ./backend
-            dockerfile: Dockerfile-production
+            dockerfile: production.Dockerfile
         environment:
             DJANGO_SETTINGS_MODULE: conf.settings_prod
             DB_NAME: django

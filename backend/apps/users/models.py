@@ -89,7 +89,9 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    objects = UserManager()
+    # Here we need to ignore mypy error https://github.com/typeddjango/django-stubs/issues/174#issuecomment-534210437
+    # but setting explicit type will help to avoid multiple ignores in the usages (User.objects...)
+    objects: 'models.QuerySet[User]' = UserManager()  # type: ignore
 
 
 class ActivationKey(BaseModel):

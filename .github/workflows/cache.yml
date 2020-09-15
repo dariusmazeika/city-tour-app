@@ -1,0 +1,42 @@
+name: Global cache
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Prepare-virtualenv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python v3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Create requirements
+        id: requirements
+        # https://stedolan.github.io/jq/, Takes Pipfile.lock and converts to requirements to reduce run times
+        run: |
+          cd backend
+          jq -r '.develop * .default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt
+          echo tblib >> requirements.txt
+          echo ::set-output name=requirements::$(md5sum requirements.txt | awk "{print $1;}")
+          echo ::set-output name=python-version::$(python --version)
+
+      - name: Cache virtualenv
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: ~/venv
+          key: ${{ runner.os }}-${{ steps.requirements.outputs.python-version }}-${{ steps.requirements.outputs.requirements }}
+
+        # Requirements are installed in virtualenv and venv directory is cached and shared in repo
+      - name: Install Dependencies
+        working-directory: ./backend
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pip install --upgrade pip wheel setuptools virtualenv
+          virtualenv ~/venv
+          ~/venv/bin/pip install --no-cache-dir -r requirements.txt

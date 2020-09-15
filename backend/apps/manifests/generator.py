@@ -1,5 +1,3 @@
-import json
-
 from django.conf import settings
 
 from apps.home.models import SiteConfiguration
@@ -15,13 +13,13 @@ def generate_messages():
 
 
 def get_enabled_languages(config):
-    return list(
+    return [
         {
             'code': lang.pk,
             'flag': lang.flag.url if lang.flag else '',
             'name': lang.name
         } for lang in config.enabled_languages.all()
-    )
+    ]
 
 
 def get_page_translations(page, add_content=False):
@@ -39,25 +37,14 @@ def get_page_translations(page, add_content=False):
     return translations
 
 
-def generate_const():
-    return {}
-
-
-def generate_manifest():
+def generate_config():
     site_config = SiteConfiguration.get_solo()
     site_default_lang = site_config.default_language
     config = {
+        'version': site_config.manifest_version,
         'enabled_languages': get_enabled_languages(site_config),
         'default_language': site_default_lang.code if site_default_lang else settings.DEFAULT_LANGUAGE,
+        'translations': generate_messages(),
     }
 
-    js_vars = """
-    window._app_messages = {};
-    window._app_constants = {};
-    window._app_conf = {}
-    """.format(
-        json.dumps(generate_messages()),
-        json.dumps(generate_const()),
-        json.dumps(config),
-    )
-    return js_vars
+    return config

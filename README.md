@@ -1,16 +1,12 @@
 # docker-django-webpack-starter
 
-This is a starter project for a django app with webpack built frontend that uses docker for dev enironment.  
+This is a starter project for a django app with webpack built static that uses docker for dev enironment.  
 Docker and docker-compose is all you need to develop, build & deploy, run development or production mode with a single command.
 
 ## stack
-python 3.7
-node 10.7
+python 3.8
 Postgres latest
-Django  2.2
-Typescript
-Webpack
-Sass
+Django 3.1
 Nginx 1.17
 Gunicorn
 
@@ -28,14 +24,16 @@ git remote add starter https://github.com/CornerCaseTechnologies/conercase-react
 git pull starter master
 ```
 
-PyLint configuration file is in .pylintrc and the seed itself is configured to pass current PyLint configuration test without warnings. You can whether configure your IDE with this conf file or run PyLint manually:
+Flake8 configuration file is in backend/.flake8 and the seed itself is configured to pass current Flake8 configuration test without warnings. You can whether configure your IDE with this conf file or run Flake8 manually:
 ```sh
-pylint --output-format=parseable --rcfile=.pylintrc --load-plugins pylint_django backend > pylint.log
+# from backend dir
+flake8
 ```
 
-PEP8 configuration is in tox.ini and the seed itself is configured to pass current PEP8 analysis without warnings:
+MyPy configuration is in backend/.mypy and the seed itself is configured to pass current mypy analysis without warnings:
 ```sh
-pycodestyle backend
+# from backend dir
+mypy apps
 ```
 
 Start dev server:
@@ -44,7 +42,14 @@ Start dev server:
 ```
 Wait for docker to set up container, then open [http://localhost:8000](http://localhost:8000)
 
-After new python dependency add to requirements.txt on dev mode we need to run `docker-compose build` do build container.
+For starting the whole structure just without backend container:
+```sh
+./bin/develop_local.sh
+cd backend/
+source .env-local
+python manage.py runserver
+```
+This will start initially DB and redis container while letting you to start backend service locally in the host for easier debugging and development
 
 ### setup production server
 
@@ -66,16 +71,10 @@ export EXTERNAL_DB=true
 ```
 
 
-#### enable ssl
-Copy your .key and .crt files to `nginx/ssl` and run `./bin/deploy.sh`.
-
 ## install dependencies
 ```sh
-# frontend
-./bin/npm.sh install [package] --save-dev
-
 # backend
-./bin/pipinstall.sh [pacakge] #will also add entry to backend/requirements.txt
+./bin/install_package.sh [package]
 ```
 
 ## backup & restore database
@@ -121,17 +120,13 @@ backend/conf/                 - django settings files
 backend/conf/settings.py      - default config
 backend/conf/settings_prod.py - production config
 backend/templates/            - django global templates
-backend/requirements.txt      - python dependencies
 backend/gunicorn.conf.py      - gunicorn conf for production
 backend/media/                - user uploads
 
 logs/                         - in prod mode app, gunicorn, nginx, postgres logs go here
 nginx/                        - nginx stuff for prod mode
-nginx/ssl/                    - put key & cert here if you use ssl
-nginx/nginx_nossl.conf        - nginx conf if no ssl is used
-nginx/nginx_ssl.conf          - nginx conf for deploy with ssl
+nginx/nginx.conf              - nginx conf
 ```
-Frontend folder structure described in `frontend/README.MD`
 
 ## tests
 
@@ -140,7 +135,7 @@ Frontend folder structure described in `frontend/README.MD`
 # run tests
 ./bin/test.sh
 
-# skip frontend build (eg, running tests repeatedly)
+# skip static build (eg, running tests repeatedly)
 ./bin/test.sh --skipbuild
 ```
 

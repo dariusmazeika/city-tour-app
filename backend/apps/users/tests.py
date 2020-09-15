@@ -5,7 +5,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
-from model_mommy import mommy
+from model_bakery.baker import make
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 
@@ -178,7 +178,7 @@ class AuthentificationTestCase(BaseTestCase):
         self.assertEqual(response.json()[0], 'msg_error_already_verified')
 
     def test_change_language(self):
-        lang = mommy.make(Language)
+        lang = make(Language)
         response = self.authorize().post(reverse('change-language'), data={'language': lang.code})
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.user.refresh_from_db()

@@ -1,0 +1,21 @@
+[flake8]
+
+jobs = 4
+max-line-length = 120
+max-complexity = 10
+application-import-names = apps
+import-order-style = google
+include = apps/
+ignore = I101 DJ09 DJ05
+exclude =
+    .git,
+    .idea,
+    .pytest_cache,
+    docker,
+    docs,
+    *.egg-info,
+    migrations
+    conf/
+per-file-ignores =
+    apps/utils/models.py:DJ08
+    apps/users/authentication.py:I100

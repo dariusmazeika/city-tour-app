@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from ckeditor.fields import RichTextField
 from django.conf import settings
@@ -50,6 +51,10 @@ class SiteConfiguration(SingletonModel):
             return template
         return None
 
+    def save(self, *args, **kwargs):
+        self.manifest_version = uuid.uuid4().hex
+        return super(SiteConfiguration, self).save(*args, **kwargs)
+
 
 class EmailTemplate(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -77,3 +82,6 @@ class EmailTemplateTranslation(models.Model):
 
     class Meta:
         unique_together = (('template', 'language'),)
+
+    def __str__(self):
+        return f'{self.subject} {self.language}'

@@ -1,6 +1,13 @@
 #System  backups
 backups/*.bak
 
+# mypy cache
+backend/.mypy_cache
+
+# statics
+backend/static
+backend/media
+
 # Logs
 logs
 *.log*
@@ -29,8 +36,8 @@ build/Release
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
 
-#Frontend dist folder
-frontend/dist/*
+#Static dist folder
+static/dist/*
 
 # IDEA/Webstorm project files
 .idea

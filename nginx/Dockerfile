@@ -1,9 +1,5 @@
-FROM nginx:1.17.3
+FROM nginx:1.19
 
-ADD ./nginx/ssl /etc/nginx/ssl
 
-ADD ./nginx/nginx_nossl.conf /etc/nginx/
-ADD ./nginx/nginx_ssl.conf /etc/nginx/
-ADD ./frontend/dist /static
-ADD ./nginx/setupconf.sh .
-RUN ./setupconf.sh
+ADD ./nginx/nginx.conf /etc/nginx/
+ADD ./static /static
