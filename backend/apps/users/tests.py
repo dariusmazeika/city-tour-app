@@ -7,27 +7,50 @@ from django.urls import reverse
 from django.utils import timezone
 from model_bakery.baker import make
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 
 from apps.translations.models import Language
-from apps.users.models import PasswordKey, ActivationKey
+from apps.users.models import ActivationKey, PasswordKey, User
 from apps.utils.tests_utils import BaseTestCase
 
 
-class AuthentificationTestCase(BaseTestCase):
+class AuthenticationTestCase(BaseTestCase):
 
     def test_login_valid(self):
-        response = self.client.post(
-            reverse('login'),
-            self.credentials,
-            format='json')
+        response = self.client.post(reverse('login'), self.credentials, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data['token'])
+        self.assertTrue(response.data['expiry'])
+        self.assertTrue(response.data['refresh'])
+        self.assertTrue(response.data['refresh_expiry'])
 
-    def test_logout(self):
-        response = self.authorize().post(reverse('logout'))
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Token.objects.filter(user=self.user))
+    def test_login_invalid(self):
+        credentials = {'email': 'test@test.lt', 'password': "password"}
+        response = self.client.post(reverse('login'), credentials, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['non_field_errors'][0], 'msg_error_bad_credentials')
+
+    def test_token_refresh(self):
+        response = self.client.post(reverse('login'), self.credentials, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        refresh = response.data["refresh"]
+        response = self.post(reverse('token-refresh'), {'refresh': refresh})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['access'])
+
+    def test_token_verify(self):
+        response = self.client.post(reverse('login'), self.credentials, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        token = response.data["token"]
+        response = self.post(reverse('token-verify'), {"token": token})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_delete_with_active_token(self):
+        response = self.client.post(reverse('login'), self.credentials, format='json')
+        User.objects.all().delete()
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {response.data["token"]}')
+        response = self.client.get(reverse('current-user'))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.data['detail'], 'msg_user_does_not_exist')
 
     def test_invalid_password(self):
         response = self.client.post(
@@ -120,7 +143,6 @@ class AuthentificationTestCase(BaseTestCase):
         self.user.refresh_from_db()
         self.assertNotEqual(previous_psw, self.user.password)
         self.assertFalse(self.user.password_keys.count())
-        self.assertFalse(Token.objects.filter(user=self.user).count())
 
     @patch.object(PasswordKey, 'send_password_key')
     def test_expired_password_key(self, mock):
@@ -199,7 +221,6 @@ class AuthentificationTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.user.refresh_from_db()
         self.assertNotEqual(previous_psw, self.user.password)
-        self.assertFalse(Token.objects.filter(user=self.user).count())
         self.assertFalse(self.user.password_keys.all().count())
 
     def test_change_password_not_equal(self):

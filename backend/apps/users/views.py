@@ -2,15 +2,14 @@ from django.contrib.auth.signals import user_logged_in
 from django.shortcuts import get_object_or_404
 from django.utils.translation import activate
 from rest_framework import permissions, status
-from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.users.models import ActivationKey, PasswordKey
-from apps.users.serializers import LoginSerializer, ChangePasswordSerializer, ForgottenPasswordSerializer, \
-    VerificationEmailResendSerializer, BasePasswordSerializer, UserSerializer, ChangeLanguageSerializer
+from apps.users.serializers import BasePasswordSerializer, ChangeLanguageSerializer, ChangePasswordSerializer, \
+    ForgottenPasswordSerializer, LoginSerializer, UserSerializer, VerificationEmailResendSerializer
 
 
 class LoginView(APIView):
@@ -21,22 +20,12 @@ class LoginView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token, _ = Token.objects.get_or_create(user=user)
-        response = {'token': token.key}
         user_logged_in.send(sender=self.__class__, request=request, user=user)
-        return Response(response)
-
-
-class LogoutView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.validated_data["token"])
 
 
 class GetUserView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         return Response(UserSerializer(instance=request.user).data)
@@ -69,14 +58,12 @@ class ChangeLanguageView(APIView):
 
 class ChangePasswordView(APIView):
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = ChangePasswordSerializer(data=request.data, context={'email': request.user.email})
         serializer.is_valid(raise_exception=True)
         request.user.set_password(serializer.validated_data['password'])
         request.user.save()
-
-        # On success - deleting all session keys
-        Token.objects.filter(user=request.user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -118,5 +105,4 @@ class ResetPasswordView(APIView):
 
         # On success - deleting all the remaining password keys and authentication keys
         password_key.user.password_keys.all().delete()
-        Token.objects.filter(user=password_key.user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -17,6 +17,7 @@ Pillow = "*"
 django-cors-headers = "*"
 dj-database-url = "*"
 django-tabbed-admin = {editable = true, git = "https://github.com/CornerCaseTechnologies/django-tabbed-admin.git"}
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 flake8 = "*"
