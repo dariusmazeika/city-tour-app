@@ -32,5 +32,5 @@ urlpatterns = [
     path('resend-verification/', ResendVerificationView.as_view(), name='resend-verification'),
     path('', include(router.urls)),
     # In case nothing matches in /api/ urls - return 404 error
-    re_path('^.*?', page_not_found, {'exception': Exception('msg_error_page_not_found')})
+    re_path('^.*?', page_not_found, {'exception': Exception('error_api_page_not_found')})
 ]

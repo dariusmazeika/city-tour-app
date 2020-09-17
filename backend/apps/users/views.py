@@ -40,7 +40,7 @@ class VerifyUserView(APIView):
         activation_key_model = get_object_or_404(ActivationKey, activation_key=str(activation_key))
         activated = activation_key_model.activate()
         if not activated:
-            raise ValidationError('msg_error_already_verified')
+            raise ValidationError('error_verify_already_verified')
         activation_key_model.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -95,7 +95,7 @@ class ResetPasswordView(APIView):
         password_key = get_object_or_404(PasswordKey, password_key=str(password_key))
         if not password_key.validate_expiration():
             password_key.delete()
-            return Response({'detail': 'msg_error_password_key_expired'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'error_reset_password_key_expired'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = BasePasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
