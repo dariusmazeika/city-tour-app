@@ -16,13 +16,13 @@ class LoginSerializer(serializers.Serializer):
 
         user = authenticate(email=email, password=password)
         if not user:
-            raise serializers.ValidationError('msg_error_bad_credentials', code='authorization')
+            raise serializers.ValidationError('error_login_bad_credentials', code='authorization')
 
         if not user.is_active:
-            raise serializers.ValidationError('msg_error_account_disabled', code='authorization')
+            raise serializers.ValidationError('error_login_account_disabled', code='authorization')
 
         if not user.is_verified:
-            raise serializers.ValidationError('msg_error_user_email_not_verified', code='authorization')
+            raise serializers.ValidationError('error_login_user_email_not_verified', code='authorization')
         token = JWTRefreshToken.for_user(user)
 
         attrs['token'] = {
@@ -50,7 +50,7 @@ class ChangeLanguageSerializer(serializers.Serializer):
     @staticmethod
     def validate_language(attrs):
         if not Language.objects.filter(code=attrs).exists():
-            raise serializers.ValidationError('msg_error_no_such_language')
+            raise serializers.ValidationError('error_no_such_language')
         return attrs
 
 
@@ -63,7 +63,7 @@ class BasePasswordSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         if attrs.get('password') != attrs.get('confirm_password'):
-            raise serializers.ValidationError('msg_error_passwords_not_equal')
+            raise serializers.ValidationError('error_passwords_not_equal')
         return attrs
 
 
@@ -75,7 +75,7 @@ class ChangePasswordSerializer(BasePasswordSerializer):
 
     def validate_old_password(self, attr):
         if not authenticate(email=self._context.get('email'), password=attr):
-            raise serializers.ValidationError('msg_error_password_is_incorrect')
+            raise serializers.ValidationError('error_password_is_incorrect')
         return attr
 
 

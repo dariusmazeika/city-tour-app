@@ -18,7 +18,7 @@ class TokenUser:
             if not self.user:
                 self.user = User.objects.filter(id=self.id).first()
                 if not self.user:
-                    raise InvalidToken('msg_user_does_not_exist')
+                    raise InvalidToken('user_does_not_exist')
             return getattr(self.user, name)
         return super().__getattribute__(name)
 
@@ -56,7 +56,7 @@ class TokenUser:
 class JWTTokenUserAuthentication(JWTAuthentication):
     def get_user(self, validated_token):
         if api_settings.USER_ID_CLAIM not in validated_token:
-            raise InvalidToken('msg_user_id_is_not_in_token')
+            raise InvalidToken('error_user_id_is_not_in_token')
         return TokenUser(validated_token)
 
 

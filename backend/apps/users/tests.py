@@ -27,7 +27,7 @@ class AuthenticationTestCase(BaseTestCase):
         credentials = {'email': 'test@test.lt', 'password': "password"}
         response = self.client.post(reverse('login'), credentials, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['non_field_errors'][0], 'msg_error_bad_credentials')
+        self.assertEqual(response.data['non_field_errors'][0], 'error_login_bad_credentials')
 
     def test_token_refresh(self):
         response = self.client.post(reverse('login'), self.credentials, format='json')
@@ -50,7 +50,7 @@ class AuthenticationTestCase(BaseTestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {response.data["token"]}')
         response = self.client.get(reverse('current-user'))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data['detail'], 'msg_user_does_not_exist')
+        self.assertEqual(response.data['detail'], 'user_does_not_exist')
 
     def test_invalid_password(self):
         response = self.client.post(
@@ -63,7 +63,7 @@ class AuthenticationTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue('non_field_errors' in response.data)
         self.assertTrue(
-            'msg_error_bad_credentials' in response.data['non_field_errors'])
+            'error_login_bad_credentials' in response.data['non_field_errors'])
 
     def test_invalid_email(self):
         response = self.client.post(
@@ -76,7 +76,7 @@ class AuthenticationTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue('non_field_errors' in response.data)
         self.assertTrue(
-            'msg_error_bad_credentials' in response.data['non_field_errors'])
+            'error_login_bad_credentials' in response.data['non_field_errors'])
 
     def test_missing_email(self):
         response = self.client.post(
@@ -197,7 +197,7 @@ class AuthenticationTestCase(BaseTestCase):
         self.assertTrue(self.user.is_verified)
         response = self.client.put(reverse('verify', args=[verification_key]))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()[0], 'msg_error_already_verified')
+        self.assertEqual(response.json()[0], 'error_verify_already_verified')
 
     def test_change_language(self):
         lang = make(Language)
@@ -209,7 +209,7 @@ class AuthenticationTestCase(BaseTestCase):
     def test_change_to_invalid_language(self):
         response = self.authorize().post(reverse('change-language'), data={'language': 'abc'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()['language'][0], 'msg_error_no_such_language')
+        self.assertEqual(response.json()['language'][0], 'error_no_such_language')
 
     def test_change_password(self):
         uuid = str(uuid4())
@@ -236,4 +236,4 @@ class AuthenticationTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.user.refresh_from_db()
         self.assertEqual(previous_psw, self.user.password)
-        self.assertEqual(response.json()['non_field_errors'][0], 'msg_error_passwords_not_equal')
+        self.assertEqual(response.json()['non_field_errors'][0], 'error_passwords_not_equal')

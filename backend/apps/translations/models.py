@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -20,6 +21,14 @@ class Message(models.Model):
 
     def __str__(self):
         return self.message_id
+
+    def clean(self):
+        if not self.message_id.startswith('msg_'):
+            raise ValidationError('Translation key must start with `msg_` prefix')
+
+    def save(self, *args, **kwargs):
+        self.message_id = self.message_id.lower()
+        return super().save(*args, **kwargs)
 
 
 class TranslationManager(models.Manager):
