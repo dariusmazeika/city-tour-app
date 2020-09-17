@@ -2,7 +2,8 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 
 from apps.translations.models import Language
-from apps.users.models import User, PasswordKey
+from apps.users.models import PasswordKey, User
+from apps.utils.authentication import JWTRefreshToken
 
 
 class LoginSerializer(serializers.Serializer):
@@ -22,7 +23,14 @@ class LoginSerializer(serializers.Serializer):
 
         if not user.is_verified:
             raise serializers.ValidationError('msg_error_user_email_not_verified', code='authorization')
+        token = JWTRefreshToken.for_user(user)
 
+        attrs['token'] = {
+            'token': str(token.access_token),
+            'expiry': token.access_token.lifetime,
+            'refresh': str(token),
+            'refresh_expiry': token.lifetime,
+        }
         attrs['user'] = user
         return attrs
 
@@ -37,7 +45,7 @@ class ChangeLanguageSerializer(serializers.Serializer):
     language = serializers.CharField(max_length=10, required=True)
 
     class Meta:
-        fields = ('language', )
+        fields = ('language',)
 
     @staticmethod
     def validate_language(attrs):

@@ -18,4 +18,5 @@ exclude =
     conf/
 per-file-ignores =
     apps/utils/models.py:DJ08
-    apps/users/authentication.py:I100
+    apps/utils/authentication.py:A003
+    apps/utils/tests_utils.py:A002, VNE003
