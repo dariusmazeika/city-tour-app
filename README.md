@@ -20,8 +20,10 @@ https://docs.docker.com/compose/
 Pull seed to your project:
 ```sh
 git init
-git remote add starter https://github.com/CornerCaseTechnologies/conercase-react-django-starter
+git remote add starter https://github.com/CornerCaseTechnologies/conercase-django-starter
 git pull starter master
+# Remove git history of a seed before starting a new project
+rm -rf .git  
 ```
 
 Flake8 configuration file is in backend/.flake8 and the seed itself is configured to pass current Flake8 configuration test without warnings. You can whether configure your IDE with this conf file or run Flake8 manually:
