@@ -40,4 +40,4 @@ coverage = "*"
 model-bakery = "*"
 
 [requires]
-python_version = "3.8.3"
+python_version = "3.8"
