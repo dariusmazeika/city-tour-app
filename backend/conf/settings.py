@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'apps.api.apps.ApiConfig',
     'apps.translations.apps.TranslationsConfig',
     'apps.users.apps.UsersConfig',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
