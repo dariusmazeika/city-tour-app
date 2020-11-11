@@ -1,8 +1,11 @@
+# noinspection PyUnresolvedReferences
 from .settings import *
 
 ALLOWED_HOSTS = ['*']
 
 DEBUG = False
+
+SECRET_KEY = os.getenv('SECRET_KEY')  # TODO generate new secret key for the new project and pass from env.
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
