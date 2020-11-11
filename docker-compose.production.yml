@@ -14,6 +14,8 @@ services:
             context: ./backend
             dockerfile: production.Dockerfile
         environment:
+            ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+            SECRET_KEY: ${SECRET_KEY}
             DJANGO_SETTINGS_MODULE: conf.settings_prod
             DB_NAME: django
             DB_USER: django

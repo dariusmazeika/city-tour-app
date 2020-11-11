@@ -10,11 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-import os
 from datetime import timedelta
+import os
 
-import dj_database_url
 from corsheaders.defaults import default_headers
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', '^h85uo#*&q+5r=a1_l8i_&t$^$(sgsz-3*ijq8%22ayrbapxyk')
+SECRET_KEY = 'override_me_in_prod'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'apps.api.apps.ApiConfig',
     'apps.translations.apps.TranslationsConfig',
     'apps.users.apps.UsersConfig',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +76,6 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-
 
 CORS_ALLOW_HEADERS = list(default_headers)
 
