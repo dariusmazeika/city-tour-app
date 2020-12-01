@@ -28,7 +28,7 @@ include:
     DB_USER: postgres
     POSTGRES_PASSWORD: django
     POSTGRES_DB: django
-    DB_PORT: 5342
+    DB_PORT: 5432
   script:
     - python3 -m pytest apps --cov --cov-report=term --cov-report=xml:cov.xml --junitxml=pytest.xml || export FAIL=true
     - cat cov.xml | sed 's/apps/backend\/apps/g' > coverage.xml
