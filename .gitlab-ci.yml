@@ -187,6 +187,7 @@ Test fixtures:
     DB_USER: postgres
     POSTGRES_PASSWORD: django
     POSTGRES_DB: django
+    DB_PORT: 5432
   before_script:
     - cd backend
   script:

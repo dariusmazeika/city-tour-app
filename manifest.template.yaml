@@ -127,6 +127,8 @@ spec:
               value: psql
             - name: DB_HOST
               value: postgresql
+            - name: DB_PORT
+              value: 5432
             - name: APP_HOST
               value: ${CI_ENVIRONMENT_URL}
           ports:
