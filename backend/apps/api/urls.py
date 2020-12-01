@@ -6,9 +6,7 @@ from django.conf.urls import include
 from django.urls import path, re_path
 from django.views.defaults import page_not_found
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenRefreshView, TokenVerifyView,
-)
+from rest_framework_simplejwt.views import TokenVerifyView
 from watchman.views import bare_status
 
 from apps.api.views import BuildVersionView
