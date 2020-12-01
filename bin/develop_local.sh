@@ -3,4 +3,4 @@
 
 source bin/env.sh
 ./bin/init_db.sh
-dcdev up --scale django=0
+dcdev up -d --scale django=0
