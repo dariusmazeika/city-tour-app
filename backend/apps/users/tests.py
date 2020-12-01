@@ -16,12 +16,10 @@ from apps.utils.tests_utils import BaseTestCase
 class AuthenticationTestCase(BaseTestCase):
 
     def test_login_valid(self):
-        response = self.client.post(reverse('login'), self.credentials, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['token'])
-        self.assertTrue(response.data['expiry'])
-        self.assertTrue(response.data['refresh'])
-        self.assertTrue(response.data['refresh_expiry'])
+        response = self.client.post(reverse("login"), self.credentials, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(response.data["token"])
+        self.assertTrue(response.data["refresh"])
 
     def test_login_invalid(self):
         credentials = {'email': 'test@test.lt', 'password': "password"}
@@ -31,15 +29,26 @@ class AuthenticationTestCase(BaseTestCase):
 
     def test_token_refresh(self):
         response = self.client.post(reverse('login'), self.credentials, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         refresh = response.data["refresh"]
         response = self.post(reverse('token-refresh'), {'refresh': refresh})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data['access'])
+        self.assertTrue(response.data['refresh'])
+
+    def test_token_refresh_after_password_change(self):
+        response = self.client.post(reverse('login'), self.credentials, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        refresh = response.data["refresh"]
+        self.user.password_last_change = timezone.now() + datetime.timedelta(minutes=1)
+        self.user.save()
+        response = self.post(reverse('token-refresh'), {'refresh': refresh})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()[0], 'error_user_password_changed')
 
     def test_token_verify(self):
         response = self.client.post(reverse('login'), self.credentials, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         token = response.data["token"]
         response = self.post(reverse('token-verify'), {"token": token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -48,70 +57,42 @@ class AuthenticationTestCase(BaseTestCase):
         response = self.client.post(reverse('login'), self.credentials, format='json')
         User.objects.all().delete()
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {response.data["token"]}')
-        response = self.client.get(reverse('current-user'))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data['detail'], 'user_does_not_exist')
+        response = self.client.post(reverse('token-refresh'), {'refresh': response.data["refresh"]})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()[0], 'error_user_does_not_exist')
 
     def test_invalid_password(self):
-        response = self.client.post(
-            reverse('login'),
-            {
-                'email': self.user.email,
-                'password': 'invalid'
-            },
-            format='json')
+        response = self.client.post(reverse("login"), {"email": self.user.email, "password": "invalid"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue('non_field_errors' in response.data)
-        self.assertTrue(
-            'error_login_bad_credentials' in response.data['non_field_errors'])
+        self.assertEqual(response.data["non_field_errors"][0], "error_login_bad_credentials")
 
     def test_invalid_email(self):
         response = self.client.post(
-            reverse('login'),
-            {
-                'email': 'invalid@email.com',
-                'password': self.user.password
-            },
-            format='json')
+            reverse("login"), {"email": "invalid@email", "password": self.user.password}, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue('non_field_errors' in response.data)
-        self.assertTrue(
-            'error_login_bad_credentials' in response.data['non_field_errors'])
+        self.assertEqual(response.data["email"][0], "error_invalid_email")
 
     def test_missing_email(self):
-        response = self.client.post(
-            reverse('login'),
-            {
-                'password': self.user.password
-            },
-            format='json')
+        response = self.client.post(reverse("login"), {"password": self.user.password}, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()['email']
-                         [0], 'This field is required.')
+        self.assertEqual(response.json()["email"][0], "error_field_is_required")
 
     def test_missing_password(self):
-        response = self.client.post(
-            reverse('login'),
-            {
-                'email': self.user.email
-            },
-            format='json')
+        response = self.client.post(reverse("login"), {"email": self.user.email}, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.json()['password'][0], 'This field is required.')
+        self.assertEqual(response.json()["password"][0], "error_field_is_required")
 
     def test_get_current_user(self):
         response = self.authorize().get(reverse('current-user'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         for field in ['first_name', 'last_name', 'email']:
-            self.assertEqual(response.data.get(field),
-                             getattr(self.user, field))
+            self.assertEqual(response.data.get(field), getattr(self.user, field))
 
     def test_get_user_not_authorized(self):
         response = self.client.get(reverse('current-user'))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(
-            response.json()['detail'], 'Authentication credentials were not provided.')
+        self.assertEqual(response.json()['detail'], 'Authentication credentials were not provided.')
 
     @patch.object(PasswordKey, 'send_password_key')
     def test_forgot_password(self, mock):
@@ -214,14 +195,16 @@ class AuthenticationTestCase(BaseTestCase):
     def test_change_password(self):
         uuid = str(uuid4())
         previous_psw = self.user.password
+        self.assertIsNone(self.user.password_last_change)
         response = self.authorize().post(
             reverse('change-password'),
             data={'old_password': self.credentials['password'], 'password': uuid, 'confirm_password': uuid}
         )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.user.refresh_from_db()
         self.assertNotEqual(previous_psw, self.user.password)
         self.assertFalse(self.user.password_keys.all().count())
+        self.assertIsNotNone(self.user.password_last_change)
 
     def test_change_password_not_equal(self):
         previous_psw = self.user.password

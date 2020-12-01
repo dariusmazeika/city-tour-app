@@ -1,27 +1,23 @@
-from django.contrib.auth.signals import user_logged_in
+from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.utils.dateformat import format
 from django.utils.translation import activate
-from rest_framework import permissions, status
+from jwt import decode
+from rest_framework import generics, permissions, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenRefreshView
 
-from apps.users.models import ActivationKey, PasswordKey
+from apps.users.models import ActivationKey, PasswordKey, User
 from apps.users.serializers import BasePasswordSerializer, ChangeLanguageSerializer, ChangePasswordSerializer, \
     ForgottenPasswordSerializer, LoginSerializer, UserSerializer, VerificationEmailResendSerializer
 
 
-class LoginView(APIView):
+class LoginView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = LoginSerializer
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        user_logged_in.send(sender=self.__class__, request=request, user=user)
-        return Response(serializer.validated_data["token"])
 
 
 class GetUserView(APIView):
@@ -56,15 +52,8 @@ class ChangeLanguageView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ChangePasswordView(APIView):
-
-    @staticmethod
-    def post(request):
-        serializer = ChangePasswordSerializer(data=request.data, context={'email': request.user.email})
-        serializer.is_valid(raise_exception=True)
-        request.user.set_password(serializer.validated_data['password'])
-        request.user.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class ChangePasswordView(generics.CreateAPIView):
+    serializer_class = ChangePasswordSerializer
 
 
 class ForgottenPasswordView(APIView):
@@ -106,3 +95,31 @@ class ResetPasswordView(APIView):
         # On success - deleting all the remaining password keys and authentication keys
         password_key.user.password_keys.all().delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TokenRefreshViewWithActiveChecks(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        access_token = response.data.get('access')
+        if access_token:
+            self._validate_user_state(access_token, request.data['refresh'])
+        return response
+
+    @staticmethod
+    def _validate_user_state(access_token: str, refresh_token: str) -> None:
+        payload = decode(access_token, verify=False)
+        user_id = payload.get('user_id')
+        user = User.objects.filter(id=user_id).first() if user_id else None
+
+        if not user:
+            raise ValidationError('error_user_does_not_exist')
+        if user.password_last_change:
+            # Tokens which have expiration date sooner than password_last_changed + 1 day should be invalidated
+            no_sooner_than = int(format(user.password_last_change + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'], 'U'))
+            payload_refresh = decode(refresh_token, verify=False)
+            issued_before_change = payload_refresh['exp'] < no_sooner_than
+            # Checking whether given token was issued before password was changed
+            if issued_before_change:
+                raise ValidationError('error_user_password_changed')
+        if not user.is_active:
+            raise ValidationError('error_user_is_not_active')

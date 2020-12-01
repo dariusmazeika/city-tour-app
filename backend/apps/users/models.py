@@ -62,6 +62,8 @@ class User(AbstractUser):
         on_delete=models.CASCADE,
     )
 
+    password_last_change = models.DateTimeField(null=True, blank=True)
+
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         super(User, self).save(*args, **kwargs)
