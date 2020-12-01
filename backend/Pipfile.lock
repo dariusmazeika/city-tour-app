@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e53aee47f75aeaeae7bb803890b6c83193bf1abb4616c38e7f3dd6c12cffd815"
+            "sha256": "1bc026402da1b243afb2029c73f66efd45532678c525eea8491218d6cec3bbeb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -164,6 +164,14 @@
             "editable": true,
             "git": "https://github.com/CornerCaseTechnologies/django-tabbed-admin.git",
             "ref": "49a663d4772bdfdbc3d5ba25d5cee4e0466fa6e7"
+        },
+        "django-watchman": {
+            "hashes": [
+                "sha256:6c0b8889456ed644fcfe2f7c3294cb4ef8568a85772b7f95842e2d8c9b4bbff5",
+                "sha256:c38830c58984b8eb29db30a3e332968d1c7e235dee3f5c0a907d8d79a37a3125"
+            ],
+            "index": "pypi",
+            "version": "==1.2.0"
         },
         "djangorestframework": {
             "hashes": [

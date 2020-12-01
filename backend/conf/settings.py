@@ -30,6 +30,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+BUILD_VERSION = os.getenv("BUILD_VERSION", "")
+
+# Semantic versioning + build version
+VERSION = f"0.0.0_{BUILD_VERSION}"
+
 AUTH_USER_MODEL = 'users.User'
 
 # Returns user even if it's not active, lets do handle it manually
@@ -49,7 +54,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'solo',
-
+    "watchman",
     'ckeditor',
     'ckeditor_uploader',
 
@@ -161,11 +166,11 @@ MANIFEST_JS_MAX_AGE = 0
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.getenv('STATIC_ROOT', os.path.join(BASE_DIR, '/static/'))
+STATIC_ROOT = os.getenv('STATIC_ROOT', os.path.join(BASE_DIR, 'static/'))
 
 # user uploads
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, '/media/'))
+MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, 'media/'))
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'apps.utils.pagination.CustomPagination',
