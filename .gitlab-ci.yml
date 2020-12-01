@@ -1,9 +1,5 @@
 variables:
-  SAST_DISABLED: "true"
   VERSION_URL: "api/api/build-version/"
-
-include:
-  - template: Security/SAST.gitlab-ci.yml
 
 .docker:
   image: docker:latest
@@ -74,9 +70,6 @@ stages:
   - Quality assurance
   - Deploy Development
   - Deploy Production
-
-sast:
-  stage: Testing
 
 Build base app:
   stage: Requirements check
@@ -212,16 +205,6 @@ Test build:
     - when: never
   dependencies:
     - Build image
-
-Bandit SAST:
-  stage: Testing
-  extends: bandit-sast
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: on_success
-    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies")
-      when: on_success
-    - when: never
 
 Build review app image:
   stage: Build review app
