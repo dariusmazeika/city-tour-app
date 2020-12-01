@@ -1,6 +1,6 @@
 # docker-django-webpack-starter
 
-This is a starter project for a django app with webpack built static that uses docker for dev enironment.  
+This is a starter project for a django app that uses docker for the environment.  
 Docker and docker-compose is all you need to develop, build & deploy, run development or production mode with a single command.
 
 ## stack
@@ -26,16 +26,10 @@ git pull starter master
 rm -rf .git  
 ```
 
-Flake8 configuration file is in backend/.flake8 and the seed itself is configured to pass current Flake8 configuration test without warnings. You can whether configure your IDE with this conf file or run Flake8 manually:
-```sh
-# from backend dir
-flake8
-```
-
-MyPy configuration is in backend/.mypy and the seed itself is configured to pass current mypy analysis without warnings:
-```sh
-# from backend dir
-mypy apps
+This project is Flakehell (flake8) and MyPy compatible and all checks can be launched via:
+```shell script
+cd backend
+./bin/check.sh
 ```
 
 Start dev server:
@@ -121,7 +115,8 @@ backend/apps/                 - django apps
 backend/conf/                 - django settings files
 backend/conf/settings.py      - default config
 backend/conf/settings_prod.py - production config
-backend/templates/            - django global templates
+backend/conf/settings_aws.py  - production config for AWS env
+backend/conf/settings_qa.py   - config for review app env
 backend/gunicorn.conf.py      - gunicorn conf for production
 backend/media/                - user uploads
 
@@ -136,9 +131,6 @@ nginx/nginx.conf              - nginx conf
 
 # run tests
 ./bin/test.sh
-
-# skip static build (eg, running tests repeatedly)
-./bin/test.sh --skipbuild
 ```
 
 ## tests locally (using Pycharm IDE)
