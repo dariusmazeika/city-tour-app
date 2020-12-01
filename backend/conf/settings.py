@@ -84,7 +84,7 @@ ROOT_URLCONF = 'urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/app/templates/'],
+        'DIRS': [os.path.join(BASE_DIR, "apps/home/templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,9 +111,9 @@ else:
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': os.getenv('DB_NAME', 'django'),
             'USER': os.getenv('DB_USER', 'django'),
-            'HOST': os.getenv('DB_HOST', 'db'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
             'PASSWORD': os.getenv('DB_PASSWORD', 'django'),
-            'PORT': os.getenv('DB_PORT', 5432),
+            'PORT': os.getenv('DB_PORT', 9432),
             'CONN_MAX_AGE': os.getenv('CONN_MAX_AGE', 600),
         }
     }

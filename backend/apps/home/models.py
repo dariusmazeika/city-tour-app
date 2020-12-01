@@ -77,11 +77,11 @@ class EmailTemplateTranslation(models.Model):
         on_delete=models.CASCADE,
     )
 
-    def clean(self):
-        check_template(self.content)
-
     class Meta:
         unique_together = (('template', 'language'),)
 
     def __str__(self):
         return f'{self.subject} {self.language}'
+
+    def clean(self):
+        check_template(self.content)

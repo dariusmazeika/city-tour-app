@@ -24,7 +24,7 @@ def send_email_task(email: str, template: str, category: str = None, context: di
                                                        subject=translation.subject)
         send_email(email=email, subject=translation.subject, html_message=html_message, category=category)
     except Exception as e:
-        LOGGER.error('Error during sending %s: %s ', translation, e)
+        LOGGER.error('Error during sending %s: %s ', translation, e)  # noqa: G200
 
 
 def _get_translation(template: str, language: str) -> Optional[EmailTemplateTranslation]:

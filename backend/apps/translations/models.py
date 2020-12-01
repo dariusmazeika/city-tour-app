@@ -22,13 +22,13 @@ class Message(models.Model):
     def __str__(self):
         return self.message_id
 
-    def clean(self):
-        if not self.message_id.startswith('msg_'):
-            raise ValidationError('Translation key must start with `msg_` prefix')
-
     def save(self, *args, **kwargs):
         self.message_id = self.message_id.lower()
         return super().save(*args, **kwargs)
+
+    def clean(self):
+        if not self.message_id.startswith('msg_'):
+            raise ValidationError('Translation key must start with `msg_` prefix')
 
 
 class TranslationManager(models.Manager):
@@ -43,11 +43,11 @@ class Translation(models.Model):
 
     objects = TranslationManager()
 
+    class Meta:
+        unique_together = (('message', 'language'),)
+
     def __str__(self):
         return '{}'.format(self.language)
 
     def natural_key(self):
         return self.message.pk, self.language.pk
-
-    class Meta:
-        unique_together = (('message', 'language'),)

@@ -1,0 +1,300 @@
+variables:
+  SAST_DISABLED: "true"
+  VERSION_URL: "api/api/build-version/"
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+.docker:
+  image: docker:latest
+  variables:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:stable-dind
+  before_script:
+    - apk add jq
+    - docker info || unset DOCKER_HOST && docker info
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+
+.tests:
+  stage: Testing
+  services:
+    - postgres:latest
+    - redis:latest
+  variables:
+    DB_HOST: postgres
+    DB_USER: postgres
+    POSTGRES_PASSWORD: django
+    POSTGRES_DB: django
+  script:
+    - python3 -m pytest apps --cov --cov-report=term --cov-report=xml:cov.xml --junitxml=pytest.xml || export FAIL=true
+    - cat cov.xml | sed 's/apps/backend\/apps/g' > coverage.xml
+    - if ${FAIL:=false}; then false; fi
+  artifacts:
+    reports:
+      cobertura: backend/coverage.xml
+      junit: backend/pytest.xml
+
+.deploy-aws:
+  image: $CI_RUNNER
+  script:
+    - export BUILD_VERSION=$CI_PIPELINE_ID
+    - python3 backend/manage.py collectstatic
+    - aws s3 sync backend/static s3://${STATIC_BUCKET_NAME}/static --delete --acl public-read > /tmp/s3.log &
+    - echo Using - ${DJANGO_SETTINGS_MODULE:=conf.settings_aws}
+    - cat taskdef.template.json | envsubst > taskdef.json
+    - export TASK_DEFINITION=$(aws ecs register-task-definition --cli-input-json file://taskdef.json | jq -r ".taskDefinition.taskDefinitionArn")
+    - cat appspec.template.yaml | envsubst > appspec.yaml
+    - aws deploy create-deployment --application-name $APPLICATION_NAME --deployment-group-name $DEPLOYMENT_GROUP --revision revisionType=AppSpecContent,appSpecContent={content="$(cat appspec.yaml)"}
+    - wait && cat /tmp/s3.log
+  dependencies:
+    - Build base runner
+
+.after-deploy-check:
+  image: $CI_RUNNER
+  script:
+    - export VERSION=$(wget -qO- "$CI_ENVIRONMENT_URL$VERSION_URL")
+    - if [ $VERSION -ne $CI_PIPELINE_ID ]; then echo "Environment version $VERSION did not match pipeline id $CI_PIPELINE_ID" && false; fi
+  dependencies:
+    - Build base runner
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies")
+      when: delayed
+      start_in: 5 minutes
+    - when: never
+
+stages:
+  - Requirements check
+  - Building
+  - Testing
+  - Build review app
+  - Quality assurance
+  - Deploy Development
+  - Deploy Production
+
+sast:
+  stage: Testing
+
+Build base app:
+  stage: Requirements check
+  extends: .docker
+  script:
+    - jq -r '.default | to_entries[] | .key + .value.version' backend/Pipfile.lock > backend/requirements.txt
+    - echo "tblib" >> backend/requirements.txt
+    - export IMAGE=$CI_REGISTRY_IMAGE:$(md5sum backend/requirements.txt | awk '{print $1}')
+    - docker manifest inspect $IMAGE || export REBUILD=true
+    - if ${REBUILD:=false}; then docker build --tag $IMAGE --no-cache --file backend/base.Dockerfile backend/; fi
+    - if ${REBUILD:=false}; then docker push $IMAGE; fi
+    - echo "CI_APP=$IMAGE" >> app.env
+  artifacts:
+    reports:
+      dotenv: app.env
+  only:
+    - master
+    - merge_requests
+
+Build base runner:
+  stage: Requirements check
+  extends: .docker
+  script:
+    - jq -r '.develop * .default | to_entries[] | .key + .value.version' backend/Pipfile.lock > backend/requirements.txt
+    - echo "tblib" >> backend/requirements.txt
+    - export IMAGE=$CI_REGISTRY_IMAGE:$(md5sum backend/requirements.txt | awk '{print $1}')
+    - docker manifest inspect $IMAGE || export REBUILD=true
+    - if ${REBUILD:=false}; then docker build --tag $IMAGE --no-cache --file backend/runner.Dockerfile backend/; fi
+    - if ${REBUILD:=false}; then docker push $IMAGE; fi
+    - echo "CI_RUNNER=$IMAGE" >> runner.env
+    - echo $CI_KUBERNETES_ACTIVE
+  artifacts:
+    reports:
+      dotenv: runner.env
+  only:
+    - master
+    - merge_requests
+
+Build image:
+  stage: Building
+  extends: .docker
+  image: $CI_RUNNER
+  script:
+    - if ${AWS_ECR:=false}; then aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR ; fi
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --tag $CI_REGISTRY_IMAGE:latest --tag $AWS_ECR:$CI_COMMIT_SHORT_SHA --file backend/build.Dockerfile --no-cache --build-arg image=$CI_APP backend/
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - if ${AWS_ECR:=false}; then docker push $AWS_ECR:$CI_COMMIT_SHORT_SHA ; fi
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies")
+      when: on_success
+    - when: never
+  dependencies:
+    - Build base runner
+    - Build base app
+
+Code quality:
+  stage: Testing
+  image: $CI_RUNNER
+  before_script:
+    - cd backend
+  script:
+    - flakehell lint --format=gitlab --output-file flakehell.json || export FAIL=true
+    - cat flakehell.json | sed 's/.\/apps/backend\/apps/g' > codeclimate.json
+    - if ${FAIL:=false}; then false; fi
+  artifacts:
+    reports:
+      codequality: backend/codeclimate.json
+  only:
+    - master
+    - merge_requests
+  dependencies:
+    - Build base runner
+
+MyPY:
+  stage: Testing
+  image: $CI_RUNNER
+  before_script:
+    - cd backend
+  script:
+    - mypy apps --config-file mypy.ini --junit-xml mypy.xml
+  only:
+    - master
+    - merge_requests
+  dependencies:
+    - Build base runner
+  artifacts:
+    reports:
+      junit: backend/mypy.xml
+
+Tests:
+  extends: .tests
+  image: $CI_RUNNER
+  before_script:
+    - cd backend
+  only:
+    - merge_requests
+  dependencies:
+    - Build base runner
+
+Test fixtures:
+  stage: Testing
+  image: $CI_RUNNER
+  services:
+    - postgres:latest
+    - redis:latest
+  variables:
+    DB_HOST: postgres
+    DB_USER: postgres
+    POSTGRES_PASSWORD: django
+    POSTGRES_DB: django
+  before_script:
+    - cd backend
+  script:
+    - python3 manage.py migrate
+    - python3 manage.py loaddata initial.json
+  only:
+    - merge_requests
+  dependencies:
+    - Build base runner
+
+Test build:
+  extends: .tests
+  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  before_script:
+    - cd /srv
+  after_script:
+    - mv /srv/*.xml backend/
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies")
+      when: on_success
+    - when: never
+  dependencies:
+    - Build image
+
+Bandit SAST:
+  stage: Testing
+  extends: bandit-sast
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies")
+      when: on_success
+    - when: never
+
+Build review app image:
+  stage: Build review app
+  extends: .docker
+  image: $CI_RUNNER
+  script:
+    - mkdir -p backend/apps/home/templates/admin
+    - cat base.template.html | envsubst >> backend/apps/home/templates/admin/base.html
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --file backend/build.Dockerfile --no-cache --build-arg image=$CI_APP backend/
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  only:
+    - merge_request
+  dependencies:
+    - Build base runner
+    - Build base app
+
+Deploy review app:
+  stage: Quality assurance
+  image: dtzar/helm-kubectl:3.3.4
+  environment:
+    name: Review app $CI_PROJECT_TITLE MR$CI_MERGE_REQUEST_IID
+    url: https://$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN/admin/
+    on_stop: Teardown review app
+    auto_stop_in: 1 day
+  before_script:
+    - apk add gettext
+    - CI_ENVIRONMENT_URL=${CI_ENVIRONMENT_URL:8:-7}
+  script:
+    - kubectl version
+    - kubectl create secret docker-registry regcred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
+    - cat manifest.template.yaml | envsubst | kubectl apply -f -
+    - kubectl rollout status deployment.v1.apps/$CI_ENVIRONMENT_SLUG
+    - kubectl logs $(kubectl get pods | grep review-app | tail -n 1 | awk '{print $1}') -c application
+  after_script:
+    - kubectl delete secret regcred
+  when: manual
+  only:
+    - merge_request
+  dependencies:
+    - Build review app image
+
+Teardown review app:
+  stage: Quality assurance
+  image: dtzar/helm-kubectl:3.3.4
+  script:
+    - kubectl delete deployments --all
+    - kubectl delete services --all
+    - kubectl delete ingress --all
+  when: manual
+  only:
+    - merge_request
+  environment:
+    name: Review app $CI_PROJECT_TITLE MR$CI_MERGE_REQUEST_IID
+    action: stop
+
+Deploy development:
+  stage: Deploy Development
+  extends: .deploy-aws
+  environment: Development
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies" && $AWS_ECR)
+      when: on_success
+    - when: never
+
+Check after deploy development:
+  stage: Deploy Development
+  extends: .after-deploy-check
+  environment: Development
+
+Deploy production:
+  stage: Deploy Production
+  extends: .deploy-aws
+  environment: Production
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies" && $AWS_ECR)
+      when: manual
+    - when: never
+
