@@ -214,8 +214,9 @@ Build review app image:
     - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --file backend/build.Dockerfile --no-cache --build-arg image=$CI_APP backend/
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   only:
-    - merge_request
-    - kubernetes
+    kubernetes: active
+    refs:
+      - merge_request
   dependencies:
     - Build base runner
     - Build base app
@@ -241,8 +242,9 @@ Deploy review app:
     - kubectl delete secret regcred
   when: manual
   only:
-    - merge_request
-    - kubernetes
+    kubernetes: active
+    refs:
+      - merge_request
   dependencies:
     - Build review app image
 
@@ -256,8 +258,9 @@ Teardown review app:
     - kubectl delete pvc --all
   when: manual
   only:
-    - merge_request
-    - kubernetes
+    kubernetes: active
+    refs:
+      - merge_request
   environment:
     name: Review app $CI_PROJECT_TITLE MR$CI_MERGE_REQUEST_IID
     action: stop

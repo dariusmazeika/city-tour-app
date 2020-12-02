@@ -10,6 +10,12 @@ Django 3.1
 Nginx 1.17
 Gunicorn
 
+## API documentation
+
+Documentation dynamically generated with OpenAPI3. It can be reached:
+
+- `/schema/swagger/` for Swagger UI
+- `/schema/redoc/` for ReDoc UI
 
 ## get started
 
