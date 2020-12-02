@@ -70,6 +70,7 @@ stages:
   - Quality assurance
   - Deploy Development
   - Deploy Production
+  - Production Check
 
 Build base app:
   stage: Requirements check
@@ -282,7 +283,7 @@ Deploy production:
     - when: never
 
 Check after deploy production:
-  stage: Deploy Production
+  stage: Production Check
   extends: .after-deploy-check
   environment: Production
 
