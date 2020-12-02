@@ -36,8 +36,7 @@ class VerifyUserView(APIView):
     @staticmethod
     def put(request, activation_key):
         del request
-        activation_key_model = get_object_or_404(
-            ActivationKey, activation_key=str(activation_key))
+        activation_key_model = get_object_or_404(ActivationKey, activation_key=str(activation_key))
         activated = activation_key_model.activate()
         if not activated:
             raise ValidationError('error_verify_already_verified')
@@ -59,8 +58,7 @@ class ChangePasswordView(APIView):
 
     @staticmethod
     def post(request):
-        serializer = ChangePasswordSerializer(data=request.data, context={
-                                              'email': request.user.email})
+        serializer = ChangePasswordSerializer(data=request.data, context={'email': request.user.email})
         serializer.is_valid(raise_exception=True)
         request.user.set_password(serializer.validated_data['password'])
         request.user.save()
@@ -92,8 +90,7 @@ class ResetPasswordView(APIView):
 
     @staticmethod
     def put(request, password_key):
-        password_key = get_object_or_404(
-            PasswordKey, password_key=str(password_key))
+        password_key = get_object_or_404(PasswordKey, password_key=str(password_key))
         if not password_key.validate_expiration():
             password_key.delete()
             return Response({'detail': 'error_reset_password_key_expired'}, status=status.HTTP_400_BAD_REQUEST)
