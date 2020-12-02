@@ -43,7 +43,7 @@ class TranslationForm(ModelForm):
 
 class TranslationInline(admin.TabularInline):
     model = Translation
-    formset = BaseTranslationFormSet
+    formset = BaseTranslationFormSet  # type: ignore
     form = TranslationForm
 
 

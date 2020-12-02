@@ -18,6 +18,9 @@ django-cors-headers = "*"
 dj-database-url = "*"
 django-tabbed-admin = {editable = true, git = "https://github.com/CornerCaseTechnologies/django-tabbed-admin.git"}
 djangorestframework-simplejwt = "*"
+django-storages = "*"
+django-amazon-ses = "*"
+django-watchman = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -38,6 +41,11 @@ mypy = "*"
 flake8-print = "*"
 coverage = "*"
 model-bakery = "*"
+flakehell = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-django = "*"
+pytest-xdist = "*"
 
 [requires]
 python_version = "3.8"

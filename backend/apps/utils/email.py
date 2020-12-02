@@ -36,7 +36,7 @@ def send_email(email: str, subject: str, html_message: str, attachments: list = 
         email_msg.send()
         LOGGER.info('email sent to %s with subject %s', email, subject)
     except Exception as e:
-        LOGGER.error('failed to send email to %s error %s', email, e)
+        LOGGER.error('failed to send email to %s error %s', email, e)  # noqa: G200
 
 
 def render_email_template_with_base(html_content: str, context: dict = None, subject: str = '') -> str:

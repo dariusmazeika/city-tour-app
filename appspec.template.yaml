@@ -1,0 +1,9 @@
+Version: 1
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: ${TASK_DEFINITION}
+        LoadBalancerInfo:
+          ContainerName: ${CI_PROJECT_NAME}
+          ContainerPort: 8000

@@ -30,6 +30,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+BUILD_VERSION = os.getenv("BUILD_VERSION", "")
+
+# Semantic versioning + build version
+VERSION = f"0.0.0_{BUILD_VERSION}"
+
 AUTH_USER_MODEL = 'users.User'
 
 # Returns user even if it's not active, lets do handle it manually
@@ -49,7 +54,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'solo',
-
+    "watchman",
     'ckeditor',
     'ckeditor_uploader',
 
@@ -84,7 +89,7 @@ ROOT_URLCONF = 'urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/app/templates/'],
+        'DIRS': [os.path.join(BASE_DIR, "apps/home/templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,9 +116,9 @@ else:
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': os.getenv('DB_NAME', 'django'),
             'USER': os.getenv('DB_USER', 'django'),
-            'HOST': os.getenv('DB_HOST', 'db'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
             'PASSWORD': os.getenv('DB_PASSWORD', 'django'),
-            'PORT': os.getenv('DB_PORT', 5432),
+            'PORT': os.getenv('DB_PORT', 9432),
             'CONN_MAX_AGE': os.getenv('CONN_MAX_AGE', 600),
         }
     }
@@ -161,11 +166,11 @@ MANIFEST_JS_MAX_AGE = 0
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.getenv('STATIC_ROOT', os.path.join(BASE_DIR, '/static/'))
+STATIC_ROOT = os.getenv('STATIC_ROOT', os.path.join(BASE_DIR, 'static/'))
 
 # user uploads
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, '/media/'))
+MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, 'media/'))
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'apps.utils.pagination.CustomPagination',

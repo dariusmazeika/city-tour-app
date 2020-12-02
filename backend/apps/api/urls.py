@@ -9,8 +9,9 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenRefreshView, TokenVerifyView,
 )
+from watchman.views import bare_status
 
-from apps.api.views import PingView
+from apps.api.views import BuildVersionView
 from apps.manifests.views import AppConfigView
 from apps.users.views import ChangeLanguageView, ChangePasswordView, ForgottenPasswordView, GetUserView, LoginView, \
     ResendVerificationView, ResetPasswordView, VerifyUserView
@@ -18,7 +19,8 @@ from apps.users.views import ChangeLanguageView, ChangePasswordView, ForgottenPa
 router = DefaultRouter()
 
 urlpatterns = [
-    path('ping/', PingView.as_view(), name='ping'),
+    path("health/", bare_status, name="watchman"),
+    path("build-version/", BuildVersionView.as_view(), name="build-version"),
     path('app-config/', AppConfigView.as_view(), name='app-config'),
     path('login/', LoginView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),

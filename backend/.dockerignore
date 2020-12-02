@@ -1,4 +1,4 @@
 *.pyc
 __pycache__
-Dockerfile*
+*Dockerfile*
 pipcache
