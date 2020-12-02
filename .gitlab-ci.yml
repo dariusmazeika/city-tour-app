@@ -211,8 +211,6 @@ Build review app image:
   extends: .docker
   image: $CI_RUNNER
   script:
-    - mkdir -p backend/apps/home/templates/admin
-    - cat base.template.html | envsubst >> backend/apps/home/templates/admin/base.html
     - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --file backend/build.Dockerfile --no-cache --build-arg image=$CI_APP backend/
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   only:
@@ -282,4 +280,9 @@ Deploy production:
     - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies" && $AWS_ECR)
       when: manual
     - when: never
+
+Check after deploy production:
+  stage: Deploy Production
+  extends: .after-deploy-check
+  environment: Production
 
