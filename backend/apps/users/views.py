@@ -1,6 +1,5 @@
 from django.contrib.auth.signals import user_logged_in
 from django.shortcuts import get_object_or_404
-from django.utils.translation import activate
 from rest_framework import permissions, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -51,7 +50,6 @@ class ChangeLanguageView(APIView):
         serializer = ChangeLanguageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         lang = serializer.validated_data['language']
-        activate(lang)
         request.user.change_language(lang)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
