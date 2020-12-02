@@ -4,7 +4,7 @@ addopts = '--numprocesses=auto'
 DJANGO_SETTINGS_MODULE = 'conf.settings_test'
 
 [tool.coverage.report]
-fail_under = 81.3
+fail_under = 80.0
 
 [tool.coverage.run]
 include = [
