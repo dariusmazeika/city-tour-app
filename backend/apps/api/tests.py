@@ -1,3 +1,4 @@
+from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
 
@@ -11,7 +12,7 @@ class WatchmanCase(BaseTestCase):
 
 
 class BuildVersionCase(BaseTestCase):
-    def test_watchman_state(self):
+    @override_settings(BUILD_VERSION=123)
+    def test_build_version(self):
         response = self.client.get(reverse("build-version"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), 0)
+        self.assertEqual(response.json(), 123)
