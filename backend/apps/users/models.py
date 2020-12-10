@@ -68,6 +68,10 @@ class User(AbstractUser):
         self.email = self.email.lower()
         super(User, self).save(*args, **kwargs)
 
+    def set_password(self, raw_password):
+        super().set_password(raw_password)
+        self.password_last_change = timezone.now()
+
     def verify(self):
         self.is_verified = True
         self.save()

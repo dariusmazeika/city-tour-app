@@ -1,13 +1,19 @@
 from django.contrib.auth import authenticate, user_logged_in
-from django.utils import timezone
 from rest_framework import exceptions, serializers
 from rest_framework_simplejwt.serializers import PasswordField, TokenObtainPairSerializer
 
 from apps.translations.models import Language
 from apps.users.models import PasswordKey, User
+from apps.utils.token import get_token
 
 
-class LoginSerializer(TokenObtainPairSerializer):
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        return get_token(user)
+
+
+class LoginSerializer(CustomTokenObtainPairSerializer):
     default_error_messages = {
         "no_active_account": "error_login_bad_credentials",
     }
@@ -86,9 +92,12 @@ class ChangePasswordSerializer(BasePasswordSerializer):
             raise serializers.ValidationError("error_password_is_incorrect")
         return attr
 
+    def to_representation(self, instance):
+        refresh = get_token(self.context["request"].user)
+        return {'refresh': str(refresh), 'access': str(refresh.access_token)}
+
     def create(self, validated_data):
         self.context["request"].user.set_password(validated_data["password"])
-        self.context["request"].user.password_last_change = timezone.now()
         self.context["request"].user.save()
         return {}
 

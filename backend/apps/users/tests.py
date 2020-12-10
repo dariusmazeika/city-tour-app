@@ -42,9 +42,9 @@ class AuthenticationTestCase(BaseTestCase):
         refresh = response.data["refresh"]
         self.user.password_last_change = timezone.now() + datetime.timedelta(minutes=1)
         self.user.save()
-        response = self.post(reverse('token-refresh'), {'refresh': refresh})
+        response = self.client.post(reverse('token-refresh'), {'refresh': refresh})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()[0], 'error_user_password_changed')
+        self.assertEqual(response.json()[0], 'error_user_datetime_claim_changed')
 
     def test_token_verify(self):
         response = self.client.post(reverse('login'), self.credentials, format='json')
@@ -195,7 +195,7 @@ class AuthenticationTestCase(BaseTestCase):
     def test_change_password(self):
         uuid = str(uuid4())
         previous_psw = self.user.password
-        self.assertIsNone(self.user.password_last_change)
+        previous_psw_datetime = self.user.password_last_change
         response = self.authorize().post(
             reverse('change-password'),
             data={'old_password': self.credentials['password'], 'password': uuid, 'confirm_password': uuid}
@@ -204,7 +204,11 @@ class AuthenticationTestCase(BaseTestCase):
         self.user.refresh_from_db()
         self.assertNotEqual(previous_psw, self.user.password)
         self.assertFalse(self.user.password_keys.all().count())
-        self.assertIsNotNone(self.user.password_last_change)
+        self.assertNotEqual(self.user.password_last_change, previous_psw_datetime)
+        self.assertTrue(response.json()['access'])
+        self.assertTrue(response.json()['refresh'])
+        response = self.client.post(reverse('token-refresh'), {'refresh': response.json()['refresh']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_change_password_not_equal(self):
         previous_psw = self.user.password

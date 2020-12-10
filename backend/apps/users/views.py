@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.dateformat import format
 from django.utils.translation import activate
@@ -113,13 +112,7 @@ class TokenRefreshViewWithActiveChecks(TokenRefreshView):
 
         if not user:
             raise ValidationError('error_user_does_not_exist')
-        if user.password_last_change:
-            # Tokens which have expiration date sooner than password_last_changed + 1 day should be invalidated
-            no_sooner_than = user.password_last_change + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']  # type: ignore
-            payload_refresh = decode(refresh_token, verify=False)
-            issued_before_change = payload_refresh['exp'] < int(format(no_sooner_than, 'U'))
-            # Checking whether given token was issued before password was changed
-            if issued_before_change:
-                raise ValidationError('error_user_password_changed')
+        if user.password_last_change and int(format(user.password_last_change, 'U')) != payload['datetime_claim']:
+            raise ValidationError('error_user_datetime_claim_changed')
         if not user.is_active:
             raise ValidationError('error_user_is_not_active')
