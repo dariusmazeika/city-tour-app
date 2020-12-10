@@ -101,11 +101,11 @@ class TokenRefreshViewWithActiveChecks(TokenRefreshView):
         response = super().post(request, *args, **kwargs)
         access_token = response.data.get('access')
         if access_token:
-            self._validate_user_state(access_token, request.data['refresh'])
+            self._validate_user_state(access_token)
         return response
 
     @staticmethod
-    def _validate_user_state(access_token: str, refresh_token: str) -> None:
+    def _validate_user_state(access_token: str) -> None:
         payload = decode(access_token, verify=False)
         user_id = payload.get('user_id')
         user = User.objects.filter(id=user_id).first() if user_id else None
