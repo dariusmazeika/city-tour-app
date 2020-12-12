@@ -4,7 +4,7 @@ addopts = '--numprocesses=auto'
 DJANGO_SETTINGS_MODULE = 'conf.settings_test'
 
 [tool.coverage.report]
-fail_under = 81.3
+fail_under = 81.6
 
 [tool.coverage.run]
 include = [
@@ -65,3 +65,4 @@ flake8-builtins = ['-A003']
 [tool.flakehell.exceptions.'apps/utils/tests_utils.py']
 flake8-variables-names = ['-VNE003']
 flake8-builtins = ['-A002']
+flake8-bandit = ['-S105']
