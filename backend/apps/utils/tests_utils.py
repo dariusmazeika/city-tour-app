@@ -45,8 +45,8 @@ class BaseTestCase(TestCase):
         if not user:
             user = self.user
         refresh = get_token(user)
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(refresh.access_token))
-        return self.client
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(refresh.access_token))  # type: ignore
+        return self.client  # type: ignore
 
     def get(self, path: str, query_params: dict = None, *args, **kwargs):
         if query_params:
