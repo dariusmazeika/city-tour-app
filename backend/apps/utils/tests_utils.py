@@ -3,18 +3,20 @@ from urllib.parse import urlencode
 
 from django.test import TestCase
 from django.urls import reverse
-from rest_framework.test import APIClient
 
 from apps.translations.models import Language
 from apps.users.models import User
+from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
 class BaseTestCase(TestCase):
     email = 'test@test.lt'
     password = 'testtest'
     credentials = {'email': email, 'password': password}
-    user_data = {'email': email, 'password': password, 'first_name': 'First', 'last_name': 'Last'}
+    user_data = {'email': email, 'password': password,
+                 'first_name': 'First', 'last_name': 'Last'}
     auth_url = reverse('login')
+    query_limits = {}
 
     def setUp(self):
         logging.disable(logging.INFO)
@@ -26,7 +28,13 @@ class BaseTestCase(TestCase):
         self.user.is_verified = True
         self.user.language = self.language
         self.user.save()
-        self.client = APIClient()
+        self.client = APIClientWithQueryCounter(test_case=self)
+
+        # Default query_limits for all project:
+        self.query_limits["ANY GET REQUEST"] = 5
+        self.query_limits["ANY POST REQUEST"] = 5
+        self.query_limits["ANY PUT REQUEST"] = 5
+        self.query_limits["ANY DELETE REQUEST"] = 5
 
     def tearDown(self):
         logging.disable(logging.NOTSET)

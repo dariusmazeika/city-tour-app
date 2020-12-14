@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django.utils.dateformat import format
-from django.utils.translation import activate
 from jwt import decode
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import ValidationError
@@ -46,7 +45,6 @@ class ChangeLanguageView(APIView):
         serializer = ChangeLanguageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         lang = serializer.validated_data['language']
-        activate(lang)
         request.user.change_language(lang)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
