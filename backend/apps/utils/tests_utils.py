@@ -7,6 +7,7 @@ from django.urls import reverse
 from apps.translations.models import Language
 from apps.users.models import User
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
+from apps.utils.token import get_token
 
 
 class BaseTestCase(TestCase):
@@ -40,9 +41,11 @@ class BaseTestCase(TestCase):
         logging.disable(logging.NOTSET)
         super(BaseTestCase, self).tearDown()
 
-    def authorize(self):
-        token = self.client.post(self.auth_url, self.credentials).data['token']
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+    def authorize(self, user: User = None) -> APIClientWithQueryCounter:
+        if not user:
+            user = self.user
+        refresh = get_token(user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + str(refresh.access_token))
         return self.client
 
     def get(self, path: str, query_params: dict = None, *args, **kwargs):
