@@ -1,38 +1,52 @@
-from django.contrib.auth import authenticate
-from rest_framework import serializers
+from django.contrib.auth import authenticate, user_logged_in
+from rest_framework import exceptions, serializers
+from rest_framework_simplejwt.serializers import PasswordField, TokenObtainPairSerializer
 
 from apps.translations.models import Language
 from apps.users.models import PasswordKey, User
-from apps.utils.authentication import JWTRefreshToken
+from apps.utils.token import get_token
 
 
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField(max_length=200)
-    password = serializers.CharField(max_length=255, required=True, style={'input_type': 'password'})
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        return get_token(user)
+
+
+class LoginSerializer(CustomTokenObtainPairSerializer):
+    default_error_messages = {
+        "no_active_account": "error_login_bad_credentials",
+    }
+
+    token = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Not defined as class variables since DRF ignores class variables if its already defined in self.fields
+        # And simple-JWT defines username_field via self.fields
+        self.fields[self.username_field] = serializers.EmailField(
+            write_only=True,
+            required=True,
+            error_messages={"invalid": "error_invalid_email", "required": "error_field_is_required"},
+        )
+        self.fields["password"] = PasswordField(error_messages={"required": "error_field_is_required"})
 
     def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
+        try:
+            validated_data = super(LoginSerializer, self).validate(attrs)
+        except exceptions.AuthenticationFailed:
+            raise serializers.ValidationError("error_login_bad_credentials", code="authorization")
 
-        user = authenticate(email=email, password=password)
-        if not user:
-            raise serializers.ValidationError('error_login_bad_credentials', code='authorization')
+        if not self.user.is_verified:
+            raise serializers.ValidationError("error_login_user_email_not_verified", code="authorization")
 
-        if not user.is_active:
-            raise serializers.ValidationError('error_login_account_disabled', code='authorization')
+        validated_data["token"] = validated_data.pop("access")
+        return validated_data
 
-        if not user.is_verified:
-            raise serializers.ValidationError('error_login_user_email_not_verified', code='authorization')
-        token = JWTRefreshToken.for_user(user)
-
-        attrs['token'] = {
-            'token': str(token.access_token),
-            'expiry': token.access_token.lifetime,
-            'refresh': str(token),
-            'refresh_expiry': token.lifetime,
-        }
-        attrs['user'] = user
-        return attrs
+    def create(self, validated_data):
+        user_logged_in.send(sender=self.__class__, request=self.context["request"], user=self.user)
+        return validated_data
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -68,15 +82,24 @@ class BasePasswordSerializer(serializers.Serializer):
 
 
 class ChangePasswordSerializer(BasePasswordSerializer):
-    old_password = serializers.CharField(max_length=255, write_only=True, required=True)
+    old_password = PasswordField(required=True, write_only=True)
 
     class Meta:
-        fields = ('old_password', 'password', 'confirm_password')
+        fields = ("old_password", "password", "confirm_password")
 
     def validate_old_password(self, attr):
-        if not authenticate(email=self._context.get('email'), password=attr):
-            raise serializers.ValidationError('error_password_is_incorrect')
+        if not authenticate(email=self.context["request"].user.email, password=attr):
+            raise serializers.ValidationError("error_password_is_incorrect")
         return attr
+
+    def to_representation(self, instance):
+        refresh = get_token(self.context["request"].user)
+        return {'refresh': str(refresh), 'access': str(refresh.access_token)}
+
+    def create(self, validated_data):
+        self.context["request"].user.set_password(validated_data["password"])
+        self.context["request"].user.save()
+        return {}
 
 
 class ForgottenPasswordSerializer(serializers.Serializer):

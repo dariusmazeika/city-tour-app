@@ -62,9 +62,15 @@ class User(AbstractUser):
         on_delete=models.CASCADE,
     )
 
+    password_last_change = models.DateTimeField(null=True, blank=True)
+
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         super(User, self).save(*args, **kwargs)
+
+    def set_password(self, raw_password):
+        super().set_password(raw_password)
+        self.password_last_change = timezone.now()
 
     def verify(self):
         self.is_verified = True

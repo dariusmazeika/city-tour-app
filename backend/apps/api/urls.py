@@ -6,15 +6,13 @@ from django.conf.urls import include
 from django.urls import path, re_path
 from django.views.defaults import page_not_found
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenRefreshView, TokenVerifyView,
-)
+from rest_framework_simplejwt.views import TokenVerifyView
 from watchman.views import bare_status
 
 from apps.api.views import BuildVersionView
 from apps.manifests.views import AppConfigView
 from apps.users.views import ChangeLanguageView, ChangePasswordView, ForgottenPasswordView, GetUserView, LoginView, \
-    ResendVerificationView, ResetPasswordView, VerifyUserView
+    ResendVerificationView, ResetPasswordView, VerifyUserView, TokenRefreshViewWithActiveChecks
 
 router = DefaultRouter()
 
@@ -23,7 +21,7 @@ urlpatterns = [
     path("build-version/", BuildVersionView.as_view(), name="build-version"),
     path('app-config/', AppConfigView.as_view(), name='app-config'),
     path('login/', LoginView.as_view(), name='login'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    path('token/refresh/', TokenRefreshViewWithActiveChecks.as_view(), name='token-refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token-verify'),
     path('current-user/', GetUserView.as_view(), name='current-user'),
     path('verify/<uuid:activation_key>/', VerifyUserView.as_view(), name='verify'),
