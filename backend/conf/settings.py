@@ -30,10 +30,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-BUILD_VERSION = os.getenv("BUILD_VERSION", "")
+BUILD_VERSION = os.getenv('BUILD_VERSION', '')
 
 # Semantic versioning + build version
-VERSION = f"0.0.0_{BUILD_VERSION}"
+VERSION = f'0.0.0_{BUILD_VERSION}'
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -54,10 +54,10 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'solo',
-    "watchman",
+    'watchman',
     'ckeditor',
     'ckeditor_uploader',
-
+    'drf_spectacular',
     'tabbed_admin',
 
     # local
@@ -89,7 +89,7 @@ ROOT_URLCONF = 'urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "apps/home/templates")],
+        'DIRS': [os.path.join(BASE_DIR, 'apps/home/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -182,13 +182,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'COERCE_DECIMAL_TO_STRING': False
+    'COERCE_DECIMAL_TO_STRING': False,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # user uploads
 FILE_UPLOAD_PERMISSIONS = 0o644
 CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_IMAGE_BACKEND = "pillow"
+CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_UPLOAD_SLUGIFY_FILENAME = True
 CKEDITOR_ALLOW_NONIMAGE_FILES = False
 
@@ -252,4 +253,13 @@ SIMPLE_JWT = {
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+}
+
+# Documentation settings
+SPECTACULAR_SETTINGS = {
+    'SCHEMA_PATH_PREFIX': r'api/',
+    'SERVE_PUBLIC': False,
+    'SERVE_PERMISSIONS': ('rest_framework.permissions.IsAdminUser',),
+    'TITLE': '',
+    'VERSION': VERSION,
 }

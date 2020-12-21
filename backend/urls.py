@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.views import serve
 from django.urls import path
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from apps.manifests.views import RegenerateManifest
 
@@ -14,9 +15,18 @@ if settings.DEBUG:
     urlpatterns += [path('static/<path>', serve)] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += [
+    # Admin
     path('admin/regenerate_cache/', RegenerateManifest.as_view()),
     path('admin/', admin.site.urls),
-    path('api/', include('apps.api.urls')),
+    # 3rd party apps
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # Local apps
+    path('api/api/', include('apps.api.urls')),
+    path('api/home/', include('apps.home.urls')),
+    path('api/users/', include('apps.users.urls')),
+    path('api/manifests/', include('apps.manifests.urls')),
 ]
 
 admin.autodiscover()

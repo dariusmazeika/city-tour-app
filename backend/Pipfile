@@ -21,6 +21,7 @@ djangorestframework-simplejwt = "*"
 django-storages = "*"
 django-amazon-ses = "*"
 django-watchman = "*"
+drf-spectacular="*"
 
 [dev-packages]
 flake8 = "*"
