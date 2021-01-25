@@ -67,4 +67,4 @@ __pycache__
 pipcache
 
 # Coverage
-backend/.coverage
+backend/.coverage*
