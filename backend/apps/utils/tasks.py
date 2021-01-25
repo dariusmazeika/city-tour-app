@@ -23,7 +23,7 @@ def send_email_task(email: str, template: str, category: str = None, context: di
         html_message = render_email_template_with_base(html_content=translation.content, context=context,
                                                        subject=translation.subject)
         send_email(email=email, subject=translation.subject, html_message=html_message, category=category)
-    except Exception as e:
+    except Exception as e:  # noqa: B902
         LOGGER.error('Error during sending %s: %s ', translation, e)  # noqa: G200
 
 

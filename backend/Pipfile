@@ -16,12 +16,14 @@ Django = "*"
 Pillow = "*"
 django-cors-headers = "*"
 dj-database-url = "*"
-django-tabbed-admin = {editable = false, git = "https://github.com/CornerCaseTechnologies/django-tabbed-admin.git"}
+django-tabbed-admin = { editable = false, git = "https://github.com/CornerCaseTechnologies/django-tabbed-admin.git" }
 djangorestframework-simplejwt = "*"
 django-storages = "*"
 django-amazon-ses = "*"
 django-watchman = "*"
-drf-spectacular="*"
+drf-spectacular = "*"
+typing-extensions = "*"
+pyjwt = "==1.7.1"
 
 [dev-packages]
 flake8 = "*"
