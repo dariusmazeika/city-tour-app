@@ -1,11 +1,10 @@
 from django.shortcuts import get_object_or_404
-from django.utils.dateformat import format
-from jwt import decode
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.users.models import ActivationKey, PasswordKey, User
@@ -104,13 +103,12 @@ class TokenRefreshViewWithActiveChecks(TokenRefreshView):
 
     @staticmethod
     def _validate_user_state(access_token: str) -> None:
-        payload = decode(access_token, verify=False)
-        user_id = payload.get('user_id')
+        token = AccessToken(token=access_token)
+        user_id = token.get("user_id")
         user = User.objects.filter(id=user_id).first() if user_id else None
-
         if not user:
             raise ValidationError('error_user_does_not_exist')
-        if user.password_last_change and int(format(user.password_last_change, 'U')) != payload['datetime_claim']:
+        if user.password_last_change and int(user.password_last_change.timestamp()) != token['datetime_claim']:
             raise ValidationError('error_user_datetime_claim_changed')
         if not user.is_active:
             raise ValidationError('error_user_is_not_active')
