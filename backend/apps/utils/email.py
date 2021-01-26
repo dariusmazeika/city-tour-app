@@ -19,24 +19,20 @@ VERIFICATION_EMAIL_CATEGORY = 'Verify Email'
 
 
 def send_email(email: str, subject: str, html_message: str, attachments: list = None, category: str = None) -> None:
-    if attachments is None:
-        attachments = []
-    try:
-        email_msg = EmailMessage(
-            subject=subject,
-            body=html_message,
-            to=[email],
-            attachments=[
-                (filename, content, mimetypes.guess_type(filename)[0] or 'application/octet-stream')
-                for filename, content in attachments
-            ],
-            headers={'X-SMTPAPI': json.dumps({'category': category or 'Email'})}
-        )
-        email_msg.content_subtype = 'html'
-        email_msg.send()
-        LOGGER.info('email sent to %s with subject %s', email, subject)
-    except Exception as e:
-        LOGGER.error('failed to send email to %s error %s', email, e)  # noqa: G200
+    attachments = attachments or []
+    email_msg = EmailMessage(
+        subject=subject,
+        body=html_message,
+        to=[email],
+        attachments=[
+            (filename, content, mimetypes.guess_type(filename)[0] or 'application/octet-stream')
+            for filename, content in attachments
+        ],
+        headers={'X-SMTPAPI': json.dumps({'category': category or 'Email'})}
+    )
+    email_msg.content_subtype = 'html'
+    email_msg.send()
+    LOGGER.info('email sent to %s with subject %s', email, subject)
 
 
 def render_email_template_with_base(html_content: str, context: dict = None, subject: str = '') -> str:

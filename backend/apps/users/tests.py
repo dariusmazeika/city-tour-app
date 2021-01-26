@@ -17,7 +17,7 @@ class AuthenticationTestCase(BaseTestCase):
 
     def test_login_valid(self):
         response = self.client.post(reverse("login"), self.credentials, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         self.assertTrue(response.data["token"])
         self.assertTrue(response.data["refresh"])
 
@@ -29,16 +29,16 @@ class AuthenticationTestCase(BaseTestCase):
 
     def test_token_refresh(self):
         response = self.client.post(reverse('login'), self.credentials, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         refresh = response.data["refresh"]
         response = self.post(reverse('token-refresh'), {'refresh': refresh})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         self.assertTrue(response.data['access'])
         self.assertTrue(response.data['refresh'])
 
     def test_token_refresh_after_password_change(self):
         response = self.client.post(reverse('login'), self.credentials, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         refresh = response.data["refresh"]
         self.user.password_last_change = timezone.now() + datetime.timedelta(minutes=1)
         self.user.save()
@@ -48,7 +48,7 @@ class AuthenticationTestCase(BaseTestCase):
 
     def test_token_verify(self):
         response = self.client.post(reverse('login'), self.credentials, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         token = response.data["token"]
         response = self.post(reverse('token-verify'), {"token": token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -97,7 +97,7 @@ class AuthenticationTestCase(BaseTestCase):
     @patch.object(PasswordKey, 'send_password_key')
     def test_forgot_password(self, mock):
         response = self.client.post(reverse('forgot'), data={'email': self.user.email})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
         self.assertEqual(self.user.password_keys.count(), 1)
         self.assertEqual(PasswordKey.objects.count(), 1)
         self.assertTrue(mock.called)
@@ -105,7 +105,7 @@ class AuthenticationTestCase(BaseTestCase):
     @patch.object(PasswordKey, 'send_password_key')
     def test_forgot_password_non_existing_email(self, mock):
         response = self.client.post(reverse('forgot'), data={'email': 'some@email.com'})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
         self.assertEqual(PasswordKey.objects.count(), 0)
         self.assertFalse(mock.called)
 
@@ -120,7 +120,7 @@ class AuthenticationTestCase(BaseTestCase):
             reverse('reset-password', args=[reset_key]),
             data={'password': uuid, 'confirm_password': uuid}
         )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
         self.user.refresh_from_db()
         self.assertNotEqual(previous_psw, self.user.password)
         self.assertFalse(self.user.password_keys.count())
@@ -145,7 +145,7 @@ class AuthenticationTestCase(BaseTestCase):
     @patch.object(ActivationKey, 'send_verification')
     def test_resend_verification_email_to_verified_user(self, mock):
         response = self.client.post(reverse('resend-verification'), data={'email': self.user.email})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
         self.assertFalse(mock.called)
 
     @patch.object(ActivationKey, 'send_verification')
@@ -153,7 +153,7 @@ class AuthenticationTestCase(BaseTestCase):
         self.user.is_verified = False
         self.user.save()
         response = self.client.post(reverse('resend-verification'), data={'email': self.user.email})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
         self.assertTrue(mock.called)
 
     @patch.object(ActivationKey, 'send_verification')
@@ -164,7 +164,7 @@ class AuthenticationTestCase(BaseTestCase):
         verification_key = self.user.create_activation_key()
         self.assertFalse(self.user.is_verified)
         response = self.client.put(reverse('verify', args=[verification_key]))
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_verified)
         self.assertFalse(self.user.activation_keys.count())
@@ -183,7 +183,7 @@ class AuthenticationTestCase(BaseTestCase):
     def test_change_language(self):
         lang = make(Language)
         response = self.authorize().post(reverse('change-language'), data={'language': lang.code})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
         self.user.refresh_from_db()
         self.assertEqual(self.user.language, lang)
 
@@ -200,7 +200,7 @@ class AuthenticationTestCase(BaseTestCase):
             reverse('change-password'),
             data={'old_password': self.credentials['password'], 'password': uuid, 'confirm_password': uuid}
         )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         self.user.refresh_from_db()
         self.assertNotEqual(previous_psw, self.user.password)
         self.assertFalse(self.user.password_keys.all().count())
@@ -208,7 +208,7 @@ class AuthenticationTestCase(BaseTestCase):
         self.assertTrue(response.json()['access'])
         self.assertTrue(response.json()['refresh'])
         response = self.client.post(reverse('token-refresh'), {'refresh': response.json()['refresh']})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_change_password_not_equal(self):
         previous_psw = self.user.password

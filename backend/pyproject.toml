@@ -1,7 +1,7 @@
 [tool.pytest.ini_options]
 python_files = 'tests.py'
-addopts = '--numprocesses=auto'
-DJANGO_SETTINGS_MODULE = 'conf.settings_test'
+addopts = '--numprocesses=auto --ds=conf.settings_test'
+
 
 [tool.coverage.report]
 fail_under = 80.0
