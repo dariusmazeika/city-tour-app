@@ -15,5 +15,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(create_default_lang),
+        migrations.RunPython(create_default_lang, reverse_code=migrations.RunPython.noop),
     ]

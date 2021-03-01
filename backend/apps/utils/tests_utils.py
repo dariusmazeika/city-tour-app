@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 
 from django.test import TestCase
 from django.urls import reverse
+from model_bakery import generators
 
 from apps.translations.models import Language
 from apps.users.models import User
@@ -19,12 +20,15 @@ class BaseTestCase(TestCase):
     auth_url = reverse('login')
     query_limits = {}
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        generators.add('ckeditor.fields.RichTextField', generators.random_gen.gen_text)
+        generators.add('apps.utils.model_fields.TranslatableResourceForeignKey', generators.random_gen.gen_related)
+
     def setUp(self):
         logging.disable(logging.INFO)
-        self.language = Language.objects.create(
-            name='test',
-            code='en'
-        )
+        self.language = Language.objects.get_or_create(code='en', defaults={'name': 'English'})[0]
         self.user = User.objects.create_user(**self.user_data)
         self.user.is_verified = True
         self.user.language = self.language

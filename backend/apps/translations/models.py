@@ -38,7 +38,7 @@ class TranslationManager(models.Manager):
 
 class Translation(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
-    language = models.ForeignKey(Language, default=settings.TRANSLATIONS_BASE_LANGUAGE[0], on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, default=settings.DEFAULT_LANGUAGE, on_delete=models.CASCADE)
     text = models.TextField()
 
     objects = TranslationManager()

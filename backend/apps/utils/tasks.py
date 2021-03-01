@@ -1,10 +1,9 @@
 import logging
 from typing import Optional
 
-
 from apps.celery import app
-from apps.home.models import SiteConfiguration, EmailTemplateTranslation
-from apps.utils.email import send_email, render_email_template_with_base
+from apps.home.models import EmailTemplateTranslation, SiteConfiguration
+from apps.utils.email import render_email_template_with_base, send_email
 
 LOGGER = logging.getLogger('app')
 
@@ -45,7 +44,11 @@ def _get_translation(template: str, language: str) -> Optional[EmailTemplateTran
 
     template = site_config_member
     if template:
-        return site_config.get_localized_email_template(template, language)
+        translation = site_config.get_localized_email_template(template, language)
+        if translation:
+            error_msg = f'No notification template {template}'
+            LOGGER.error(error_msg)
+            raise Exception(error_msg)
     error_msg = f'No notification template {template}'
     LOGGER.error(error_msg)
     raise Exception(error_msg)
