@@ -1,7 +1,6 @@
 [tool.pytest.ini_options]
 python_files = 'tests.py'
-addopts = '--numprocesses=auto --ds=conf.settings_test'
-
+addopts = '--numprocesses=3 --ds=conf.settings_test'
 
 [tool.coverage.report]
 fail_under = 80.0
@@ -25,7 +24,8 @@ exclude = [
 	'docs',
 	'*.egg-info',
 	'migrations',
-	'conf'
+	'conf',
+	'*/tests_mocks.py'
 ]
 format = "grouped"
 show_source = true

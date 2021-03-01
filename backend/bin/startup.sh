@@ -1,28 +1,39 @@
 #!/bin/bash
 echo $DJANGO_SETTINGS_MODULE
 
-if [[ ${RUN_MODE:="DEVELOPMENT"} != "CELERY" ]]; then
-	python3 manage.py migrate  -v 2 || exit 1
+if [[ $(expr match "${RUN_MODE:="DEVELOPMENT"}" "CELERY_") == 0 ]]; then
+  python3 manage.py collectstatic --noinput
+  python3 manage.py migrate -v 2 || exit 1
 fi
 
 if [[ $RUN_MODE == "QA" ]]; then
-	python3 manage.py loaddata initial.json
-fi
-
-if [[ $DJANGO_SETTINGS_MODULE != "conf.settings_aws" ]]; then
-	python3 manage.py collectstatic --noinput -v 2
+  python3 manage.py loaddata initial.json
+  python3 manage.py createsuperuser --noinput || true
 fi
 
 if [[ $RUN_MODE != "GUNICORN" ]]; then
-	if [[ $RUN_MODE == "CELERY" ]]; then
-		echo "Starting Celery"
-		celery -A apps worker -Bl INFO -c 1
-	else
-		echo "Starting Celery in detached mode"
-		celery -A apps worker -Bl INFO -c 4 --logfile /dev/stdout -D
-	fi
+  if [[ $RUN_MODE == "CELERY_WORKER" ]]; then
+    echo "Starting Celery worker"
+    celery -A apps worker -l INFO -c 2
+  elif [[ $RUN_MODE == "CELERY_BEAT" ]]; then
+    echo "Starting Celery beat"
+    celery -A apps beat -l INFO
+  else
+    echo "Starting Celery in detached mode"
+    celery -A apps worker -l INFO --logfile celery.log --detach
+    celery -A apps beat -l INFO --logfile celery_beat.log --detach
+  fi
+else
+  echo "Starting Celery in detached mode"
+  celery -A apps worker -l INFO --logfile celery.log --detach
+  celery -A apps beat -l INFO --logfile celery_beat.log --detach
 fi
 
-if [[ $RUN_MODE != "CELERY" ]]; then
-	gunicorn -b 0.0.0.0:8000 -c /srv/gunicorn.conf.py wsgi:application
+if [[ $(expr match "$RUN_MODE" "CELERY_") == 0 ]]; then
+  if [[ $RUN_MODE == "DEVELOPMENT" ]]; then
+    python3 manage.py createsuperuser --noinput
+    python3 manage.py runserver 0.0.0.0:8000
+  else
+    gunicorn -b 0.0.0.0:8000 -c /app/gunicorn.conf.py wsgi:application
+  fi
 fi

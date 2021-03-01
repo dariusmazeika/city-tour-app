@@ -1,41 +1,36 @@
 variables:
-  VERSION_URL: "api/api/build-version/"
+  VERSION_PATH: "api/api/build-version/"
+  DOCKER_BUILDKIT: 1
+  MAX_DB_RETRIES: 5
 
 .docker:
-  image: docker:latest
+  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:latest
+  interruptible: true
   variables:
     DOCKER_CLI_EXPERIMENTAL: enabled
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
   services:
-    - docker:stable-dind
+    - $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:stable-dind
   before_script:
-    - apk add jq
     - docker info || unset DOCKER_HOST && docker info
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
 
-.tests:
+.test:
   stage: Testing
-  services:
-    - postgres:latest
-    - redis:latest
-  variables:
-    DB_HOST: postgres
-    DB_USER: postgres
-    POSTGRES_PASSWORD: django
-    POSTGRES_DB: django
-    DB_PORT: 5432
-  script:
-    - python3 -m pytest apps --cov --cov-report=term --cov-report=xml:cov.xml --junitxml=pytest.xml || export FAIL=true
-    - cat cov.xml | sed 's/apps/backend\/apps/g' > coverage.xml
-    - if ${FAIL:=false}; then false; fi
-  artifacts:
-    reports:
-      cobertura: backend/coverage.xml
-      junit: backend/pytest.xml
+  image: $CI_RUNNER
+  interruptible: true
+  before_script:
+    - cd backend
+  only:
+    - master
+    - merge_requests
+  needs:
+    - Build base runner
 
 .deploy-aws:
   image: $CI_RUNNER
+  stage: Deploy
   script:
     - export BUILD_VERSION=$CI_PIPELINE_ID
     - python3 backend/manage.py collectstatic
@@ -46,21 +41,14 @@ variables:
     - cat appspec.template.yaml | envsubst > appspec.yaml
     - aws deploy create-deployment --application-name $APPLICATION_NAME --deployment-group-name $DEPLOYMENT_GROUP --revision revisionType=AppSpecContent,appSpecContent={content="$(cat appspec.yaml)"}
     - wait && cat /tmp/s3.log
+    - if ${CI_KUBERNETES_ACTIVE:=false}; then ./bin/check_if_deployed.sh; fi
   dependencies:
     - Build base runner
-
-.after-deploy-check:
-  image: $CI_RUNNER
-  script:
-    - export VERSION=$(wget -qO- "$CI_ENVIRONMENT_URL$VERSION_URL")
-    - if [ $VERSION -ne $CI_PIPELINE_ID ]; then echo "Environment version $VERSION did not match pipeline id $CI_PIPELINE_ID" && false; fi
-  dependencies:
-    - Build base runner
-  rules:
-    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies")
-      when: delayed
-      start_in: 5 minutes
-    - when: never
+  only:
+    refs:
+      - master
+    variables:
+      - $AWS_ECR
 
 stages:
   - Requirements check
@@ -68,19 +56,16 @@ stages:
   - Testing
   - Build review app
   - Quality assurance
-  - Deploy Development
-  - Deploy Production
-  - Production Check
+  - Deploy
 
 Build base app:
   stage: Requirements check
   extends: .docker
   script:
-    - jq -r '.default | to_entries[] | .key + .value.version' backend/Pipfile.lock > backend/requirements.txt
-    - echo "tblib" >> backend/requirements.txt
-    - export IMAGE=$CI_REGISTRY_IMAGE/base:$(md5sum backend/requirements.txt | awk '{print $1}')
+    - export IMAGE=$CI_REGISTRY_IMAGE/base:$(md5sum backend/requirements.txt | awk '{print $1}')$(md5sum backend/production.Dockerfile | awk '{print $1}')
+    - echo $IMAGE
     - docker manifest inspect $IMAGE || export REBUILD=true
-    - if ${REBUILD:=false}; then docker build --tag $IMAGE --no-cache --file backend/base.Dockerfile backend/; fi
+    - if ${REBUILD:=false}; then docker build --tag $IMAGE --no-cache --target=base --file backend/production.Dockerfile backend/; fi
     - if ${REBUILD:=false}; then docker push $IMAGE; fi
     - echo "CI_APP=$IMAGE" >> app.env
   artifacts:
@@ -94,11 +79,10 @@ Build base runner:
   stage: Requirements check
   extends: .docker
   script:
-    - jq -r '.develop * .default | to_entries[] | .key + .value.version' backend/Pipfile.lock > backend/requirements.txt
-    - echo "tblib" >> backend/requirements.txt
-    - export IMAGE=$CI_REGISTRY_IMAGE/runner:$(md5sum backend/requirements.txt | awk '{print $1}')
+    - export IMAGE=$CI_REGISTRY_IMAGE/runner:$(md5sum backend/requirements.dev.txt | awk '{print $1}')$(md5sum backend/Dockerfile | awk '{print $1}')
+    - echo $IMAGE
     - docker manifest inspect $IMAGE || export REBUILD=true
-    - if ${REBUILD:=false}; then docker build --tag $IMAGE --no-cache --file backend/runner.Dockerfile backend/; fi
+    - if ${REBUILD:=false}; then docker build --tag $IMAGE --no-cache --file backend/Dockerfile backend/; fi
     - if ${REBUILD:=false}; then docker push $IMAGE; fi
     - echo "CI_RUNNER=$IMAGE" >> runner.env
   artifacts:
@@ -108,29 +92,43 @@ Build base runner:
     - master
     - merge_requests
 
+Tag stable runner:
+  stage: Building
+  extends: .docker
+  script:
+    - export RUNNER_MANIFEST=$(docker manifest inspect $CI_RUNNER)
+    - export STABLE_RUNNER_MANIFEST=$(docker manifest inspect $CI_REGISTRY_IMAGE/runner:stable) || export STABLE_RUNNER_MANIFEST=""
+    - >
+      if [[ "$RUNNER_MANIFEST" != "$STABLE_RUNNER_MANIFEST" ]]; then
+        docker pull $CI_RUNNER;
+        docker tag $CI_RUNNER $CI_REGISTRY_IMAGE/runner:stable;
+        docker push $CI_REGISTRY_IMAGE/runner:stable;
+      fi
+  only:
+    - master
+  needs:
+    - Build base runner
+
 Build image:
   stage: Building
   extends: .docker
   image: $CI_RUNNER
   script:
     - if ${AWS_ECR:=false}; then aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR ; fi
-    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --tag $CI_REGISTRY_IMAGE:latest --tag $AWS_ECR:$CI_COMMIT_SHORT_SHA --file backend/build.Dockerfile --no-cache --build-arg image=$CI_APP backend/
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --file backend/production.Dockerfile --no-cache --build-arg IMAGE=$CI_APP backend/
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE:latest
     - if ${AWS_ECR:=false}; then docker push $AWS_ECR:$CI_COMMIT_SHORT_SHA ; fi
-  rules:
-    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies")
-      when: on_success
-    - when: never
-  dependencies:
+  only:
+    - master
+  needs:
     - Build base runner
     - Build base app
 
 Code quality:
-  stage: Testing
-  image: $CI_RUNNER
-  before_script:
-    - cd backend
+  variables:
+    KUBERNETES_CPU_REQUEST: 2750m
+    KUBERNETES_CPU_LIMIT: 2750m
+  extends: .test
   script:
     - flakehell lint --format=gitlab --output-file flakehell.json || export FAIL=true
     - cat flakehell.json | sed 's/.\/apps/backend\/apps/g' > codeclimate.json
@@ -138,72 +136,67 @@ Code quality:
   artifacts:
     reports:
       codequality: backend/codeclimate.json
-  only:
-    - master
-    - merge_requests
-  dependencies:
-    - Build base runner
 
 MyPY:
-  stage: Testing
-  image: $CI_RUNNER
-  before_script:
-    - cd backend
+  extends: .test
+  variables:
+    KUBERNETES_CPU_REQUEST: 700m
+    KUBERNETES_CPU_LIMIT: 700m
   script:
     - mypy apps --config-file mypy.ini --junit-xml mypy.xml
-  only:
-    - master
-    - merge_requests
-  dependencies:
-    - Build base runner
   artifacts:
     reports:
       junit: backend/mypy.xml
 
 Tests:
-  extends: .tests
-  image: $CI_RUNNER
-  before_script:
-    - cd backend
-  only:
-    - merge_requests
-  dependencies:
-    - Build base runner
-
-Test fixtures:
-  stage: Testing
-  image: $CI_RUNNER
+  extends: .test
   services:
-    - postgres:latest
-    - redis:latest
+    - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/postgis/postgis:latest
+      alias: postgres
+    - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/redis:latest
+      alias: redis
   variables:
+    KUBERNETES_CPU_REQUEST: 3000m
+    KUBERNETES_CPU_LIMIT: 3000m
     DB_HOST: postgres
     DB_USER: postgres
     POSTGRES_PASSWORD: django
     POSTGRES_DB: django
     DB_PORT: 5432
+  coverage: '/Total coverage: (\d+.\d+)%/'
   before_script:
     - cd backend
+    - while ! pg_isready -h $DB_HOST -U $DB_USER -d $POSTGRES_DB -q && [[ ${RETRY:=0} -lt MAX_DB_RETRIES ]]; do sleep 5 && RETRY=$((RETRY + 1)); done
+  script:
+    - python3 -m pytest apps --cov --cov-report=term --cov-report=xml:cov.xml --junitxml=pytest.xml || export FAIL=true
+    - cat cov.xml | sed 's/apps/backend\/apps/g' > coverage.xml
+    - if ${FAIL:=false}; then false; fi
+  artifacts:
+    reports:
+      cobertura: backend/coverage.xml
+      junit: backend/pytest.xml
+  only:
+    - merge_requests
+
+Test fixtures:
+  variables:
+    KUBERNETES_CPU_REQUEST: 700m
+    KUBERNETES_CPU_LIMIT: 700m
+  extends: Tests
   script:
     - python3 manage.py migrate
     - python3 manage.py loaddata initial.json
-  only:
-    - merge_requests
-  dependencies:
-    - Build base runner
 
 Test build:
-  extends: .tests
+  extends: Tests
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   before_script:
-    - cd /srv
+    - cd /app
   after_script:
-    - mv /srv/*.xml backend/
-  rules:
-    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies")
-      when: on_success
-    - when: never
-  dependencies:
+    - mv /app/*.xml backend/
+  only:
+    - master
+  needs:
     - Build image
 
 Build review app image:
@@ -211,46 +204,53 @@ Build review app image:
   extends: .docker
   image: $CI_RUNNER
   script:
-    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --file backend/build.Dockerfile --no-cache --build-arg image=$CI_APP backend/
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --file backend/production.Dockerfile --no-cache --build-arg IMAGE=$CI_APP backend/
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   only:
     kubernetes: active
     refs:
-      - merge_request
-  dependencies:
+      - merge_requests
+  needs:
     - Build base runner
     - Build base app
 
 Deploy review app:
   stage: Quality assurance
-  image: dtzar/helm-kubectl:3.3.4
+  image: $CI_RUNNER
   environment:
-    name: Review app $CI_PROJECT_TITLE MR$CI_MERGE_REQUEST_IID
+    name: Review app MR$CI_MERGE_REQUEST_IID
     url: https://$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN/admin/
     on_stop: Teardown review app
     auto_stop_in: 1 day
   before_script:
-    - apk add gettext
+    - kubectl delete secret regcred || true
     - CI_ENVIRONMENT_URL=${CI_ENVIRONMENT_URL:8:-7}
   script:
     - kubectl version
+    - if $(kubectl get secret regcred); then kubectl delete secret regcred; fi
     - kubectl create secret docker-registry regcred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
-    - cat manifest.template.yaml | envsubst | kubectl apply -f -
-    - kubectl rollout status deployment.v1.apps/$CI_ENVIRONMENT_SLUG
-    - kubectl logs $(kubectl get pods | grep review-app | tail -n 1 | awk '{print $1}') -c application
+    - kubectl set image deployment.v1.apps/$CI_ENVIRONMENT_SLUG application=${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA} --record || cat manifest.template.yaml | envsubst | kubectl apply -f -
+    - kubectl rollout status deployment.v1.apps/$CI_ENVIRONMENT_SLUG || export ROLLBACK=true
+    - kubectl logs $(kubectl get pods | grep $CI_ENVIRONMENT_SLUG | tail -n 1 | awk '{print $1}') -c application
+    - if ${ROLLBACK:=false}; then kubectl rollout undo deployment.v1.apps/$CI_ENVIRONMENT_SLUG && false; fi
   after_script:
     - kubectl delete secret regcred
   when: manual
   only:
     kubernetes: active
     refs:
-      - merge_request
-  dependencies:
+      - merge_requests
+  needs:
+    - Tests
+    - Code quality
+    - MyPY
     - Build review app image
+    - Build base runner
+    - Test fixtures
 
 Teardown review app:
   stage: Quality assurance
-  image: dtzar/helm-kubectl:3.3.4
+  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/dtzar/helm-kubectl:3.3.4
   script:
     - kubectl delete deployments --all
     - kubectl delete services --all
@@ -260,36 +260,35 @@ Teardown review app:
   only:
     kubernetes: active
     refs:
-      - merge_request
+      - merge_requests
   environment:
-    name: Review app $CI_PROJECT_TITLE MR$CI_MERGE_REQUEST_IID
+    name: Review app MR$CI_MERGE_REQUEST_IID
     action: stop
 
-Deploy development:
-  stage: Deploy Development
-  extends: .deploy-aws
-  environment: Development
-  rules:
-    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies" && $AWS_ECR)
-      when: on_success
-    - when: never
+Deploy QA:
+  extends: Deploy review app
+  stage: Deploy
+  when: on_success
+  environment:
+    name: QA
+    on_stop: null
+    auto_stop_in: null
+  only:
+    kubernetes: active
+    refs:
+      - master
+  needs:
+    - Build image
+    - Test build
+    - Code quality
+    - MyPY
+    - Build base runner
 
-Check after deploy development:
-  stage: Deploy Development
-  extends: .after-deploy-check
+Deploy development:
+  extends: .deploy-aws
   environment: Development
 
 Deploy production:
-  stage: Deploy Production
-  extends: .deploy-aws
+  extends: Deploy development
   environment: Production
-  rules:
-    - if: ($CI_COMMIT_BRANCH == "master" && $CI_PROJECT_NAMESPACE == "corner-case-technologies" && $AWS_ECR)
-      when: manual
-    - when: never
-
-Check after deploy production:
-  stage: Production Check
-  extends: .after-deploy-check
-  environment: Production
-
+  when: manual

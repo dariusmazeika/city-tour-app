@@ -15,6 +15,12 @@ import os
 
 from corsheaders.defaults import default_headers
 import dj_database_url
+import sentry_sdk
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
+
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'local')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -35,8 +41,6 @@ BUILD_VERSION = os.getenv('BUILD_VERSION', '')
 # Semantic versioning + build version
 VERSION = f'0.0.0_{BUILD_VERSION}'
 
-AUTH_USER_MODEL = 'users.User'
-
 # Returns user even if it's not active, lets do handle it manually
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
 
@@ -45,7 +49,7 @@ APP_HOST = os.getenv('APP_HOST', 'http://localhost:8000/')
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'apps.utils.admin.AdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -67,6 +71,7 @@ INSTALLED_APPS = [
     'apps.translations.apps.TranslationsConfig',
     'apps.users.apps.UsersConfig',
     'corsheaders',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -113,7 +118,7 @@ if os.getenv('DATABASE_URL'):
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': os.getenv('DB_NAME', 'django'),
             'USER': os.getenv('DB_USER', 'django'),
             'HOST': os.getenv('DB_HOST', 'localhost'),
@@ -147,8 +152,6 @@ LOGGING = {
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -239,11 +242,13 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
+AUTH_USER_MODEL = 'users.User'
 VERIFICATION_BASE_URL = '{}verify/{}'
 RESET_PASSWORD_BASE_URL = '{}reset-password/{}'
 PASSWORD_TOKEN_EXPIRATION_PERIOD = 12  # in hours
 
 TABBED_ADMIN_USE_JQUERY_UI = True
+ADMIN_COLOR = '#44484a'  # Gray
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
@@ -263,3 +268,11 @@ SPECTACULAR_SETTINGS = {
     'TITLE': '',
     'VERSION': VERSION,
 }
+
+sentry_sdk.init(
+    os.getenv('SENTRY_URL'),
+    environment=ENVIRONMENT,
+    integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=True,
+)

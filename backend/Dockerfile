@@ -1,17 +1,27 @@
-FROM python:3.9
+FROM python:alpine
 
 ENV PYTHONUNBUFFERED 1
-RUN apt-get update
-RUN pip3 install --upgrade pip
-RUN pip3 install --upgrade pipenv
+EXPOSE 8000 8000
 
-COPY Pipfile.lock Pipfile tmp/
-WORKDIR tmp/
-RUN pipenv install --dev --system --deploy
-RUN mkdir -p /app/static /tmp/logs/app
+# Add system requirements
+RUN apk add --no-cache jq gettext sed bash curl docker-cli git binutils
+# Add runtime dependencies
+RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg postgresql-client geos gdal
+
+COPY requirements.dev.txt .
+
+RUN apk add --no-cache --virtual build-deps gcc musl-dev postgresql-dev libxslt-dev jpeg-dev libffi-dev rust cargo \
+	&& pip install --no-cache-dir --upgrade pip-tools awscli \
+	&& pip-sync requirements.dev.txt
+
+RUN rm -f requirements.dev.txt
+
+RUN ln -s $(find /usr/lib -name libgdal* | head -n 1) /usr/lib/libgdal.so \
+	&& ln -s /usr/lib/libgeos_c.so.1 /usr/lib/libgeos_c.so
+
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk add kubectl
 
 VOLUME /app
 VOLUME /static
-
 WORKDIR /app
-EXPOSE 8000

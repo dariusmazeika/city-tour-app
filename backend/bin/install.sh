@@ -1,4 +1,4 @@
 #!/bin/bash
 
 #install django dependencies
-pipenv install --dev --system
+pip-sync requirements.dev.txt
