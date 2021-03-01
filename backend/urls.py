@@ -23,10 +23,7 @@ urlpatterns += [
     path('schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     # Local apps
-    path('api/api/', include('apps.api.urls')),
-    path('api/home/', include('apps.home.urls')),
-    path('api/users/', include('apps.users.urls')),
-    path('api/manifests/', include('apps.manifests.urls')),
+    path('api/', include('apps.api.urls')),
 ]
 
 admin.autodiscover()
