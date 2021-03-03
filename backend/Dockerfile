@@ -6,7 +6,7 @@ EXPOSE 8000 8000
 # Add system requirements
 RUN apk add --no-cache jq gettext sed bash curl docker-cli git binutils
 # Add runtime dependencies
-RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg postgresql-client geos gdal
+RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg postgresql-client
 
 COPY requirements.dev.txt .
 
@@ -15,9 +15,6 @@ RUN apk add --no-cache --virtual build-deps gcc musl-dev postgresql-dev libxslt-
 	&& pip-sync requirements.dev.txt
 
 RUN rm -f requirements.dev.txt
-
-RUN ln -s $(find /usr/lib -name libgdal* | head -n 1) /usr/lib/libgdal.so \
-	&& ln -s /usr/lib/libgeos_c.so.1 /usr/lib/libgeos_c.so
 
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 RUN apk add kubectl

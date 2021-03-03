@@ -114,31 +114,9 @@ spec:
         - name: application
           image: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
           imagePullPolicy: IfNotPresent
-          env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: conf.settings_qa
-            - name: BUILD_VERSION
-              value: "${CI_PIPELINE_ID}"
-            - name: RUN_MODE
-              value: QA
-            - name: DB_USER
-              value: psql
-            - name: DB_HOST
-              value: postgresql
-            - name: DB_PORT
-              value: "5432"
-            - name: APP_HOST
-              value: ${CI_ENVIRONMENT_URL}
-            - name: CI_PROJECT_TITLE
-              value: ${CI_PROJECT_TITLE}
-            - name: DJANGO_SUPERUSER_EMAIL
-              value: test@test.com
-            - name: DJANGO_SUPERUSER_PASSWORD
-              value: test
-            - name: SENTRY_URL
-              value: ${SENTRY_URL}
-            - name: ENVIRONMENT
-              value: ${ENVIRONMENT}
+          envFrom:
+            - configMapRef:
+                name: values
           ports:
             - containerPort: 8000
           readinessProbe:
@@ -217,12 +195,11 @@ metadata:
   labels:
     app: ${CI_PROJECT_NAME}
 spec:
-  storageClassName: rook-cephfs
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 6Gi
 
 ---
 apiVersion: v1
@@ -232,9 +209,8 @@ metadata:
   labels:
     app: ${CI_PROJECT_NAME}
 spec:
-  storageClassName: rook-cephfs
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 8Gi

@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 EXPOSE 8000 8000
 
 # Add runtime dependencies
-RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg bash postgresql-client geos gdal binutils
+RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg bash postgresql-client binutils
 
 COPY requirements.txt .
 
@@ -13,9 +13,6 @@ RUN apk add --no-cache --virtual build-deps gcc musl-dev postgresql-dev libxslt-
 	&& pip install --no-cache-dir pip-tools \
 	&& pip-sync \
 	&& apk --purge del build-deps
-
-RUN ln -s $(find /usr/lib -name libgdal* | head -n 1) /usr/lib/libgdal.so \
-	&& ln -s /usr/lib/libgeos_c.so.1 /usr/lib/libgeos_c.so
 
 RUN rm -f requirements.txt
 

@@ -1,6 +1,9 @@
 [tool.pytest.ini_options]
 python_files = 'tests.py'
 addopts = '--numprocesses=3 --ds=conf.settings_test'
+filterwarnings = [
+	"ignore:::^(?!apps)"
+]
 
 [tool.coverage.report]
 fail_under = 80.0
