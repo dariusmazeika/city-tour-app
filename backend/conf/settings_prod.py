@@ -5,6 +5,7 @@ DEBUG = False
 
 SECRET_KEY = os.getenv('SECRET_KEY')  # TODO generate new secret key for the new project and pass from env.
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', [])  # TODO specify hosts from env once prod will be set.
+INTERNAL_IPS = []
 CORS_ALLOWED_ORIGINS = ALLOWED_HOSTS
 CORS_ORIGIN_ALLOW_ALL = False
 
