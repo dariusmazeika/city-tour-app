@@ -1,7 +1,16 @@
 [tool.pytest.ini_options]
-python_files = 'tests.py'
-addopts = '--numprocesses=auto --ds=conf.settings_test'
-
+python_files = 'tests.py test_*.py tests_*.py'
+addopts = '--numprocesses=auto'
+DJANGO_SETTINGS_MODULE = 'conf.settings_test'
+filterwarnings = [
+	# To ignore a warning: copy begging of the warning message and
+	# escape special characters (like brackets) with '\\', e.g.:
+	#
+	#	"ignore:django.utils.translation.ugettext_lazy\\(\\) is deprecated in favor of",
+	#
+	"ignore:::^(?!apps)",
+	"error:::^apps",
+]
 
 [tool.coverage.report]
 fail_under = 80.0
