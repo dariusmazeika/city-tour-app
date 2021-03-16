@@ -231,8 +231,12 @@ EMAIL_HOST_USER = '<email-host>'
 EMAIL_HOST_PASSWORD = '<email-psw>'
 EMAIL_PORT = 587
 
+# Redis settings
+REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+REDIS_CACHE_DEFAULT_TTL = 86400
+
 # Celery settings
-CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://redis:6379/0')
+CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
