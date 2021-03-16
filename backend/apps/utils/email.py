@@ -1,6 +1,7 @@
 import json
 import logging
 import mimetypes
+from typing import List, Optional
 
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
@@ -18,12 +19,22 @@ VERIFICATION_EMAIL_TEMPLATE = 'get_verification_template'
 VERIFICATION_EMAIL_CATEGORY = 'Verify Email'
 
 
-def send_email(email: str, subject: str, html_message: str, attachments: list = None, category: str = None) -> None:
+def send_email(  # noqa: CFQ002
+    email: str,
+    subject: str,
+    html_message: str,
+    attachments: Optional[list] = None,
+    category: Optional[str] = None,
+    cc: Optional[List[str]] = None,
+    bcc: Optional[List[str]] = None,
+) -> None:
     attachments = attachments or []
     email_msg = EmailMessage(
         subject=subject,
         body=html_message,
         to=[email],
+        cc=cc,
+        bcc=bcc,
         attachments=[
             (filename, content, mimetypes.guess_type(filename)[0] or 'application/octet-stream')
             for filename, content in attachments
