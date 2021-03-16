@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'override_me_in_prod'
+SECRET_KEY = os.getenv('SECRET_KEY', 'override_me_in_prod')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -228,7 +228,7 @@ DEFAULT_FROM_EMAIL = ''
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = '<email-host>'
-EMAIL_HOST_PASSWORD = '<email-psw>'
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '<email-psw>')
 EMAIL_PORT = 587
 
 # Redis settings
@@ -244,7 +244,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
 VERIFICATION_BASE_URL = '{}verify/{}'
-RESET_PASSWORD_BASE_URL = '{}reset-password/{}'
+RESET_PASSWORD_BASE_URL = os.getenv('RESET_PASSWORD_BASE_URL', '{}reset-password/{}')
 PASSWORD_TOKEN_EXPIRATION_PERIOD = 12  # in hours
 
 TABBED_ADMIN_USE_JQUERY_UI = True
