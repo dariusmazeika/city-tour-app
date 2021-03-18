@@ -23,6 +23,10 @@ django-amazon-ses = "*"
 django-watchman = "*"
 drf-spectacular="*"
 typing-extensions = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-django = "*"
+pytest-xdist = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -44,10 +48,6 @@ flake8-print = "*"
 coverage = "*"
 model-bakery = "*"
 flakehell = "*"
-pytest = "*"
-pytest-cov = "*"
-pytest-django = "*"
-pytest-xdist = "*"
 
 [requires]
 python_version = "3.9"
