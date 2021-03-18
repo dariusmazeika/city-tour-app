@@ -27,6 +27,8 @@ pytest = "*"
 pytest-cov = "*"
 pytest-django = "*"
 pytest-xdist = "*"
+coverage = "*"
+model-bakery = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -45,8 +47,6 @@ flake8-bandit = "*"
 django-stubs = "*"
 mypy = "*"
 flake8-print = "*"
-coverage = "*"
-model-bakery = "*"
 flakehell = "*"
 
 [requires]
