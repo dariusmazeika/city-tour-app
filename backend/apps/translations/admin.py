@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.forms import ModelForm, Textarea, ValidationError
+from django.forms import ValidationError, ModelForm, Textarea
 from django.forms.models import BaseInlineFormSet
 from django.utils.html import format_html_join
 
@@ -34,10 +34,10 @@ class BaseTranslationFormSet(BaseInlineFormSet):
 
 class TranslationForm(ModelForm):
     class Meta:
-        fields = ('language', 'title')
+        fields = ('language', 'text')
         model = Translation
         widgets = {
-            'title': Textarea(attrs={'cols': 40, 'rows': 2}),
+            'text': Textarea(attrs={'cols': 40, 'rows': 2}),
         }
 
 
@@ -58,6 +58,6 @@ class MessageAdmin(admin.ModelAdmin):
     @staticmethod
     def trans(obj):
         trans = format_html_join('\n', '<b>{}:</b> "{}"<br/>',
-                                 ((t.language.code, t.title) for t in obj.translation_set.all()))
+                                 ((t.language.code, t.text) for t in obj.translation_set.all()))
         trans.short_description = 'Translations'
         return trans

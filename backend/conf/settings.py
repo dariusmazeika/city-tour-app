@@ -118,7 +118,7 @@ if os.getenv('DATABASE_URL'):
 else:
     DATABASES = {
         'default': {
-                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': os.getenv('DB_NAME', 'django'),
             'USER': os.getenv('DB_USER', 'django'),
             'HOST': os.getenv('DB_HOST', 'localhost'),

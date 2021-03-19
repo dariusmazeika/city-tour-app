@@ -1,4 +1,4 @@
-FROM python:alpine
+FROM python:3.9-alpine
 
 ENV PYTHONUNBUFFERED 1
 EXPOSE 8000 8000

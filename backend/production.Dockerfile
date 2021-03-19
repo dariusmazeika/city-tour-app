@@ -1,5 +1,5 @@
 ARG IMAGE=base
-FROM python:alpine as base
+FROM python:3.9-alpine as base
 
 ENV PYTHONUNBUFFERED 1
 EXPOSE 8000 8000

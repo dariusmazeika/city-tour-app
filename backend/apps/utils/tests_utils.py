@@ -24,7 +24,6 @@ class BaseTestCase(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         generators.add('ckeditor.fields.RichTextField', generators.random_gen.gen_text)
-        generators.add('apps.translations.utils.TranslatableResourceForeignKey', generators.random_gen.gen_related)
 
     def setUp(self):
         logging.disable(logging.INFO)

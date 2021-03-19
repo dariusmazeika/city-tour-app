@@ -143,7 +143,7 @@ spec:
         - name: regcred
       volumes:
         - name: static-files
-          emptyDir: {}
+          emptyDir: { }
         - name: media-files
           persistentVolumeClaim:
             claimName: persistent-storage
@@ -170,7 +170,7 @@ spec:
           ports:
             - containerPort: 6379
         - name: postgresql
-          image: postgis/postgis:latest
+          image: postgres:latest
           env:
             - name: POSTGRES_USER
               value: psql

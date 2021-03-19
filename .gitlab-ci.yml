@@ -151,7 +151,7 @@ MyPY:
 Tests:
   extends: .test
   services:
-    - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/postgis/postgis:latest
+    - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/postgres:latest
       alias: postgres
     - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/redis:latest
       alias: redis

@@ -3,7 +3,7 @@ gunicorn
 djangorestframework
 django-solo
 django-ckeditor
-celery==4.4.6
+celery
 premailer
 redis
 Django

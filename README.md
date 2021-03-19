@@ -6,7 +6,11 @@ command.
 
 ## stack
 
-python 3.8 Postgres latest Django 3.1 Nginx 1.17 Gunicorn
+Python
+Postgres
+Django
+Nginx
+Gunicorn
 
 ## API documentation
 

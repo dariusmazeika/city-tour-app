@@ -19,10 +19,14 @@ if [[ $RUN_MODE != "GUNICORN" ]]; then
     echo "Starting Celery beat"
     celery -A apps beat -l INFO
   else
-    echo "Starting Celery in detached mode"
-    celery -A apps worker -l INFO --logfile celery.log --detach
-    celery -A apps beat -l INFO --logfile celery_beat.log --detach
+    echo "Starting Celery Worker and Celery Beat"
+    celery -A apps worker -l INFO -c 2 &
+    celery -A apps beat -l INFO
   fi
+else
+  echo "Starting Celery in detached mode"
+  celery -A apps worker -l INFO --logfile celery.log --detach
+  celery -A apps beat -l INFO --logfile celery_beat.log --detach
 fi
 
 if [[ $(expr match "$RUN_MODE" "CELERY_") == 0 ]]; then

@@ -1,7 +1,6 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-
-from apps.translations.utils import BaseTranslatableResourceModel, BaseTranslationModel, TranslatableResourceForeignKey
 
 
 class Language(models.Model):
@@ -17,7 +16,7 @@ class Language(models.Model):
         super(Language, self).save(*args, **kwargs)
 
 
-class Message(BaseTranslatableResourceModel):
+class Message(models.Model):
     message_id = models.CharField(max_length=200, primary_key=True)
 
     def __str__(self):
@@ -37,8 +36,10 @@ class TranslationManager(models.Manager):
         return self.get(message=message_pk, language=language_pk)
 
 
-class Translation(BaseTranslationModel):
-    message = TranslatableResourceForeignKey(Message)
+class Translation(models.Model):
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, default=settings.TRANSLATIONS_BASE_LANGUAGE[0], on_delete=models.CASCADE)
+    text = models.TextField()
 
     objects = TranslationManager()
 
