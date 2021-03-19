@@ -1,8 +1,15 @@
 [tool.pytest.ini_options]
-python_files = 'tests.py'
-addopts = '--numprocesses=3 --ds=conf.settings_test'
+python_files = 'tests.py test_*.py tests_*.py'
+addopts = '--numprocesses=auto'
+DJANGO_SETTINGS_MODULE = 'conf.settings_test'
 filterwarnings = [
-	"ignore:::^(?!apps)"
+	# To ignore a warning: copy begging of the warning message and
+	# escape special characters (like brackets) with '\\', e.g.:
+	#
+	#	"ignore:django.utils.translation.ugettext_lazy\\(\\) is deprecated in favor of",
+	#
+	"ignore:::^(?!apps)",
+	"error:::^apps",
 ]
 
 [tool.coverage.report]
@@ -27,8 +34,7 @@ exclude = [
 	'docs',
 	'*.egg-info',
 	'migrations',
-	'conf',
-	'*/tests_mocks.py'
+	'conf'
 ]
 format = "grouped"
 show_source = true

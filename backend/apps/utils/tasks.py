@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import List, Optional
 
 from apps.celery import app
 from apps.home.models import EmailTemplateTranslation, SiteConfiguration
@@ -9,7 +9,15 @@ LOGGER = logging.getLogger('app')
 
 
 @app.task
-def send_email_task(email: str, template: str, category: str = None, context: dict = None, language: str = None):
+def send_email_task(  # noqa: CFQ002
+    email: str,
+    template: str,
+    category: Optional[str] = None,
+    context: Optional[dict] = None,
+    language: Optional[str] = None,
+    cc: Optional[List[str]] = None,
+    bcc: Optional[List[str]] = None,
+):
     """
     Email send task, which firstly collects all the information from SiteConfiguration
     and then calls send_email function.
@@ -19,9 +27,19 @@ def send_email_task(email: str, template: str, category: str = None, context: di
     try:
         LOGGER.info('sending email %s to %s ', template, email)
         translation = _get_translation(template, language)
-        html_message = render_email_template_with_base(html_content=translation.content, context=context,
-                                                       subject=translation.subject)
-        send_email(email=email, subject=translation.subject, html_message=html_message, category=category)
+        html_message = render_email_template_with_base(
+            html_content=translation.content,
+            context=context,
+            subject=translation.subject,
+        )
+        send_email(
+            email=email,
+            subject=translation.subject,
+            html_message=html_message,
+            category=category,
+            cc=cc,
+            bcc=bcc,
+        )
     except Exception as e:  # noqa: B902
         LOGGER.error('Error during sending %s: %s ', translation, e)  # noqa: G200
 
