@@ -2,8 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
     kubernetes.io/ingress.class: "nginx"
     certmanager.k8s.io/cluster-issuer: "letsencrypt-prod"
     ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -15,7 +13,7 @@ spec:
   tls:
     - hosts:
         - ${CI_ENVIRONMENT_URL}
-      secretName: letsencrypt-prod
+      secretName: ${CI_ENVIRONMENT_URL}
   rules:
     - host: ${CI_ENVIRONMENT_URL}
       http:
@@ -116,33 +114,23 @@ spec:
         - name: application
           image: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
           imagePullPolicy: IfNotPresent
-          env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: conf.settings_qa
-            - name: RUN_MODE
-              value: QA
-            - name: DB_USER
-              value: psql
-            - name: DB_HOST
-              value: postgresql
-            - name: DB_PORT
-              value: "5432"
-            - name: APP_HOST
-              value: ${CI_ENVIRONMENT_URL}
+          envFrom:
+            - configMapRef:
+                name: values
           ports:
             - containerPort: 8000
           readinessProbe:
             httpGet:
-              path: /api/api/health/
+              path: /api/health/
               port: 8000
             failureThreshold: 30
           volumeMounts:
-            - mountPath: /srv/static
+            - mountPath: /app/static
               name: static-files
-            - mountPath: /srv/media
+            - mountPath: /app/media
               name: media-files
         - name: media
-          image: docker.io/library/nginx:latest
+          image: nginx:alpine
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -155,7 +143,7 @@ spec:
         - name: regcred
       volumes:
         - name: static-files
-          emptyDir: {}
+          emptyDir: { }
         - name: media-files
           persistentVolumeClaim:
             claimName: persistent-storage
@@ -192,6 +180,13 @@ spec:
               value: django
           ports:
             - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: database-storage
+      volumes:
+        - name: database-storage
+          persistentVolumeClaim:
+            claimName: database-storage
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -204,4 +199,18 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 6Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-storage
+  labels:
+    app: ${CI_PROJECT_NAME}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi

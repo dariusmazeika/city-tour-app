@@ -5,7 +5,7 @@ from apps.translations.models import Language, Translation
 
 
 def get_translations(language):
-    return {trans.message.message_id: trans.text for trans in Translation.objects.filter(language=language)}
+    return {trans.message.message_id: trans.title for trans in Translation.objects.filter(language=language)}
 
 
 def generate_messages():
@@ -32,7 +32,7 @@ def get_page_translations(page, add_content=False):
             'slug': translation.slug,
             'title': translation.title,
             'icon': icon,
-            'content': translation.text if add_content else None
+            'content': translation.title if add_content else None
         }
     return translations
 

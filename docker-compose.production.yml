@@ -16,6 +16,8 @@ services:
         environment:
             ALLOWED_HOSTS: ${ALLOWED_HOSTS}
             SECRET_KEY: ${SECRET_KEY}
+            SENTRY_URL: ${SENTRY_URL}
+            ENVIRONMENT: ${ENVIRONMENT}
             DJANGO_SETTINGS_MODULE: conf.settings_prod
             DB_NAME: django
             DB_USER: django

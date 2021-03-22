@@ -1,6 +1,8 @@
 # noinspection PyUnresolvedReferences
 from .settings import *
 
+CELERY_TASK_ALWAYS_EAGER = True
+
 
 # Do not use Redis in tests
 REDIS_URL = ""

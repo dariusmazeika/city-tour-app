@@ -1,13 +1,15 @@
 # docker-django-webpack-starter
 
 This is a starter project for a django app that uses docker for the environment.  
-Docker and docker-compose is all you need to develop, build & deploy, run development or production mode with a single command.
+Docker and docker-compose is all you need to develop, build & deploy, run development or production mode with a single
+command.
 
 ## stack
-python 3.8
-Postgres latest
-Django 3.1
-Nginx 1.17
+
+Python
+Postgres
+Django
+Nginx
 Gunicorn
 
 ## API documentation
@@ -24,6 +26,7 @@ https://www.docker.com/
 https://docs.docker.com/compose/
 
 Pull seed to your project:
+
 ```sh
 git init
 git remote add starter https://github.com/CornerCaseTechnologies/conercase-django-starter
@@ -33,25 +36,31 @@ rm -rf .git
 ```
 
 This project is Flakehell (flake8) and MyPy compatible and all checks can be launched via:
+
 ```shell script
 cd backend
 ./bin/check.sh
 ```
 
 Start dev server:
+
 ```sh
 ./bin/develop.sh
 ```
+
 Wait for docker to set up container, then open [http://localhost:8000](http://localhost:8000)
 
 For starting the whole structure just without backend container:
+
 ```sh
 ./bin/develop_local.sh
 cd backend/
 source .env-local
 python manage.py runserver
 ```
-This will start initially DB and redis container while letting you to start backend service locally in the host for easier debugging and development
+
+This will start initially DB and redis container while letting you to start backend service locally in the host for
+easier debugging and development
 
 ### setup production server
 
@@ -59,24 +68,30 @@ This will start initially DB and redis container while letting you to start back
 2. add deploy key to git repo
 3. clone repository, checkout appropriate branch
 4. create `.env` file at project root with env vars, sample:
+
 ```sh
 export DOCKER_CONFIG_PROD=docker-compose.production.yml #docker-compose file to use
 export PROD_MODE=true # always true for production mode
 ```
-5. run deploy script `./bin/deploy.sh`  
 
-In prod mode sources are added to docker image rather than mounted from host. Nginx serves static files, proxy pass to gunicorn for django app. Logs in `logs` dir.
+5. run deploy script `./bin/deploy.sh`
+
+In prod mode sources are added to docker image rather than mounted from host. Nginx serves static files, proxy pass to
+gunicorn for django app. Logs in `logs` dir.
 
 In case production environment uses external database, set env variable to not backup database:
+
 ```sh
 export EXTERNAL_DB=true
 ```
 
-
 ## install dependencies
+
+Dependencies are storied `requirements.in` (pip-tools)
+
 ```sh
-# backend
-./bin/install_package.sh [package]
+# install dependencies
+./bin/compile-packages.sh
 ```
 
 ## backup & restore database
@@ -90,6 +105,7 @@ export EXTERNAL_DB=true
 ```
 
 ## run django management commands
+
 ```sh
 #dev mode
 ./bin/django.sh [command]
@@ -100,6 +116,7 @@ export EXTERNAL_DB=true
 ```
 
 ## translations
+
 ```sh
 # dump to fixture
 ./bin/django.sh dumpdata --indent 4 --natural-primary translations > backend/apps/translations/fixtures/initial.json

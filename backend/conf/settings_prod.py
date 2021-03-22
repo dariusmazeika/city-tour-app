@@ -43,3 +43,5 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+ADMIN_COLOR = '#417690'  # Blue (default admin color)
