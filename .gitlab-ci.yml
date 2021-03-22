@@ -149,6 +149,18 @@ MyPY:
     reports:
       junit: backend/mypy.xml
 
+Dependency scanning:
+  extends: .test
+  variables:
+    KUBERNETES_CPU_REQUEST: 1000m
+    KUBERNETES_CPU_LIMIT: 1000m
+  script:
+    - safety check -r requirements.txt --full-report || export FAIL=true
+    - safety check -r requirements.dev.txt --full-report || export FAIL=true
+    - if ${FAIL:=false}; then false; fi
+  only:
+    - merge_requests
+
 Tests:
   extends: .test
   services:
