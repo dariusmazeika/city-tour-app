@@ -2,8 +2,6 @@ import json
 
 from .settings import *
 
-ALLOWED_HOSTS = ["*"]
-
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = False
@@ -21,6 +19,9 @@ EMAIL_BACKEND = "django_amazon_ses.EmailBackend"
 
 # S3 storage
 AWS_DEFAULT_ACL = "public-read"
+STORAGE_BUCKET_NAME = os.environ.get("STORAGE_BUCKET_NAME")
+STATIC_BUCKET_NAME = os.environ.get("STATIC_BUCKET_NAME")
+
 DEFAULT_FILE_STORAGE = "apps.utils.storage.MediaStorage"
 STATICFILES_STORAGE = "apps.utils.storage.StaticStorage"
 

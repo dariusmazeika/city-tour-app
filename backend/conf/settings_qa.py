@@ -1,7 +1,5 @@
 from .settings import *
 
-ALLOWED_HOSTS = ["*"]
-
 DEBUG = False
 TEMPLATE_DEBUG = False
 ADMIN_COLOR = '#007704'  # Green
