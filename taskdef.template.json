@@ -96,7 +96,7 @@
         },
         {
           "name": "RUN_MODE",
-          "value": "CELERY"
+          "value": "CELERY_WORKER_AND_BEAT"
         },
         {
           "name": "SENTRY_DSN",
