@@ -34,7 +34,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'override_me_in_prod')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 BUILD_VERSION = os.getenv('BUILD_VERSION', '')
 
