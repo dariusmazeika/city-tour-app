@@ -59,7 +59,7 @@ class User(AbstractUser):
     language = models.ForeignKey(
         Language,
         default=settings.DEFAULT_LANGUAGE,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_DEFAULT,
     )
 
     password_last_change = models.DateTimeField(null=True, blank=True)
@@ -126,9 +126,9 @@ class ActivationKey(BaseModel):
 
 
 class PasswordKey(BaseModel):
-    user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE, related_name='password_keys')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_keys')
     password_key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    expires_at = models.DateTimeField(blank=False, null=False)
+    expires_at = models.DateTimeField()
 
     @staticmethod
     def _default_expiration_period():
