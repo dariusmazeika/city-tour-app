@@ -5,6 +5,7 @@ backups/*.bak
 backend/.mypy_cache
 
 # statics
+static
 backend/static
 backend/media
 
@@ -68,3 +69,6 @@ pipcache
 
 # Coverage
 backend/.coverage*
+
+# Celery beat temporal file
+backend/celerybeat-schedule

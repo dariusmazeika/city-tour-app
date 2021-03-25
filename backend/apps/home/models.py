@@ -17,13 +17,13 @@ class SiteConfiguration(SingletonModel):
         'translations.Language',
         related_name='default_inform_language',
         null=True,
-        blank=True, on_delete=models.CASCADE
+        blank=True, on_delete=models.SET_NULL
     )
     manifest_version = models.CharField(max_length=300, default='1')
     password_renewal_template = models.ForeignKey('home.EmailTemplate', related_name='password_renewal_template',
-                                                  blank=True, null=True, on_delete=models.CASCADE)
+                                                  blank=True, null=True, on_delete=models.SET_NULL)
     verify_email_template = models.ForeignKey('home.EmailTemplate', related_name='verify_email_template',
-                                              blank=True, null=True, on_delete=models.CASCADE)
+                                              blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "Site Configuration"
@@ -68,7 +68,7 @@ class EmailTemplateTranslation(models.Model):
     language = models.ForeignKey(
         'translations.Language',
         default=settings.DEFAULT_LANGUAGE,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_DEFAULT,
     )
     subject = models.CharField(max_length=100)
     template = models.ForeignKey(
