@@ -93,6 +93,27 @@ Build base runner:
     - master
     - merge_requests
 
+Dependabot Standalone:
+  stage: Requirements check
+  image:
+    name: docker.io/andrcuns/dependabot-gitlab:latest
+    entrypoint: [""]
+  variables:
+    RAILS_ENV: production
+    SETTINGS__STANDALONE: "true"
+    SETTINGS__GITLAB_URL: https://gitlab.com
+  before_script:
+    - cd /home/dependabot
+  script:
+    - bundle exec rake "dependabot:update[$CI_PROJECT_PATH,pip,/backend/]"
+  only:
+    refs:
+      - schedules
+      - master
+    variables:
+      - $SETTINGS__GITLAB_ACCESS_TOKEN
+  when: manual
+
 Tag stable runner:
   stage: Building
   extends: .docker
