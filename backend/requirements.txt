@@ -37,7 +37,7 @@ djangorestframework-simplejwt==4.6.0  # via -r requirements.in
 djangorestframework==3.12.3  # via -r requirements.in, djangorestframework-simplejwt, drf-spectacular
 drf-spectacular==0.15.1   # via -r requirements.in
 execnet==1.8.0            # via pytest-xdist
-gunicorn==20.0.4          # via -r requirements.in
+gunicorn==20.1.0          # via -r requirements.in
 idna==2.10                # via requests
 inflection==0.5.1         # via drf-spectacular
 iniconfig==1.1.1          # via pytest
