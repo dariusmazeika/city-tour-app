@@ -75,7 +75,7 @@ mypy==0.812               # via -r requirements.dev.in, django-stubs
 packaging==20.9           # via dparse, pytest, safety
 pbr==5.5.1                # via stevedore
 pep8-naming==0.11.1       # via -r requirements.dev.in
-pillow==8.1.2             # via -r requirements.in
+pillow==8.2.0             # via -r requirements.in
 pluggy==0.13.1            # via pytest
 premailer==3.7.0          # via -r requirements.in
 prompt-toolkit==3.0.18    # via click-repl
