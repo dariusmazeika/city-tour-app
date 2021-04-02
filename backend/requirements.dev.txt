@@ -44,7 +44,7 @@ entrypoints==0.3          # via flakehell
 execnet==1.8.0            # via pytest-xdist
 flake8-bandit==2.1.2      # via -r requirements.dev.in
 flake8-blind-except==0.2.0  # via -r requirements.dev.in
-flake8-bugbear==21.3.2    # via -r requirements.dev.in
+flake8-bugbear==21.4.3    # via -r requirements.dev.in
 flake8-builtins==1.5.3    # via -r requirements.dev.in
 flake8-comprehensions==3.4.0  # via -r requirements.dev.in
 flake8-django==1.1.1      # via -r requirements.dev.in
