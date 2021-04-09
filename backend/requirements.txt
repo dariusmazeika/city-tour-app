@@ -6,7 +6,7 @@
 #
 amqp==5.0.5               # via kombu
 apipkg==1.5               # via execnet
-asgiref==3.3.1            # via django
+asgiref==3.3.4            # via django
 attrs==20.3.0             # via jsonschema, pytest
 billiard==3.6.3.0         # via celery
 boto3==1.17.34            # via django-amazon-ses
@@ -32,7 +32,7 @@ django-solo==1.1.5        # via -r requirements.in
 django-storages==1.11.1   # via -r requirements.in
 django-tabbed-admin==1.0.4  # via -r requirements.in
 django-watchman==1.2.0    # via -r requirements.in
-django==3.1.7             # via -r requirements.in, django-amazon-ses, django-cors-headers, django-storages, django-watchman, djangorestframework, djangorestframework-simplejwt, drf-spectacular, model-bakery
+django==3.2               # via -r requirements.in, django-amazon-ses, django-cors-headers, django-storages, django-watchman, djangorestframework, djangorestframework-simplejwt, drf-spectacular, model-bakery
 djangorestframework-simplejwt==4.6.0  # via -r requirements.in
 djangorestframework==3.12.3  # via -r requirements.in, djangorestframework-simplejwt, drf-spectacular
 drf-spectacular==0.15.1   # via -r requirements.in
