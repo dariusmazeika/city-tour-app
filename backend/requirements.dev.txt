@@ -39,7 +39,7 @@ django==3.1.7             # via -r requirements.in, django-amazon-ses, django-co
 djangorestframework-simplejwt==4.6.0  # via -r requirements.in
 djangorestframework==3.12.3  # via -r requirements.in, djangorestframework-simplejwt, drf-spectacular
 dparse==0.5.1             # via safety
-drf-spectacular==0.14.0   # via -r requirements.in
+drf-spectacular==0.15.1   # via -r requirements.in
 entrypoints==0.3          # via flakehell
 execnet==1.8.0            # via pytest-xdist
 flake8-bandit==2.1.2      # via -r requirements.dev.in

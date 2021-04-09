@@ -35,7 +35,7 @@ django-watchman==1.2.0    # via -r requirements.in
 django==3.1.7             # via -r requirements.in, django-amazon-ses, django-cors-headers, django-storages, django-watchman, djangorestframework, djangorestframework-simplejwt, drf-spectacular, model-bakery
 djangorestframework-simplejwt==4.6.0  # via -r requirements.in
 djangorestframework==3.12.3  # via -r requirements.in, djangorestframework-simplejwt, drf-spectacular
-drf-spectacular==0.14.0   # via -r requirements.in
+drf-spectacular==0.15.1   # via -r requirements.in
 execnet==1.8.0            # via pytest-xdist
 gunicorn==20.0.4          # via -r requirements.in
 idna==2.10                # via requests
