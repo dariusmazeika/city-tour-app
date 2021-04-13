@@ -221,6 +221,17 @@ Test fixtures:
     - python3 manage.py migrate
     - python3 manage.py loaddata initial.json
 
+Check migrations:
+  variables:
+    KUBERNETES_CPU_REQUEST: 700m
+    KUBERNETES_CPU_LIMIT: 700m
+  extends: Tests
+  script:
+    - python3 manage.py makemigrations --check --noinput
+  only:
+    - master
+    - merge_requests
+
 Test build:
   extends: Tests
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
