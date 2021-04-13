@@ -55,7 +55,6 @@ stages:
   - Requirements check
   - Building
   - Testing
-  - Build review app
   - Quality assurance
   - Deploy
 
@@ -131,20 +130,43 @@ Tag stable runner:
   needs:
     - Build base runner
 
-Build image:
+Build app image:
   stage: Building
   extends: .docker
   image: $CI_RUNNER
   script:
-    - if ${AWS_ECR:=false}; then aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR ; fi
+    - if [[ -n "$AWS_ECR" && "$CI_COMMIT_BRANCH"=="$CI_DEFAULT_BRANCH" ]]; then aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR ; fi
     - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --file backend/production.Dockerfile --no-cache --build-arg IMAGE=$CI_APP backend/
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - if ${AWS_ECR:=false}; then docker push $AWS_ECR:$CI_COMMIT_SHORT_SHA ; fi
+    - if [[ -n "$AWS_ECR" && "$CI_COMMIT_BRANCH"=="$CI_DEFAULT_BRANCH" ]]; then docker push $AWS_ECR:$CI_COMMIT_SHORT_SHA ; fi
   only:
     - master
+    - merge_requests
   needs:
     - Build base runner
     - Build base app
+
+Container scanning:
+  stage: Testing
+  image:
+    name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/aquasec/trivy:latest
+    entrypoint: [""]
+  allow_failure: true
+  variables:
+    GIT_STRATEGY: none
+    TRIVY_USERNAME: $CI_REGISTRY_USER
+    TRIVY_PASSWORD: $CI_REGISTRY_PASSWORD
+    TRIVY_AUTH_URL: $CI_REGISTRY
+  script:
+    - trivy image --no-progress --format template --template "@/contrib/html.tpl" -o report.html $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  only:
+    - merge_requests
+    - master
+  needs:
+    - Build app image
+  artifacts:
+    paths:
+      - report.html
 
 Code quality:
   variables:
@@ -242,22 +264,7 @@ Test build:
   only:
     - master
   needs:
-    - Build image
-
-Build review app image:
-  stage: Build review app
-  extends: .docker
-  image: $CI_RUNNER
-  script:
-    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --file backend/production.Dockerfile --no-cache --build-arg IMAGE=$CI_APP backend/
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-  only:
-    kubernetes: active
-    refs:
-      - merge_requests
-  needs:
-    - Build base runner
-    - Build base app
+    - Build app image
 
 Deploy review app:
   stage: Quality assurance
@@ -290,7 +297,7 @@ Deploy review app:
     - Tests
     - Code quality
     - MyPY
-    - Build review app image
+    - Build app image
     - Build base runner
     - Test fixtures
 
