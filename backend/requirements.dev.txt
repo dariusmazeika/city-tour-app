@@ -37,14 +37,14 @@ django-tabbed-admin==1.0.4  # via -r requirements.in
 django-watchman==1.2.0    # via -r requirements.in
 django==3.2               # via -r requirements.in, django-amazon-ses, django-cors-headers, django-storages, django-stubs, django-watchman, djangorestframework, djangorestframework-simplejwt, drf-spectacular, model-bakery
 djangorestframework-simplejwt==4.6.0  # via -r requirements.in
-djangorestframework==3.12.3  # via -r requirements.in, djangorestframework-simplejwt, drf-spectacular
+djangorestframework==3.12.4  # via -r requirements.in, djangorestframework-simplejwt, drf-spectacular
 dparse==0.5.1             # via safety
 drf-spectacular==0.15.1   # via -r requirements.in
 entrypoints==0.3          # via flakehell
 execnet==1.8.0            # via pytest-xdist
 flake8-bandit==2.1.2      # via -r requirements.dev.in
 flake8-blind-except==0.2.0  # via -r requirements.dev.in
-flake8-bugbear==21.3.2    # via -r requirements.dev.in
+flake8-bugbear==21.4.3    # via -r requirements.dev.in
 flake8-builtins==1.5.3    # via -r requirements.dev.in
 flake8-comprehensions==3.4.0  # via -r requirements.dev.in
 flake8-django==1.1.1      # via -r requirements.dev.in
