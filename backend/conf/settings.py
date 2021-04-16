@@ -266,7 +266,7 @@ SIMPLE_JWT = {
 
 # Documentation settings
 SPECTACULAR_SETTINGS = {
-    'SCHEMA_PATH_PREFIX': r'api/',
+    'SCHEMA_PATH_PREFIX': r'/api/',
     'SERVE_PUBLIC': False,
     'SERVE_PERMISSIONS': ('rest_framework.permissions.IsAdminUser',),
     'TITLE': '',
