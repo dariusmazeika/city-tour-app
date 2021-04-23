@@ -25,3 +25,4 @@ pytest-xdist
 responses
 django-cleanup
 sentry-sdk
+parameterized
