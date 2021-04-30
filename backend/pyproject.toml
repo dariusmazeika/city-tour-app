@@ -49,6 +49,7 @@ ignore = [
 	'DJ09',
 	'DJ05',
 	'W503',
+	'CFQ004',
 ]
 per-file-ignores = [
     'apps/utils/authentication.py:A003',
