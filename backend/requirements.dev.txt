@@ -174,7 +174,7 @@ lxml==4.6.3
     # via premailer
 mccabe==0.6.1
     # via flake8
-model-bakery==1.2.1
+model-bakery==1.3.1
     # via -r requirements.in
 mr-proper==0.0.6
     # via flake8-functions
