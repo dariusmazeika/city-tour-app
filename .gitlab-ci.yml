@@ -47,9 +47,6 @@ variables:
   dependencies:
     - Build base runner
   only:
-    refs:
-      - master
-      - /^hotfix.*$/
     variables:
       - $AWS_ECR
 
@@ -331,8 +328,23 @@ Teardown review app:
 Deploy development:
   extends: .deploy-aws
   environment: Development
+  only:
+    refs:
+      - master
+
+Deploy hotfix to development:
+  extends: .deploy-aws
+  environment: Development
+  when: manual
+  only:
+    refs:
+      - /^hotfix.*$/
 
 Deploy production:
   extends: Deploy development
   environment: Production
   when: manual
+  only:
+    refs:
+      - master
+      - /^hotfix.*$/
