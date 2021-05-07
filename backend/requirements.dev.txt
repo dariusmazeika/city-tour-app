@@ -62,7 +62,7 @@ django-amazon-ses==4.0.0
     # via -r requirements.in
 django-ckeditor==6.0.0
     # via -r requirements.in
-django-cleanup==5.1.0
+django-cleanup==5.2.0
     # via -r requirements.in
 django-cors-headers==3.7.0
     # via -r requirements.in
