@@ -95,14 +95,14 @@ Build base runner:
 Dependabot Standalone:
   stage: Requirements check
   image:
-    name: docker.io/andrcuns/dependabot-gitlab:latest
+    name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/andrcuns/dependabot-gitlab:0.3.10
     entrypoint: [""]
   variables:
     RAILS_ENV: production
     SETTINGS__STANDALONE: "true"
     SETTINGS__GITLAB_URL: https://gitlab.com
   before_script:
-    - cd /home/dependabot
+    - cd /home/dependabot/app
   script:
     - bundle exec rake "dependabot:update[$CI_PROJECT_PATH,pip,/backend/]"
   only:
