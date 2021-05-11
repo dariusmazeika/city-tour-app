@@ -26,6 +26,7 @@ variables:
   only:
     - master
     - merge_requests
+    - /^hotfix.*$/
   needs:
     - Build base runner
 
@@ -46,8 +47,6 @@ variables:
   dependencies:
     - Build base runner
   only:
-    refs:
-      - master
     variables:
       - $AWS_ECR
 
@@ -74,6 +73,7 @@ Build base app:
   only:
     - master
     - merge_requests
+    - /^hotfix.*$/
 
 Build base runner:
   stage: Requirements check
@@ -91,6 +91,7 @@ Build base runner:
   only:
     - master
     - merge_requests
+    - /^hotfix.*$/
 
 Dependabot Standalone:
   stage: Requirements check
@@ -109,6 +110,7 @@ Dependabot Standalone:
     refs:
       - schedules
       - master
+      - /^hotfix.*$/
     variables:
       - $SETTINGS__GITLAB_ACCESS_TOKEN
   when: manual
@@ -127,6 +129,7 @@ Tag stable runner:
       fi
   only:
     - master
+    - /^hotfix.*$/
   needs:
     - Build base runner
 
@@ -142,6 +145,7 @@ Build app image:
   only:
     - master
     - merge_requests
+    - /^hotfix.*$/
   needs:
     - Build base runner
     - Build base app
@@ -162,6 +166,7 @@ Container scanning:
   only:
     - merge_requests
     - master
+    - /^hotfix.*$/
   needs:
     - Build app image
   artifacts:
@@ -253,6 +258,7 @@ Check migrations:
   only:
     - master
     - merge_requests
+    - /^hotfix.*$/
 
 Test build:
   extends: Tests
@@ -263,6 +269,7 @@ Test build:
     - mv /app/*.xml backend/
   only:
     - master
+    - /^hotfix.*$/
   needs:
     - Build app image
 
@@ -321,8 +328,23 @@ Teardown review app:
 Deploy development:
   extends: .deploy-aws
   environment: Development
+  only:
+    refs:
+      - master
+
+Deploy hotfix to development:
+  extends: .deploy-aws
+  environment: Development
+  when: manual
+  only:
+    refs:
+      - /^hotfix.*$/
 
 Deploy production:
   extends: Deploy development
   environment: Production
   when: manual
+  only:
+    refs:
+      - master
+      - /^hotfix.*$/
