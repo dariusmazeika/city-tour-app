@@ -6,7 +6,7 @@ set -e
 echo "Backend checks"
 
 echo "1. FlakeHell"
-python3 -m flakehell lint
+python3 -m pflake8 apps
 
 echo "2. MyPy"
 python3 -m mypy apps --config-file mypy.ini

@@ -179,7 +179,7 @@ Code quality:
     KUBERNETES_CPU_LIMIT: 2750m
   extends: .test
   script:
-    - flakehell lint --format=gitlab --output-file flakehell.json || export FAIL=true
+    - pflake8 --format gl-codeclimate --output-file flakehell.json apps || export FAIL=true
     - cat flakehell.json | sed 's/.\/apps/backend\/apps/g' > codeclimate.json
     - if ${FAIL:=false}; then false; fi
   artifacts:

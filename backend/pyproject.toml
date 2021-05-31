@@ -25,7 +25,7 @@ omit = [
 	'*/tests.py',
 ]
 
-[tool.flakehell]
+[tool.flake8]
 exclude = [
 	'.git',
 	'.idea',
@@ -36,42 +36,21 @@ exclude = [
 	'migrations',
 	'conf'
 ]
-format = "grouped"
-show_source = true
+format = 'grouped'
+show_source = 'true'
 max_line_length = 120
 max_complexity = 7
 import_order_style = 'google'
 include = 'apps/'
 application_import_names = 'apps'
 
-[tool.flakehell.plugins]
-flake8-black = ['+*']
-flake8-bandit = ['+*']
-flake8-blind-except = ['+*']
-flake8-bugbear = ['+*']
-flake8-comprehensions = ['+*']
-flake8-django = ['+*', '-DJ09', '-DJ05']
-flake8-functions = ['+*']
-flake8-print = ['+*']
-flake8-type-annotations = ['+*']
-flake8-variables-names = ['+*']
-flake8_builtins = ['+*']
-flake8-import-order=['+*', '-I101']
-flake8-logging-format = ['+*']
-mccabe = ['+*']
-pep8-naming = ['+*']
-pycodestyle=['+*', '-W503']
-pyflakes = ['+*']
-pylint = ['+*']
-
-
-[tool.flakehell.exceptions.'apps/utils/models.py']
-flake8-django = ['-DJ08']
-
-[tool.flakehell.exceptions.'apps/utils/authentication.py']
-flake8-builtins = ['-A003']
-
-[tool.flakehell.exceptions.'apps/utils/tests_utils.py']
-flake8-variables-names = ['-VNE003']
-flake8-builtins = ['-A002']
-flake8-bandit = ['-S105']
+ignore = [
+	'I101',
+	'DJ09',
+	'DJ05',
+	'W503',
+]
+per-file-ignores = [
+    'apps/utils/authentication.py:A003',
+    'apps/utils/tests_utils.py:A002, VNE003, S105',
+]
