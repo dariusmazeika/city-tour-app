@@ -48,8 +48,6 @@ click==7.1.2
     #   click-plugins
     #   click-repl
     #   safety
-colorama==0.4.4
-    # via flakehell
 coverage==5.5
     # via pytest-cov
 cssselect==1.1.0
@@ -104,8 +102,6 @@ dparse==0.5.1
     # via safety
 drf-spectacular==0.15.1
     # via -r requirements.in
-entrypoints==0.3
-    # via flakehell
 execnet==1.8.0
     # via pytest-xdist
 flake8-bandit==2.1.2
@@ -122,6 +118,8 @@ flake8-django==1.1.1
     # via -r requirements.dev.in
 flake8-functions==0.0.5
     # via -r requirements.dev.in
+flake8-gl-codeclimate==0.1.4
+    # via -r requirements.dev.in
 flake8-import-order==0.18.1
     # via -r requirements.dev.in
 flake8-logging-format==0.6.0
@@ -136,7 +134,7 @@ flake8-type-annotations==0.1.0
     # via -r requirements.dev.in
 flake8-variables-names==0.0.4
     # via -r requirements.dev.in
-flake8==3.9.0
+flake8==3.9.2
     # via
     #   -r requirements.dev.in
     #   flake8-bandit
@@ -144,12 +142,11 @@ flake8==3.9.0
     #   flake8-builtins
     #   flake8-comprehensions
     #   flake8-django
+    #   flake8-gl-codeclimate
     #   flake8-polyfill
     #   flake8-print
     #   flake8-type-annotations
-    #   flakehell
-flakehell==0.9.0
-    # via -r requirements.dev.in
+    #   pyproject-flake8
 gitdb==4.0.5
     # via gitpython
 gitpython==3.1.14
@@ -217,12 +214,12 @@ pycodestyle==2.7.0
     #   flake8-print
 pyflakes==2.3.0
     # via flake8
-pygments==2.8.1
-    # via flakehell
 pyjwt==2.0.1
     # via djangorestframework-simplejwt
 pyparsing==2.4.7
     # via packaging
+pyproject-flake8==0.0.1a2
+    # via -r requirements.dev.in
 pyrsistent==0.17.3
     # via jsonschema
 pytest-cov==2.11.1
@@ -286,7 +283,7 @@ stevedore==3.3.0
 toml==0.10.2
     # via
     #   dparse
-    #   flakehell
+    #   pyproject-flake8
     #   pytest
 typed-ast==1.4.2
     # via mypy
@@ -300,7 +297,6 @@ uritemplate==3.0.1
 urllib3==1.26.4
     # via
     #   botocore
-    #   flakehell
     #   requests
     #   responses
     #   sentry-sdk

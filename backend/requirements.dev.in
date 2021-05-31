@@ -16,5 +16,6 @@ flake8-bandit
 django-stubs
 mypy
 flake8-print
-flakehell
+flake8-gl-codeclimate
 safety
+pyproject-flake8
