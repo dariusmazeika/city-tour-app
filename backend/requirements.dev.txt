@@ -116,7 +116,7 @@ flake8-comprehensions==3.4.0
     # via -r requirements.dev.in
 flake8-django==1.1.1
     # via -r requirements.dev.in
-flake8-functions==0.0.5
+flake8-functions==0.0.6
     # via -r requirements.dev.in
 flake8-gl-codeclimate==0.1.4
     # via -r requirements.dev.in
