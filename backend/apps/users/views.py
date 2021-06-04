@@ -30,11 +30,11 @@ class VerifyUserView(APIView):
     @staticmethod
     def put(request, activation_key):
         del request
-        activation_key_model = get_object_or_404(ActivationKey, activation_key=str(activation_key))
-        activated = activation_key_model.activate()
+        activation_key = get_object_or_404(ActivationKey, activation_key=str(activation_key))
+        activated = activation_key.activate()
         if not activated:
             raise ValidationError('error_verify_already_verified')
-        activation_key_model.delete()
+        activation_key.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
