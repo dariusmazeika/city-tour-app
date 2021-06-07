@@ -4,6 +4,7 @@ from rest_framework_simplejwt.serializers import PasswordField, TokenObtainPairS
 
 from apps.translations.models import Language
 from apps.users.models import PasswordKey, User
+from apps.utils.error_codes import Errors
 from apps.utils.token import get_token
 
 
@@ -15,7 +16,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class LoginSerializer(CustomTokenObtainPairSerializer):
     default_error_messages = {
-        "no_active_account": "error_login_bad_credentials",
+        "no_active_account": Errors.BAD_CREDENTIALS.value,
     }
 
     token = serializers.CharField(read_only=True)
@@ -28,18 +29,18 @@ class LoginSerializer(CustomTokenObtainPairSerializer):
         self.fields[self.username_field] = serializers.EmailField(
             write_only=True,
             required=True,
-            error_messages={"invalid": "error_invalid_email", "required": "error_field_is_required"},
+            error_messages={"invalid": Errors.INVALID_EMAIL.value, "required": Errors.FIELD_IS_REQUIRED.value},
         )
-        self.fields["password"] = PasswordField(error_messages={"required": "error_field_is_required"})
+        self.fields["password"] = PasswordField(error_messages={"required": Errors.FIELD_IS_REQUIRED.value})
 
     def validate(self, attrs):
         try:
             validated_data = super(LoginSerializer, self).validate(attrs)
         except exceptions.AuthenticationFailed:
-            raise serializers.ValidationError("error_login_bad_credentials", code="authorization")
+            raise serializers.ValidationError(Errors.BAD_CREDENTIALS.value, code="authorization")
 
         if not self.user.is_verified:
-            raise serializers.ValidationError("error_login_user_email_not_verified", code="authorization")
+            raise serializers.ValidationError(Errors.USER_EMAIL_NOT_VERIFIED.value, code="authorization")
 
         validated_data["token"] = validated_data.pop("access")
         return validated_data
@@ -64,7 +65,7 @@ class ChangeLanguageSerializer(serializers.Serializer):
     @staticmethod
     def validate_language(attrs):
         if not Language.objects.filter(code=attrs).exists():
-            raise serializers.ValidationError('error_no_such_language')
+            raise serializers.ValidationError(Errors.NO_SUCH_LANGUAGE.value)
         return attrs
 
 
@@ -77,7 +78,7 @@ class BasePasswordSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         if attrs.get('password') != attrs.get('confirm_password'):
-            raise serializers.ValidationError('error_passwords_not_equal')
+            raise serializers.ValidationError(Errors.PASSWORDS_NOT_EQUAL.value)
         return attrs
 
 
@@ -89,7 +90,7 @@ class ChangePasswordSerializer(BasePasswordSerializer):
 
     def validate_old_password(self, attr):
         if not authenticate(email=self.context["request"].user.email, password=attr):
-            raise serializers.ValidationError("error_password_is_incorrect")
+            raise serializers.ValidationError(Errors.PASSWORD_IS_INCORRECT.value)
         return attr
 
     def to_representation(self, instance):

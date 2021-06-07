@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from apps.users.models import ActivationKey, PasswordKey, User
 from apps.users.serializers import BasePasswordSerializer, ChangeLanguageSerializer, ChangePasswordSerializer, \
     ForgottenPasswordSerializer, LoginSerializer, UserSerializer, VerificationEmailResendSerializer
+from apps.utils.error_codes import Errors
 
 
 class LoginView(generics.CreateAPIView):
@@ -30,11 +31,11 @@ class VerifyUserView(APIView):
     @staticmethod
     def put(request, activation_key):
         del request
-        activation_key_model = get_object_or_404(ActivationKey, activation_key=str(activation_key))
-        activated = activation_key_model.activate()
+        activation_key = get_object_or_404(ActivationKey, activation_key=str(activation_key))
+        activated = activation_key.activate()
         if not activated:
-            raise ValidationError('error_verify_already_verified')
-        activation_key_model.delete()
+            raise ValidationError(Errors.USER_ALREADY_VERIFIED.value)
+        activation_key.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -80,7 +81,7 @@ class ResetPasswordView(APIView):
         password_key = get_object_or_404(PasswordKey, password_key=str(password_key))
         if not password_key.validate_expiration():
             password_key.delete()
-            return Response({'detail': 'error_reset_password_key_expired'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': Errors.RESET_PASSWORD_KEY_EXPIRED}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = BasePasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -107,8 +108,8 @@ class TokenRefreshViewWithActiveChecks(TokenRefreshView):
         user_id = token.get("user_id")
         user = User.objects.filter(id=user_id).first() if user_id else None
         if not user:
-            raise ValidationError('error_user_does_not_exist')
+            raise ValidationError(Errors.USER_DOES_NOT_EXIST.value)
         if user.password_last_change and int(user.password_last_change.timestamp()) != token['datetime_claim']:
-            raise ValidationError('error_user_datetime_claim_changed')
+            raise ValidationError(Errors.USER_DATETIME_CLAIM_CHANGED.value)
         if not user.is_active:
-            raise ValidationError('error_user_is_not_active')
+            raise ValidationError(Errors.USER_IS_NOT_ACTIVE.value)

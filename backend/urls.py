@@ -16,7 +16,7 @@ if settings.DEBUG:
 
 urlpatterns += [
     # Admin
-    path('admin/regenerate_cache/', RegenerateManifest.as_view()),
+    path('admin/regenerate_cache/', RegenerateManifest.as_view(), name="regenerate-cache"),
     path('admin/', admin.site.urls),
     # 3rd party apps
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
