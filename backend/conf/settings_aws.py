@@ -18,12 +18,15 @@ DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 EMAIL_BACKEND = "django_amazon_ses.EmailBackend"
 
 # S3 storage
-AWS_DEFAULT_ACL = "public-read"
 STORAGE_BUCKET_NAME = os.environ.get("STORAGE_BUCKET_NAME")
 STATIC_BUCKET_NAME = os.environ.get("STATIC_BUCKET_NAME")
 
 DEFAULT_FILE_STORAGE = "apps.utils.storage.MediaStorage"
 STATICFILES_STORAGE = "apps.utils.storage.StaticStorage"
+
+# Below is set to False so that the default MediaStorage files would not have
+# querystring auth unless explicitly set
+AWS_QUERYSTRING_AUTH = False
 
 # Unset MEDIA_ROOT, so health checks wont try to write in local file system
 del MEDIA_ROOT
