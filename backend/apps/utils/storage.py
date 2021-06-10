@@ -1,16 +1,32 @@
-from django.conf import settings
+import os
+
+from django.core.files.storage import FileSystemStorage
 from storages.backends.s3boto3 import S3Boto3Storage
 
 
 class MediaStorage(S3Boto3Storage):
-    bucket_name = settings.STORAGE_BUCKET_NAME  # type: ignore
+    """Class for public uploaded files that will not have a querystring auth, e.g. images that are intended to be
+    included in the emails"""
+    bucket_name = os.getenv("STORAGE_BUCKET_NAME")
+    default_region = os.getenv("AWS_DEFAULT_REGION")
     location = "media"
-    file_overwrite = True
-    custom_domain = f"{bucket_name}.s3.{settings.AWS_DEFAULT_REGION}.amazonaws.com"  # type: ignore
+    file_overwrite = False
+    default_acl = "public-read"
 
 
 class StaticStorage(S3Boto3Storage):
-    bucket_name = settings.STATIC_BUCKET_NAME  # type: ignore
+    """Static files storage"""
+    bucket_name = os.getenv("STATIC_BUCKET_NAME")
+    default_region = os.getenv("AWS_DEFAULT_REGION")
     location = "static"
     file_overwrite = True
-    custom_domain = f"{bucket_name}.s3.{settings.AWS_DEFAULT_REGION}.amazonaws.com"  # type: ignore
+    default_acl = "public-read"
+
+
+class PrivateMediaStorage(MediaStorage):
+    """Class for restricted uploaded files that will have a querystring auth"""
+    querystring_auth = True
+    default_acl = "private"
+
+
+restricted_file_storage = PrivateMediaStorage() if os.getenv("STORAGE_BUCKET_NAME") is not None else FileSystemStorage()
