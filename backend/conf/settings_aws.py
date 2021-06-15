@@ -18,6 +18,7 @@ DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 EMAIL_BACKEND = "django_amazon_ses.EmailBackend"
 
 # S3 storage
+AWS_DEFAULT_ACL = "public-read"
 STORAGE_BUCKET_NAME = os.environ.get("STORAGE_BUCKET_NAME")
 STATIC_BUCKET_NAME = os.environ.get("STATIC_BUCKET_NAME")
 
