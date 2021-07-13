@@ -81,7 +81,7 @@ django==3.2.5
     #   djangorestframework-simplejwt
     #   drf-spectacular
     #   model-bakery
-djangorestframework-simplejwt==4.6.0
+djangorestframework-simplejwt==4.7.2
     # via -r requirements.in
 djangorestframework==3.12.4
     # via
