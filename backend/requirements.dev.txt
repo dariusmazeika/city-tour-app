@@ -78,7 +78,7 @@ django-tabbed-admin==1.0.4
     # via -r requirements.in
 django-watchman==1.2.0
     # via -r requirements.in
-django==3.2.2
+django==3.2.5
     # via
     #   -r requirements.in
     #   django-amazon-ses
