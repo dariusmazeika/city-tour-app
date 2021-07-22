@@ -88,7 +88,7 @@ djangorestframework==3.12.4
     #   -r requirements.in
     #   djangorestframework-simplejwt
     #   drf-spectacular
-drf-spectacular==0.15.1
+drf-spectacular==0.17.2
     # via -r requirements.in
 execnet==1.8.0
     # via pytest-xdist
