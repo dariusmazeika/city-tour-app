@@ -199,6 +199,7 @@ MyPY:
 
 Dependency scanning:
   extends: .test
+  allow_failure: true
   variables:
     KUBERNETES_CPU_REQUEST: 1000m
     KUBERNETES_CPU_LIMIT: 1000m
