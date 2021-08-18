@@ -62,7 +62,7 @@ django-ckeditor==6.1.0
     # via -r requirements.in
 django-cleanup==5.2.0
     # via -r requirements.in
-django-cors-headers==3.7.0
+django-cors-headers==3.8.0
     # via -r requirements.in
 django-js-asset==1.2.2
     # via django-ckeditor
