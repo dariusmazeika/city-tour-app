@@ -43,7 +43,7 @@ class AppConfigTestCase(BaseTestCase):
         url_final = reverse("app-config")
 
         self.query_limits["ANY GET REQUEST"] = 10
-        response = self.authorize().get(url, format="json", HTTP_REFERER=url_final, follow=True)
+        response = self.get(url, HTTP_REFERER=url_final, follow=True)
         site_config = SiteConfiguration.get_solo()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
