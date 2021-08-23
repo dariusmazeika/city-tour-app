@@ -64,3 +64,6 @@ class BaseTestCase(TestCase):
 
     def patch(self, path: str, data: dict = None, format: str = "json", *args, **kwargs):
         return self.authorize().patch(path=path, data=data, format=format, *args, **kwargs)
+
+    def delete(self, path: str, data: dict = None, format: str = "json", *args, **kwargs):
+        return self.authorize().delete(path=path, data=data, format=format, *args, **kwargs)
