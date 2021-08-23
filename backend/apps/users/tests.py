@@ -84,7 +84,7 @@ class AuthenticationTestCase(BaseTestCase):
         self.assertEqual(response.json()["password"][0], "error_field_is_required")
 
     def test_get_current_user(self):
-        response = self.authorize().get(reverse('current-user'))
+        response = self.get(reverse('current-user'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         for field in ['first_name', 'last_name', 'email']:
             self.assertEqual(response.data.get(field), getattr(self.user, field))
@@ -182,13 +182,13 @@ class AuthenticationTestCase(BaseTestCase):
 
     def test_change_language(self):
         lang = make(Language)
-        response = self.authorize().post(reverse('change-language'), data={'language': lang.code})
+        response = self.post(reverse('change-language'), data={'language': lang.code})
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
         self.user.refresh_from_db()
         self.assertEqual(self.user.language, lang)
 
     def test_change_to_invalid_language(self):
-        response = self.authorize().post(reverse('change-language'), data={'language': 'abc'})
+        response = self.post(reverse('change-language'), data={'language': 'abc'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json()['language'][0], 'error_no_such_language')
 
@@ -196,7 +196,7 @@ class AuthenticationTestCase(BaseTestCase):
         uuid = str(uuid4())
         previous_psw = self.user.password
         previous_psw_datetime = self.user.password_last_change
-        response = self.authorize().post(
+        response = self.post(
             reverse('change-password'),
             data={'old_password': self.credentials['password'], 'password': uuid, 'confirm_password': uuid}
         )
@@ -212,7 +212,7 @@ class AuthenticationTestCase(BaseTestCase):
 
     def test_change_password_not_equal(self):
         previous_psw = self.user.password
-        response = self.authorize().post(
+        response = self.post(
             reverse('change-password'),
             data={
                 'old_password': self.credentials['password'],
