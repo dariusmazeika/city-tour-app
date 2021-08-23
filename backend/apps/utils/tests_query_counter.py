@@ -23,19 +23,19 @@ class APIClientWithQueryCounter(APIClient):
 
     def post(self, *args, **kwargs):
         with self._assert_num_queries("POST", *args, **kwargs):
-            return super().post(*args, **kwargs)
+            return super().post(*args, **{"format": "json", **kwargs})
 
     def put(self, *args, **kwargs):
         with self._assert_num_queries("PUT", *args, **kwargs):
-            return super().put(*args, **kwargs)
+            return super().put(*args, **{"format": "json", **kwargs})
 
     def patch(self, *args, **kwargs):
         with self._assert_num_queries("PATCH", *args, **kwargs):
-            return super().patch(*args, **kwargs)
+            return super().patch(*args, **{"format": "json", **kwargs})
 
     def delete(self, *args, **kwargs):
         with self._assert_num_queries("DELETE", *args, **kwargs):
-            return super().delete(*args, **kwargs)
+            return super().delete(*args, **{"format": "json", **kwargs})
 
     def _assert_num_queries(self, http_method: str, *args, **kwargs):
         url = args[0] if args else kwargs.get("url")
