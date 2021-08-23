@@ -112,7 +112,7 @@ flake8-bugbear==21.4.3
     # via -r requirements.dev.in
 flake8-builtins==1.5.3
     # via -r requirements.dev.in
-flake8-comprehensions==3.6.0
+flake8-comprehensions==3.6.1
     # via -r requirements.dev.in
 flake8-django==1.1.2
     # via -r requirements.dev.in
