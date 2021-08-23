@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from apps.celery import app
 from apps.home.models import EmailTemplateTranslation, SiteConfiguration
-from apps.translations.exceptions import MissingTemplateException, MissingTemplateTranslationException
+from apps.translations.exceptions import MissingTemplateError, MissingTemplateTranslationError
 from apps.utils.email import render_email_template_with_base, send_email
 
 LOGGER = logging.getLogger('app')
@@ -68,8 +68,8 @@ def _get_translation(template: str, language: str) -> Optional[EmailTemplateTran
         else:
             error_msg = f'No notification translation {translation}'
             LOGGER.error(error_msg)
-            raise MissingTemplateTranslationException(error_msg)
+            raise MissingTemplateTranslationError(error_msg)
     else:
         error_msg = f'No notification template {template}'
         LOGGER.error(error_msg)
-        raise MissingTemplateException(error_msg)
+        raise MissingTemplateError(error_msg)
