@@ -1,6 +1,6 @@
-class MissingTemplateException(Exception):
+class MissingTemplateError(Exception):
     pass
 
 
-class MissingTemplateTranslationException(Exception):
+class MissingTemplateTranslationError(Exception):
     pass

@@ -146,6 +146,7 @@ flake8==3.9.2
     #   flake8-polyfill
     #   flake8-print
     #   flake8-type-annotations
+    #   pep8-naming
     #   pyproject-flake8
 gitdb==4.0.5
     # via gitpython
@@ -190,7 +191,7 @@ parameterized==0.8.1
     # via -r requirements.in
 pbr==5.5.1
     # via stevedore
-pep8-naming==0.11.1
+pep8-naming==0.12.1
     # via -r requirements.dev.in
 pillow==8.2.0
     # via -r requirements.in
