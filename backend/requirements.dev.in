@@ -19,3 +19,4 @@ flake8-print
 flake8-gl-codeclimate
 safety
 pyproject-flake8
+types-redis
