@@ -1,11 +1,4 @@
-backend
-content
-testutils
-backups
-data
-bin
-logs
 *.pyc
 __pycache__
-.git
-
+*Dockerfile*
+pipcache

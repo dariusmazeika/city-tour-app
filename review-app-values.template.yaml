@@ -8,6 +8,8 @@ data:
   RUN_MODE: QA
   DB_USER: psql
   DB_HOST: postgresql
+  DB_NAME: django
+  PGPASSWORD: django
   DB_PORT: "5432"
   APP_HOST: ${CI_ENVIRONMENT_URL}
   CI_PROJECT_TITLE: ${CI_PROJECT_TITLE}

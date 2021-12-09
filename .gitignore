@@ -72,3 +72,4 @@ backend/.coverage*
 
 # Celery beat temporal file
 backend/celerybeat-schedule
+/conf/settings_local.py
