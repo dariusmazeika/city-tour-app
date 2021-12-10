@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    open-pull-requests-limit: 25
+    pull-request-branch-name:
+      prefix: "dependabot"
+      separator: "/"
