@@ -1,7 +1,8 @@
 import logging
 from typing import List, Optional
 
-from apps.celery import app
+from conf.celery import app
+
 from apps.home.models import EmailTemplateTranslation, SiteConfiguration
 from apps.translations.exceptions import MissingTemplateError, MissingTemplateTranslationError
 from apps.utils.email import render_email_template_with_base, send_email

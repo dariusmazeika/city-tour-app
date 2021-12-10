@@ -7,6 +7,6 @@ from rest_framework.response import Response
 class BuildVersionView(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         version = settings.BUILD_VERSION
         return Response(int(version) if version else 0)

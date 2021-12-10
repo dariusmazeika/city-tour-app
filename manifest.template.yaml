@@ -183,7 +183,7 @@ spec:
             - /bin/sh
           args:
             - '-c'
-            - '[ -d /data/media-${CI_PROJECT_NAME} ] || mkdir /data/media-${CI_PROJECT_NAME}'
+            - '[ -d /data/media ] || mkdir /data/media'
           volumeMounts:
             - mountPath: /data
               name: media-files
