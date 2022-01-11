@@ -16,7 +16,7 @@ flake8-bandit
 django-stubs
 mypy
 flake8-print
-flake8-gl-codeclimate
+git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
 safety
 pyproject-flake8
 types-redis
