@@ -293,7 +293,7 @@ toml==0.10.2
     #   pytest
 types-redis==4.1.7
     # via -r requirements/requirements.dev.in
-typing-extensions==3.7.4.3
+typing-extensions==4.0.1
     # via
     #   -r requirements/requirements.in
     #   django-stubs
