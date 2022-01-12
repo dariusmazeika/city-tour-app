@@ -197,7 +197,7 @@ pillow==9.0.0
     # via -r requirements/requirements.in
 pluggy==0.13.1
     # via pytest
-premailer==3.8.0
+premailer==3.10.0
     # via -r requirements/requirements.in
 prompt-toolkit==3.0.18
     # via click-repl
