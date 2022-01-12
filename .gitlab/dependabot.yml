@@ -6,3 +6,8 @@ updates:
     pull-request-branch-name:
       prefix: "dependabot"
       separator: "/"
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: Europe/Vilnius
+      day: friday
