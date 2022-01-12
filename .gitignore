@@ -1,13 +1,13 @@
 #System  backups
-backups/*.bak
+*.bak
 
 # mypy cache
-backend/.mypy_cache
+.mypy_cache
+.pytest_cache
 
 # statics
 static
-backend/static
-backend/media
+media
 
 # Logs
 logs
@@ -30,24 +30,9 @@ coverage
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
-
-# Dependency directory
-# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
-node_modules
-
-#Static dist folder
-static/dist/*
-
 # IDEA/Webstorm project files
 .idea
 *.iml
-
-#NGNIX
-nginx/static/*
-nginx/ssl/*
-
 
 #VSCode metadata
 .vscode
@@ -58,18 +43,20 @@ nginx/ssl/*
 #Sublime text files
 sublime
 
-
 #Python cache
 __pycache__
 *.pyc
-
 
 #Pip cahce
 pipcache
 
 # Coverage
-backend/.coverage*
+.coverage*
 
 # Celery beat temporal file
-backend/celerybeat-schedule
-/conf/settings_local.py
+celerybeat-schedule
+conf/settings_local.py
+
+# Virtualenv
+.venv
+

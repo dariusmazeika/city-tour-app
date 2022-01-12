@@ -1,160 +1,102 @@
-# docker-django-webpack-starter
+# Django REST framework
 
-This is a starter project for a django app that uses docker for the environment.  
-Docker and docker-compose is all you need to develop, build & deploy, run development or production mode with a single
-command.
+![Python](https://img.shields.io/badge/python-v3.10-informational)
+![Postgres](https://img.shields.io/badge/postgres-14-informational)
+![pip-tools](https://img.shields.io/badge/pip--tools-6.1.0-informational)
+![Django](https://img.shields.io/badge/Django-latest-informational)
+![DRF](https://img.shields.io/badge/DRF-latest-informational)
+![Redis](https://img.shields.io/badge/Redis-latest-informational)
+![Redis](https://img.shields.io/badge/Redis-latest-informational)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-v3-informational)
 
-## stack
+This is a starter project for a django REST app. Docker and docker-compose is all you need to develop, build, run development with a one liner.
+Project To-Do's:
+* Create Development environment `https://<domain>.cornercase.tech/admin/`
+* Add CI pre-build image support to docker-compose.yml
 
-Python
-Postgres
-Django
-Nginx
-Gunicorn
-
-## API documentation
+## OpenAPI documentation
 
 Documentation dynamically generated with OpenAPI3. It can be reached:
 
 - `/schema/swagger/` for Swagger UI
 - `/schema/redoc/` for ReDoc UI
 
-## get started
+## Get started
+### I. Docker
 
-Get latest docker & docker-compose:  
-https://www.docker.com/  
-https://docs.docker.com/compose/
+For Mac users - install latest [Docker Desktop](https://docs.docker.com/desktop/mac/install/)
+For non-mac install docker and docker-compose system.
 
-Pull seed to your project:
+Clone project and start using:
 
 ```sh
-git init
-git remote add starter https://github.com/CornerCaseTechnologies/conercase-django-starter
-git pull starter master
-# Remove git history of a seed before starting a new project
-rm -rf .git  
+make run-docker
 ```
 
-This project is Flakehell (flake8) and MyPy compatible and all checks can be launched via:
+### II. Virtualenv
 
+To automatically create .venv, activate, sync all development requirements and start databases run:
+```sh
+source activate-venv.sh
+```
+
+### III. GitPod
+Project support gitpod integrations, to enable with gitlab follow - https://docs.gitlab.com/ee/integration/gitpod.html#enable-gitpod-in-your-user-settings
+
+### Wrapped commands
+Project is using `make` as universal wrapper. All most common commands are packed in
 ```shell script
-cd backend
-./bin/check.sh
+$ make help
+make check-tools     - ensure pip-tools present in environment
+make compile         - compile requirements files
+make install         - install requirements/requirements.dev.txt
+make sync            - Compile and then install pip depenecys
+make mypy            - runs MyPy.
+make flake8          - runs Flake8
+make test            - runs tests.
+make check           - runs tests and other checks (Flake8 and MyPy). These checks should pass before pushing code.
+make migrations      - runs django makemigrations command.
+make migrate         - applies django migrations.
+make run             - starts django server at http://localhost:8000 for local development.
+make shell           - starts interactive django shell (all models are automatically imported).
+make start-databases - starts redis and postgres in background
+make down-docker     - stops docker containers and removes them
+make purge-docker    - stop postgres and purge data volume
+make run-docker      - starts django docker environment
+make restore         - restores database.sql to docker-compose database
+make killall-docker  - Gracefully kill all running containers
 ```
 
-Start dev server:
-
-```sh
-./bin/develop.sh
+### Environment management
+#### Using make command within docker
+```shell script
+$ make run-docker
+/app $ make mypy
+mypy apps --config-file mypy.ini
+Success: no issues found in 57 source files
+/app $ 
+```
+or oneliner (useful when images needs to be build from scratch)
+```shell script
+echo "make mypy" | make run-docker
 ```
 
-Wait for docker to set up container, then open [http://localhost:8000](http://localhost:8000)
-
-For starting the whole structure just without backend container:
-
-```sh
-./bin/develop_local.sh
-cd backend/
-source .env-local
-python manage.py runserver
+#### Restoring database
+CI has ability dump development databases for local debugging/testing. For quick restore of the database to docker-compose, from active python environment run:
+```shell script
+make restore         - restores database.sql to docker-compose database
+```
+#### Starting database containers
+```shell script
+make start-databases - starts redis and postgres in background
 ```
 
-This will start initially DB and redis container while letting you to start backend service locally in the host for
-easier debugging and development
+## Project dependencies
 
-### setup production server
+Dependencies are storied `requirements.in, requirements.dev.in` and managed by pip-tools.
 
-1. install docker, docker-compose, git
-2. add deploy key to git repo
-3. clone repository, checkout appropriate branch
-4. create `.env` file at project root with env vars, sample:
-
-```sh
-export DOCKER_CONFIG_PROD=docker-compose.production.yml #docker-compose file to use
-export PROD_MODE=true # always true for production mode
-```
-
-5. run deploy script `./bin/deploy.sh`
-
-In prod mode sources are added to docker image rather than mounted from host. Nginx serves static files, proxy pass to
-gunicorn for django app. Logs in `logs` dir.
-
-In case production environment uses external database, set env variable to not backup database:
-
-```sh
-export EXTERNAL_DB=true
-```
-
-## install dependencies
-
-Dependencies are storied `requirements.in` (pip-tools)
-
-```sh
-# install dependencies
-./bin/compile-packages.sh
-```
-
-## backup & restore database
-
-```sh
-# create a backup in backups dir
-./bin/backup.sh
-
-# restore from a backup in backups dir (server must be stopped)
-./bin/restore.sh backups/somebackup.bak
-```
-
-## run django management commands
-
-```sh
-#dev mode
-./bin/django.sh [command]
-
-#create migration
-./bin/django.sh makemigrations myapp
-
-```
-
-## translations
-
-```sh
-# dump to fixture
-./bin/django.sh dumpdata --indent 4 --natural-primary translations > backend/apps/translations/fixtures/initial.json
-
-# load from fixture
-./bin/django.sh loaddata initial.json
-```
-
-## layout
-
-```
-bin/                          - various utility scripts
-
-docker-compose.yml            - base docker compose config
-docker-compose.production.yml - production docker compose config
-
-backend/                      - backend stuff
-backend/apps/                 - django apps
-backend/conf/                 - django settings files
-backend/conf/settings.py      - default config
-backend/conf/settings_prod.py - production config
-backend/conf/settings_aws.py  - production config for AWS env
-backend/conf/settings_qa.py   - config for review app env
-backend/gunicorn.conf.py      - gunicorn conf for production
-backend/media/                - user uploads
-
-logs/                         - in prod mode app, gunicorn, nginx, postgres logs go here
-nginx/                        - nginx stuff for prod mode
-nginx/nginx.conf              - nginx conf
-```
-
-## tests
-
-```sh
-
-# run tests
-./bin/test.sh
-```
+## Environment variable mapping control
+Environment variable mapping are controlled via `review-app-values.template.yaml`, more [details](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables) 
 
 ## tests locally (using Pycharm IDE)
 
@@ -170,7 +112,7 @@ setup database if you have skipped creating docker based one from instructions a
 # setup tests
 
 run/debug configurations -> templates -> Django tests 
--> set path to tests `Custom settings` (usually `/backend/conf/settings_test.py`) 
+-> set path to tests `Custom settings` (usually `conf/settings_test.py`) 
 -> set config to DB via `Enviroment variables` field. 
 Available variables are - 'DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PORT'. 
 If using docker database from instructions above DB_HOST=localhost;DB_PORT=9432; should be enough.
