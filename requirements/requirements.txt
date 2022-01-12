@@ -64,7 +64,7 @@ django-js-asset==1.2.2
     # via django-ckeditor
 django-solo==1.1.5
     # via -r requirements/requirements.in
-django-storages==1.11.1
+django-storages==1.12.3
     # via -r requirements/requirements.in
 git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
