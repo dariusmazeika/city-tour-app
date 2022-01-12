@@ -108,7 +108,7 @@ flake8-bandit==2.1.2
     # via -r requirements/requirements.dev.in
 flake8-blind-except==0.2.0
     # via -r requirements/requirements.dev.in
-flake8-bugbear==21.4.3
+flake8-bugbear==22.1.11
     # via -r requirements/requirements.dev.in
 flake8-builtins==1.5.3
     # via -r requirements/requirements.dev.in
