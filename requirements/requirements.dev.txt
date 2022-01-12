@@ -96,7 +96,7 @@ django==3.2.6
     #   model-bakery
 djangorestframework-simplejwt==4.7.2
     # via -r requirements/requirements.in
-djangorestframework==3.12.4
+djangorestframework==3.13.1
     # via
     #   -r requirements/requirements.in
     #   djangorestframework-simplejwt
@@ -249,6 +249,7 @@ pytz==2021.1
     # via
     #   celery
     #   django
+    #   djangorestframework
 pyyaml==5.4.1
     # via
     #   bandit
