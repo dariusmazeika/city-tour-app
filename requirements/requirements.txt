@@ -62,7 +62,7 @@ django-cors-headers==3.8.0
     # via -r requirements/requirements.in
 django-js-asset==1.2.2
     # via django-ckeditor
-django-solo==1.1.5
+django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.12.3
     # via -r requirements/requirements.in
@@ -75,6 +75,7 @@ django==3.2.6
     #   -r requirements/requirements.in
     #   django-amazon-ses
     #   django-cors-headers
+    #   django-solo
     #   django-storages
     #   django-watchman
     #   djangorestframework
