@@ -181,7 +181,7 @@ mr-proper==0.0.6
     # via flake8-functions
 mypy-extensions==0.4.3
     # via mypy
-mypy==0.910
+mypy==0.931
     # via
     #   -r requirements/requirements.dev.in
     #   django-stubs
@@ -288,9 +288,10 @@ stevedore==3.3.0
 toml==0.10.2
     # via
     #   dparse
-    #   mypy
     #   pyproject-flake8
     #   pytest
+tomli==2.0.0
+    # via mypy
 types-redis==4.1.7
     # via -r requirements/requirements.dev.in
 typing-extensions==4.0.1
