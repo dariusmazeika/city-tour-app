@@ -50,6 +50,8 @@ cssselect==1.1.0
     # via premailer
 cssutils==2.2.0
     # via premailer
+deprecated==1.2.13
+    # via redis
 dj-database-url==0.5.0
     # via -r requirements/requirements.in
 django-amazon-ses==4.0.0
@@ -113,8 +115,10 @@ lxml==4.6.3
     # via premailer
 model-bakery==1.4.0
     # via -r requirements/requirements.in
-packaging==20.9
-    # via pytest
+packaging==21.3
+    # via
+    #   pytest
+    #   redis
 parameterized==0.8.1
     # via -r requirements/requirements.in
 pillow==9.0.0
@@ -160,7 +164,7 @@ pytz==2021.1
     #   django
 pyyaml==5.4.1
     # via drf-spectacular
-redis==3.5.3
+redis==4.1.0
     # via -r requirements/requirements.in
 requests==2.25.1
     # via
@@ -199,6 +203,8 @@ vine==5.0.0
     #   kombu
 wcwidth==0.2.5
     # via prompt-toolkit
+wrapt==1.13.3
+    # via deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
