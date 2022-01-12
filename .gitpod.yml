@@ -5,16 +5,15 @@ vscode:
     - batisteo.vscode-django
     - ms-python.python
     - ms-azuretools.vscode-docker
-    - redhat.vscode-yaml
     - dotjoshjohnson.xml
     - mhutchie.git-graph
     - ms-toolsai.jupyter
 tasks:
   - name: Start background services
     command: >
-      docker-compose -f docker-compose.db.yml up -d &&
+      make start-databases &&
       while ! pg_isready -h localhost -U django -d django -p 9432 -q && [[ ${RETRY:=0} -lt 5 ]]; do sleep 5 && RETRY=$((RETRY + 1)); done &&
-      python manage.py migrate &&
+      make migrate &&
       python manage.py createsuperuser --noinput
     env:
       DJANGO_SUPERUSER_EMAIL: test@test.com
