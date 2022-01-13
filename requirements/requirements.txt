@@ -175,7 +175,7 @@ responses==0.13.1
     # via -r requirements/requirements.in
 s3transfer==0.3.6
     # via boto3
-sentry-sdk==1.0.0
+sentry-sdk==1.5.2
     # via -r requirements/requirements.in
 six==1.15.0
     # via
