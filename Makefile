@@ -21,7 +21,7 @@ help:
 	@echo 'make killall-docker  - Gracefully kill all running containers'
 
 check-tools:
-	pip install pip-tools==6.1.0
+	pip install pip-tools==6.2.0
 
 compile: check-tools
 	pip-compile requirements/requirements.dev.in
