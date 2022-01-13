@@ -44,7 +44,7 @@ click==8.0.3
     #   click-didyoumean
     #   click-plugins
     #   click-repl
-coverage==5.5
+coverage[toml]==5.5
     # via pytest-cov
 cssselect==1.1.0
     # via premailer
@@ -141,7 +141,7 @@ pyparsing==2.4.7
     # via packaging
 pyrsistent==0.17.3
     # via jsonschema
-pytest-cov==2.11.1
+pytest-cov==3.0.0
     # via -r requirements/requirements.in
 pytest-django==4.5.2
     # via -r requirements/requirements.in
@@ -186,7 +186,9 @@ six==1.15.0
 sqlparse==0.4.1
     # via django
 toml==0.10.2
-    # via pytest
+    # via
+    #   coverage
+    #   pytest
 typing-extensions==4.0.1
     # via -r requirements/requirements.in
 uritemplate==3.0.1
