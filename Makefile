@@ -17,6 +17,7 @@ help:
 	@echo 'make down-docker     - stops docker containers and removes them'
 	@echo 'make purge-databases - stop postgres and purge data volume'
 	@echo 'make run-docker      - starts django docker environment'
+	@echo 'make pull-docker     - starts django docker environment (pull from CI registry)'
 	@echo 'make restore         - restores database.sql to docker-compose database'
 
 check-tools:
@@ -65,10 +66,13 @@ purge-databases: down-docker
 	docker-compose -f docker-compose.yml rm postgres -fv
 	docker-compose -f docker-compose.yml rm redis -f
 
-run-docker:
-	@echo "Login with gitlab credentials (Crtl+C to skip)"
+pull-docker:
+	@echo "Login with gitlab credentials"
 	docker login registry.gitlab.com
 	docker-compose -f docker-compose.yml pull
+	docker-compose -f docker-compose.yml run django /bin/sh
+
+run-docker:
 	docker-compose -f docker-compose.yml run django /bin/sh
 
 restore:
