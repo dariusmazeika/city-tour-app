@@ -11,6 +11,7 @@
 This is a starter project for a django REST app. Docker and docker-compose is all you need to develop, build, run development with a one liner.
 Project To-Do's:
 * Create Development environment `https://<domain>.cornercase.tech/admin/`
+* Add master to protected branches, disable direct push
 * Add CI pre-build image support to docker-compose.yml
 
 ## OpenAPI documentation
