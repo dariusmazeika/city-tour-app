@@ -14,18 +14,18 @@ fi
 if [[ $RUN_MODE != "GUNICORN" ]]; then
   if [[ $RUN_MODE == "CELERY_WORKER" ]]; then
     echo "Starting Celery worker"
-    celery -A apps worker -l INFO -c 2
+    celery -A conf worker -l INFO -c 2
   elif [[ $RUN_MODE == "CELERY_BEAT" ]]; then
     echo "Starting Celery beat"
-    celery -A apps beat -l INFO
+    celery -A conf beat -l INFO
   elif [[ $RUN_MODE == "CELERY_WORKER_AND_BEAT" ]]; then
     echo "Starting Celery Worker and Celery Beat"
-    celery -A apps worker -l INFO -c 2 &
-    celery -A apps beat -l INFO
+    celery -A conf worker -l INFO -c 2 &
+    celery -A conf beat -l INFO
   else
     echo "Starting Celery in detached mode"
-    celery -A apps worker -l INFO --logfile celery.log --detach
-    celery -A apps beat -l INFO --logfile celery_beat.log --detach
+    celery -A conf worker -l INFO --logfile celery.log --detach
+    celery -A conf beat -l INFO --logfile celery_beat.log --detach
   fi
 fi
 

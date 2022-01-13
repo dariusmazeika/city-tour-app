@@ -21,7 +21,7 @@ help:
 	@echo 'make killall-docker  - Gracefully kill all running containers'
 
 check-tools:
-	pip install pip-tools==6.2.0
+	pip install pip-tools==6.2.0 pip==21.2.4
 
 compile: check-tools
 	pip-compile requirements/requirements.dev.in
@@ -74,3 +74,7 @@ restore:
 
 killall-docker:
 	docker stop -ai
+
+brew-python:
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	brew install python@3.10

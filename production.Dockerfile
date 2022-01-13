@@ -10,7 +10,7 @@ RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg bash postgresql-client bi
 COPY requirements/requirements.txt .
 
 RUN apk add --no-cache --virtual build-deps gcc musl-dev postgresql-dev libxslt-dev jpeg-dev libffi-dev git rust cargo \
-	&& pip install --no-cache-dir pip-tools==6.2.0 \
+	&& pip install --no-cache-dir pip-tools==6.2.0 pip==21.2.4 \
 	&& pip-sync \
 	&& apk --purge del build-deps
 
