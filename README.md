@@ -6,7 +6,6 @@
 ![Django](https://img.shields.io/badge/Django-latest-informational)
 ![DRF](https://img.shields.io/badge/DRF-latest-informational)
 ![Redis](https://img.shields.io/badge/Redis-latest-informational)
-![Redis](https://img.shields.io/badge/Redis-latest-informational)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-v3-informational)
 
 This is a starter project for a django REST app. Docker and docker-compose is all you need to develop, build, run development with a one liner.
