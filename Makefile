@@ -66,6 +66,9 @@ purge-databases: down-docker
 	docker-compose -f docker-compose.yml rm redis -f
 
 run-docker:
+	@echo "Login with gitlab credentials (Crtl+C to skip)"
+	docker login registry.gitlab.com
+	docker-compose -f docker-compose.yml pull
 	docker-compose -f docker-compose.yml run django /bin/sh
 
 restore:
