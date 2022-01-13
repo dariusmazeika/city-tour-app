@@ -14,6 +14,7 @@ services:
     redis:
         image: redis
     django:
+        # image: registry.gitlab.com/corner-case-technologies/<project subgroup>/<repo>/runner:stable
         build:
             context: .
             dockerfile: Dockerfile
