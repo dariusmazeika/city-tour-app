@@ -33,11 +33,17 @@ Clone project and start using:
 make run-docker
 ```
 
-### II. Virtualenv
+### II. Virtualenv (OSX)
 
-To automatically create .venv, activate, sync all development requirements and start databases run:
 ```sh
-source activate-venv.sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install python@3.10
+
+/usr/local/opt/python@3.10/bin/pip3 install virtualenv
+/usr/local/opt/python@3.10/bin/python3 -m virtualenv .venv
+
+source .venv/bin/activate
+make sync
 ```
 
 ### III. GitPod
@@ -61,10 +67,9 @@ make run             - starts django server at http://localhost:8000 for local d
 make shell           - starts interactive django shell (all models are automatically imported).
 make start-databases - starts redis and postgres in background
 make down-docker     - stops docker containers and removes them
-make purge-docker    - stop postgres and purge data volume
+make purge-databases - stop postgres and purge data volume
 make run-docker      - starts django docker environment
 make restore         - restores database.sql to docker-compose database
-make killall-docker  - Gracefully kill all running containers
 ```
 
 ### Environment management
