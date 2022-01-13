@@ -1,4 +1,4 @@
-.PHONY: check-tools compile install sync mypy flake8 test check migrations migrate run shell virtualenv start-databases stop-docker purge-docker run-docker restore prune-docker killall-docker
+.PHONY: check-tools compile install sync mypy flake8 test check migrations migrate run shell start-databases down-docker purge-databases run-docker restore
 
 help:
 	@echo 'make check-tools     - ensure pip-tools present in environment'
@@ -15,10 +15,9 @@ help:
 	@echo 'make shell           - starts interactive django shell (all models are automatically imported).'
 	@echo 'make start-databases - starts redis and postgres in background'
 	@echo 'make down-docker     - stops docker containers and removes them'
-	@echo 'make purge-docker    - stop postgres and purge data volume'
+	@echo 'make purge-databases - stop postgres and purge data volume'
 	@echo 'make run-docker      - starts django docker environment'
 	@echo 'make restore         - restores database.sql to docker-compose database'
-	@echo 'make killall-docker  - Gracefully kill all running containers'
 
 check-tools:
 	pip install pip-tools==6.2.0 pip==21.2.4
@@ -71,10 +70,3 @@ run-docker:
 
 restore:
 	export PGPASSWORD=django; cat database.sql | psql -h 127.0.0.1 -p 9432 -U django
-
-killall-docker:
-	docker stop -ai
-
-brew-python:
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-	brew install python@3.10
