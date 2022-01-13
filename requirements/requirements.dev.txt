@@ -35,12 +35,6 @@ certifi==2020.12.5
     #   sentry-sdk
 chardet==4.0.0
     # via requests
-click-didyoumean==0.0.3
-    # via celery
-click-plugins==1.1.1
-    # via celery
-click-repl==0.2.0
-    # via celery
 click==8.0.3
     # via
     #   celery
@@ -48,6 +42,12 @@ click==8.0.3
     #   click-plugins
     #   click-repl
     #   safety
+click-didyoumean==0.0.3
+    # via celery
+click-plugins==1.1.1
+    # via celery
+click-repl==0.2.0
+    # via celery
 coverage[toml]==5.5
     # via pytest-cov
 cssselect==1.1.0
@@ -57,28 +57,6 @@ cssutils==2.2.0
 deprecated==1.2.13
     # via redis
 dj-database-url==0.5.0
-    # via -r requirements/requirements.in
-django-amazon-ses==4.0.0
-    # via -r requirements/requirements.in
-django-ckeditor==6.2.0
-    # via -r requirements/requirements.in
-django-cleanup==5.2.0
-    # via -r requirements/requirements.in
-django-cors-headers==3.11.0
-    # via -r requirements/requirements.in
-django-js-asset==1.2.2
-    # via django-ckeditor
-django-solo==2.0.0
-    # via -r requirements/requirements.in
-django-storages==1.12.3
-    # via -r requirements/requirements.in
-django-stubs-ext==0.2.0
-    # via django-stubs
-django-stubs==1.8.0
-    # via -r requirements/requirements.dev.in
-git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
-    # via -r requirements/requirements.in
-django-watchman==1.2.0
     # via -r requirements/requirements.in
 django==3.2.10
     # via
@@ -94,19 +72,55 @@ django==3.2.10
     #   djangorestframework-simplejwt
     #   drf-spectacular
     #   model-bakery
-djangorestframework-simplejwt==5.0.0
+django-amazon-ses==4.0.0
+    # via -r requirements/requirements.in
+django-ckeditor==6.2.0
+    # via -r requirements/requirements.in
+django-cleanup==5.2.0
+    # via -r requirements/requirements.in
+django-cors-headers==3.11.0
+    # via -r requirements/requirements.in
+django-js-asset==1.2.2
+    # via django-ckeditor
+django-solo==2.0.0
+    # via -r requirements/requirements.in
+django-storages==1.12.3
+    # via -r requirements/requirements.in
+django-stubs==1.8.0
+    # via -r requirements/requirements.dev.in
+django-stubs-ext==0.2.0
+    # via django-stubs
+django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+    # via -r requirements/requirements.in
+django-watchman==1.2.0
     # via -r requirements/requirements.in
 djangorestframework==3.13.1
     # via
     #   -r requirements/requirements.in
     #   djangorestframework-simplejwt
     #   drf-spectacular
+djangorestframework-simplejwt==5.0.0
+    # via -r requirements/requirements.in
 dparse==0.5.1
     # via safety
 drf-spectacular==0.17.3
     # via -r requirements/requirements.in
 execnet==1.8.0
     # via pytest-xdist
+flake8==3.9.2
+    # via
+    #   -r requirements/requirements.dev.in
+    #   flake8-bandit
+    #   flake8-bugbear
+    #   flake8-builtins
+    #   flake8-comprehensions
+    #   flake8-django
+    #   flake8-gl-codeclimate
+    #   flake8-polyfill
+    #   flake8-print
+    #   flake8-type-annotations
+    #   pep8-naming
+    #   pyproject-flake8
 flake8-bandit==2.1.2
     # via -r requirements/requirements.dev.in
 flake8-blind-except==0.2.0
@@ -121,7 +135,7 @@ flake8-django==1.1.2
     # via -r requirements/requirements.dev.in
 flake8-functions==0.0.6
     # via -r requirements/requirements.dev.in
-git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
+flake8-gl-codeclimate @ git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
     # via -r requirements/requirements.dev.in
 flake8-import-order==0.18.1
     # via -r requirements/requirements.dev.in
@@ -137,20 +151,6 @@ flake8-type-annotations==0.1.0
     # via -r requirements/requirements.dev.in
 flake8-variables-names==0.0.4
     # via -r requirements/requirements.dev.in
-flake8==3.9.2
-    # via
-    #   -r requirements/requirements.dev.in
-    #   flake8-bandit
-    #   flake8-bugbear
-    #   flake8-builtins
-    #   flake8-comprehensions
-    #   flake8-django
-    #   flake8-gl-codeclimate
-    #   flake8-polyfill
-    #   flake8-print
-    #   flake8-type-annotations
-    #   pep8-naming
-    #   pyproject-flake8
 gitdb==4.0.5
     # via gitpython
 gitpython==3.1.14
@@ -179,12 +179,12 @@ model-bakery==1.4.0
     # via -r requirements/requirements.in
 mr-proper==0.0.6
     # via flake8-functions
-mypy-extensions==0.4.3
-    # via mypy
 mypy==0.931
     # via
     #   -r requirements/requirements.dev.in
     #   django-stubs
+mypy-extensions==0.4.3
+    # via mypy
 packaging==21.3
     # via
     #   dparse
@@ -227,14 +227,6 @@ pyproject-flake8==0.0.1a2
     # via -r requirements/requirements.dev.in
 pyrsistent==0.17.3
     # via jsonschema
-pytest-cov==3.0.0
-    # via -r requirements/requirements.in
-pytest-django==4.5.2
-    # via -r requirements/requirements.in
-pytest-forked==1.3.0
-    # via pytest-xdist
-pytest-xdist==2.5.0
-    # via -r requirements/requirements.in
 pytest==6.2.5
     # via
     #   -r requirements/requirements.in
@@ -243,6 +235,14 @@ pytest==6.2.5
     #   pytest-django
     #   pytest-forked
     #   pytest-xdist
+pytest-cov==3.0.0
+    # via -r requirements/requirements.in
+pytest-django==4.5.2
+    # via -r requirements/requirements.in
+pytest-forked==1.3.0
+    # via pytest-xdist
+pytest-xdist==2.5.0
+    # via -r requirements/requirements.in
 python-dateutil==2.8.1
     # via botocore
 pytz==2021.3
@@ -290,7 +290,7 @@ toml==0.10.2
     #   pytest
 tomli==2.0.0
     # via mypy
-types-redis==4.1.7
+types-redis==4.1.8
     # via -r requirements/requirements.dev.in
 typing-extensions==4.0.1
     # via
