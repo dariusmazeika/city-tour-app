@@ -13,7 +13,7 @@ help:
 	@echo 'make shell           - starts interactive django shell (all models are automatically imported).'
 
 check-tools:
-	pip install -U pip-tools
+	pip install pip-tools
 
 compile: check-tools
 	pip-compile requirements/requirements.dev.in
