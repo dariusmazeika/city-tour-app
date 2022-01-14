@@ -57,6 +57,7 @@ make check-tools     - ensure pip-tools present in environment
 make compile         - compile requirements files
 make install         - install requirements/requirements.dev.txt
 make sync            - Compile and then install pip depenecys
+make super           - Creates superuser with u:test@test.com, p:test.
 make mypy            - runs MyPy.
 make flake8          - runs Flake8
 make test            - runs tests.
