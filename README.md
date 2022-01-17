@@ -64,11 +64,13 @@ make check           - runs tests and other checks (Flake8 and MyPy). These chec
 make migrations      - runs django makemigrations command.
 make migrate         - applies django migrations.
 make run             - starts django server at http://localhost:8000 for local development.
-make shell           - starts interactive django shell (all models are automatically imported).
+make shell           - starts interactive django shell.
+make ishell          - starts interactive django shell (all models are automatically imported).
 make start-databases - starts redis and postgres in background
 make down-docker     - stops docker containers and removes them
 make purge-databases - stop postgres and purge data volume
 make run-docker      - starts django docker environment
+make pull-docker     - starts django docker environment (pull from CI registry)
 make restore         - restores database.sql to docker-compose database
 ```
 

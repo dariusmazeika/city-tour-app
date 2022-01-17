@@ -1,4 +1,4 @@
-.PHONY: check-tools compile install sync mypy flake8 test check migrations migrate run shell start-databases down-docker purge-databases run-docker restore
+.PHONY: check-tools compile install sync mypy flake8 test check migrations migrate run shell start-databases down-docker purge-databases run-docker restore ishell
 
 help:
 	@echo 'make check-tools     - ensure pip-tools present in environment'
@@ -12,7 +12,8 @@ help:
 	@echo 'make migrations      - runs django makemigrations command.'
 	@echo 'make migrate         - applies django migrations.'
 	@echo 'make run             - starts django server at http://localhost:8000 for local development.'
-	@echo 'make shell           - starts interactive django shell (all models are automatically imported).'
+	@echo 'make shell           - starts interactive django shell.'
+	@echo 'make ishell          - starts interactive django shell (all models are automatically imported).'
 	@echo 'make start-databases - starts redis and postgres in background'
 	@echo 'make down-docker     - stops docker containers and removes them'
 	@echo 'make purge-databases - stop postgres and purge data volume'
@@ -54,6 +55,9 @@ run:
 
 shell:
 	python manage.py shell
+
+ishell:
+	export DJANGO_SETTINGS_MODULE=conf.settings_test; python manage.py shell_plus --ipython
 
 start-databases:
 	docker-compose -f docker-compose.yml up -d postgres

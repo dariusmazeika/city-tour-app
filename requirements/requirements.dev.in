@@ -20,3 +20,5 @@ git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
 safety
 pyproject-flake8
 types-redis
+ipython
+django-extensions
