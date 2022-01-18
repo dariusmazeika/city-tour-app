@@ -1,10 +1,11 @@
-.PHONY: check-tools compile install sync mypy flake8 test check migrations migrate run shell start-databases down-docker purge-databases run-docker restore ishell
+.PHONY: check-tools compile super install sync mypy flake8 test check migrations migrate run shell start-databases down-docker purge-databases run-docker restore ishell
 
 help:
 	@echo 'make check-tools     - ensure pip-tools present in environment'
 	@echo 'make compile         - compile requirements files'
 	@echo 'make install         - install requirements/requirements.dev.txt'
 	@echo 'make sync            - Compile and then install pip depenecys'
+	@echo 'make super           - Creates superuser with u:test@test.com, p:test.'
 	@echo 'make mypy            - runs MyPy.'
 	@echo 'make flake8          - runs Flake8'
 	@echo 'make test            - runs tests.'
@@ -27,6 +28,9 @@ check-tools:
 compile: check-tools
 	pip-compile requirements/requirements.dev.in
 	pip-compile requirements/requirements.in
+
+super:
+	export DJANGO_SUPERUSER_EMAIL=test@test.com; export DJANGO_SUPERUSER_PASSWORD=test; python manage.py createsuperuser --noinput
 
 install: check-tools
 	pip-sync requirements/requirements.dev.txt
