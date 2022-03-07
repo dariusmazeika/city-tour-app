@@ -85,7 +85,7 @@ django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.12.3
     # via -r requirements/requirements.in
-git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
 djangorestframework==3.13.1
     # via
@@ -124,7 +124,7 @@ packaging==21.3
     #   redis
 parameterized==0.8.1
     # via -r requirements/requirements.in
-pillow==9.0.0
+pillow==9.0.1
     # via -r requirements/requirements.in
 pluggy==0.13.1
     # via pytest
