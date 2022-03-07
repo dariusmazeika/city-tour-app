@@ -8,7 +8,9 @@ amqp==5.0.9
     # via kombu
 apipkg==1.5
     # via execnet
-asgiref==3.3.4
+appnope==0.1.2
+    # via ipython
+asgiref==3.5.0
     # via django
 asttokens==2.0.5
     # via stack-data
@@ -67,17 +69,17 @@ deprecated==1.2.13
     # via redis
 dj-database-url==0.5.0
     # via -r requirements/requirements.in
-django==3.2.10
+django==4.0.2
     # via
     #   -r requirements/requirements.in
     #   django-amazon-ses
     #   django-cors-headers
     #   django-extensions
+    #   django-health-check
     #   django-solo
     #   django-storages
     #   django-stubs
     #   django-stubs-ext
-    #   django-watchman
     #   djangorestframework
     #   djangorestframework-simplejwt
     #   drf-spectacular
@@ -91,7 +93,9 @@ django-cleanup==5.2.0
 django-cors-headers==3.11.0
     # via -r requirements/requirements.in
 django-extensions==3.1.5
-    # via -r requirements/requirements.dev.in
+    # via -r requirements/requirements.in
+django-health-check==3.16.5
+    # via -r requirements/requirements.in
 django-js-asset==1.2.2
     # via django-ckeditor
 django-solo==2.0.0
@@ -103,8 +107,6 @@ django-stubs==1.8.0
 django-stubs-ext==0.2.0
     # via django-stubs
 git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
-    # via -r requirements/requirements.in
-django-watchman==1.2.0
     # via -r requirements/requirements.in
 djangorestframework==3.13.1
     # via
@@ -288,7 +290,6 @@ python-dateutil==2.8.1
 pytz==2021.3
     # via
     #   celery
-    #   django
     #   djangorestframework
 pyyaml==5.4.1
     # via

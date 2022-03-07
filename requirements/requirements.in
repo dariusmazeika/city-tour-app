@@ -13,7 +13,7 @@ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
 djangorestframework-simplejwt
 django-storages
 django-amazon-ses
-django-watchman
+django-health-check
 drf-spectacular
 typing-extensions
 dj-database-url
@@ -25,3 +25,4 @@ pytest-xdist
 django-cleanup
 sentry-sdk
 parameterized
+django-extensions

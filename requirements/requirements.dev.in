@@ -21,4 +21,3 @@ safety
 pyproject-flake8
 types-redis
 ipython
-django-extensions
