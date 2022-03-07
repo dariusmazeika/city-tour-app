@@ -64,7 +64,7 @@ deprecated==1.2.13
     # via redis
 dj-database-url==0.5.0
     # via -r requirements/requirements.in
-django==4.0.2
+django==4.0.3
     # via
     #   -r requirements/requirements.in
     #   django-amazon-ses
