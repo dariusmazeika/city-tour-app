@@ -167,7 +167,7 @@ pytz==2021.3
     #   djangorestframework
 pyyaml==5.4.1
     # via drf-spectacular
-redis==4.1.0
+redis==4.1.4
     # via -r requirements/requirements.in
 requests==2.25.1
     # via premailer
