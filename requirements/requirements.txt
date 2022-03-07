@@ -173,7 +173,7 @@ requests==2.25.1
     # via premailer
 s3transfer==0.3.6
     # via boto3
-sentry-sdk==1.5.2
+sentry-sdk==1.5.6
     # via -r requirements/requirements.in
 six==1.15.0
     # via
@@ -190,7 +190,7 @@ typing-extensions==4.0.1
     # via -r requirements/requirements.in
 uritemplate==3.0.1
     # via drf-spectacular
-urllib3==1.26.4
+urllib3==1.26.8
     # via
     #   botocore
     #   requests
