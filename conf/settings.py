@@ -58,11 +58,11 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'solo',
-    'watchman',
     'ckeditor',
     'ckeditor_uploader',
     'drf_spectacular',
     'tabbed_admin',
+    'health_check',
 
     # local
     # https://docs.djangoproject.com/en/3.1/ref/applications/#django.apps.AppConfig.ready

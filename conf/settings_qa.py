@@ -31,3 +31,11 @@ AWS_DEFAULT_ACL = "public-read"
 AWS_STORAGE_BUCKET_NAME = f"media-{os.getenv('CI_PROJECT_NAME')}"
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_S3_ENDPOINT_URL = f"https://minio.{os.getenv('CI_ENVIRONMENT_URL')}"
+
+INSTALLED_APPS = list(INSTALLED_APPS) + [
+    'health_check.db',
+    'health_check.cache',
+    'health_check.contrib.migrations',
+    'health_check.contrib.s3boto3_storage',
+    'health_check.contrib.redis',
+]

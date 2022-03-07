@@ -78,10 +78,10 @@ pull-docker:
 	@echo "Login with gitlab credentials"
 	docker login registry.gitlab.com
 	docker-compose -f docker-compose.yml pull
-	docker-compose -f docker-compose.yml run django /bin/sh
+	docker-compose -f docker-compose.yml run -p 8000:8000 django /bin/sh
 
 run-docker:
-	docker-compose -f docker-compose.yml run django /bin/sh
+	docker-compose -f docker-compose.yml run -p 8000:8000 django /bin/sh
 
 restore:
 	export PGPASSWORD=django; cat database.sql | psql -h 127.0.0.1 -p 9432 -U django

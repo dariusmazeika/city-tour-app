@@ -49,12 +49,6 @@ class AdminSmokerCase(BaseTestCase):
             self.assertEqual(response.status_code, status.HTTP_200_OK, url.name)
 
 
-class WatchmanCase(BaseTestCase):
-    def test_watchman_state(self):
-        response = self.client.get(reverse("watchman"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
 class BuildVersionCase(BaseTestCase):
     @override_settings(BUILD_VERSION=123)
     def test_build_version(self):
