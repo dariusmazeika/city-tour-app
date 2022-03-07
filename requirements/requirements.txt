@@ -85,7 +85,7 @@ django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.12.3
     # via -r requirements/requirements.in
-django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
 djangorestframework==3.13.1
     # via
@@ -144,7 +144,7 @@ pyparsing==2.4.7
     # via packaging
 pyrsistent==0.17.3
     # via jsonschema
-pytest==6.2.5
+pytest==7.0.1
     # via
     #   -r requirements/requirements.in
     #   pytest-cov
@@ -183,9 +183,9 @@ six==1.15.0
 sqlparse==0.4.2
     # via django
 toml==0.10.2
-    # via
-    #   coverage
-    #   pytest
+    # via coverage
+tomli==2.0.1
+    # via pytest
 typing-extensions==4.1.1
     # via -r requirements/requirements.in
 uritemplate==3.0.1
