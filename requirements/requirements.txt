@@ -186,7 +186,7 @@ toml==0.10.2
     # via
     #   coverage
     #   pytest
-typing-extensions==4.0.1
+typing-extensions==4.1.1
     # via -r requirements/requirements.in
 uritemplate==3.0.1
     # via drf-spectacular
