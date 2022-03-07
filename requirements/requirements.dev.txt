@@ -144,7 +144,7 @@ flake8-comprehensions==3.8.0
     # via -r requirements/requirements.dev.in
 flake8-django==1.1.2
     # via -r requirements/requirements.dev.in
-flake8-functions==0.0.6
+flake8-functions==0.0.7
     # via -r requirements/requirements.dev.in
 flake8-gl-codeclimate @ git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
     # via -r requirements/requirements.dev.in
@@ -261,7 +261,6 @@ pyrsistent==0.17.3
 pytest==6.2.5
     # via
     #   -r requirements/requirements.in
-    #   flake8-functions
     #   pytest-cov
     #   pytest-django
     #   pytest-forked
