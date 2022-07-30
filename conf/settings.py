@@ -163,7 +163,7 @@ USE_L10N = True
 USE_TZ = True
 
 DEFAULT_LANGUAGE = 'lt'
-TRANSLATIONS_BASE_LANGUAGE = ('lt', 'Lithuanian')
+TRANSLATIONS_BASE_LANGUAGE = (DEFAULT_LANGUAGE, 'Lithuanian')
 MANIFEST_JS_MAX_AGE = 0
 
 # Static files (CSS, JavaScript, Images)

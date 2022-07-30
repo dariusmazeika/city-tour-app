@@ -1,19 +1,18 @@
 from django.contrib.admin import site
-from django.test import Client
-from django.test import override_settings
 from django.urls import reverse
 from model_bakery.baker import make
-from parameterized import parameterized
+import pytest
 from rest_framework import status
 
-from apps.utils.tests_utils import BaseTestCase
+from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
-def get_model_name(testcase_func, param_num, param):
-    return f"{testcase_func.__name__}_{param[0][0].model._meta.model_name}"
+def get_model_name(value):
+    admin = value  # because [site._registry[model]] is a model name inside a list
+    return f"{admin.model._meta.model_name}"
 
 
-class AdminSmokerCase(BaseTestCase):
+class TestAdminSmokerCase:
     exclude = [
         "home_siteconfiguration_add",
         "home_siteconfiguration_delete",
@@ -21,21 +20,17 @@ class AdminSmokerCase(BaseTestCase):
         "admin_logentry_delete",
     ]
 
-    def setUp(self):
-        super().setUp()
-        self.user.is_staff = True
-        self.user.is_superuser = True
-        self.user.save()
+    @pytest.fixture
+    def authorized_admin_client(self, client: APIClientWithQueryCounter, superuser, user_credentials):
+        client.login(**user_credentials)
+        return client
 
-        self.client = Client()
-        self.client.login(**self.credentials)
+    def test_admin_index(self, authorized_admin_client):
+        response = authorized_admin_client.get(reverse("admin:index"))
+        assert response.status_code == status.HTTP_200_OK, response.request
 
-    def test_admin_index(self):
-        response = self.client.get(reverse("admin:index"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK, response.request)
-
-    @parameterized.expand([[site._registry[model]] for model in site._registry], name_func=get_model_name)
-    def test_admin(self, site_admin):
+    @pytest.mark.parametrize("site_admin", [site._registry[model] for model in site._registry], ids=get_model_name)
+    def test_admin(self, site_admin, authorized_admin_client: APIClientWithQueryCounter):
         obj = make(site_admin.model)
         for url in site_admin.urls:
             args = []
@@ -45,12 +40,12 @@ class AdminSmokerCase(BaseTestCase):
             if getattr(url.pattern, "_route", "").startswith(("<path:object_id>", "<id>")):
                 args = [obj.pk]
 
-            response = self.client.get(reverse(f"admin:{url.name}", args=args))
-            self.assertEqual(response.status_code, status.HTTP_200_OK, url.name)
+            response = authorized_admin_client.get(reverse(f"admin:{url.name}", args=args), query_limit=9)
+            assert response.status_code == status.HTTP_200_OK, url.name
 
 
-class BuildVersionCase(BaseTestCase):
-    @override_settings(BUILD_VERSION=123)
-    def test_build_version(self):
-        response = self.client.get(reverse("build-version"))
-        self.assertEqual(response.json(), 123)
+class TestBuildVersionCase:
+    def test_build_version(self, settings, client):
+        settings.BUILD_VERSION = 123
+        response = client.get(reverse("build-version"))
+        assert response.json() == 123, response.json()

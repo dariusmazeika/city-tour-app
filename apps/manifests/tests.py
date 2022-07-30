@@ -1,54 +1,59 @@
-from django.conf import settings
 from django.urls import reverse
+import pytest
 from rest_framework import status
 
 from apps.home.models import SiteConfiguration
-from apps.utils.tests_utils import BaseTestCase
+from apps.translations.models import Language
+from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
-class AppConfigTestCase(BaseTestCase):
+class TestAppConfig:
 
-    def test_app_config(self):
+    @pytest.fixture(autouse=True)
+    def additional_language(self):
+        return Language.objects.get_or_create(code="en", defaults={"name": "English"})[0]
+
+    def test_app_config(self, settings, client):
         site_config = SiteConfiguration.get_solo()
-        response = self.client.get(reverse('app-config'), format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['version'], site_config.manifest_version)
-        self.assertEqual(response.json()['default_language'], settings.DEFAULT_LANGUAGE)
-        self.assertEqual(response.json()['enabled_languages'], [])
-        self.assertEqual(response.json()['translations']['lt'], {})
-        self.assertEqual(response.json()['translations']['en'], {})
+        response = client.get(reverse('app-config'), format='json')
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()['version'] == site_config.manifest_version
+        assert response.json()['default_language'] == settings.DEFAULT_LANGUAGE
+        assert response.json()['enabled_languages'] == []
+        assert response.json()['translations']['lt'] == {}
+        assert response.json()['translations']['en'] == {}
 
-    def test_regenerate_manifest(self):
+    def test_regenerate_manifest(self, client):
         url = reverse("regenerate-cache")
-        response = self.client.get(url, format="json", HTTP_REFERER="test/url")
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertEqual(response.url, "test/url")
+        response = client.get(url, format="json", HTTP_REFERER="test/url")
+        assert response.status_code == status.HTTP_302_FOUND
+        assert response.url == "test/url"
 
-    def test_regenerate_manifest_redirects(self):
+    def test_regenerate_manifest_redirects(self, settings, client):
         site_config = SiteConfiguration.get_solo()
-        url = reverse("regenerate-cache")
-        url_final = reverse("app-config")
-
-        response = self.client.get(url, format="json", HTTP_REFERER=url_final, follow=True)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["version"], site_config.manifest_version)
-        self.assertEqual(response.json()["default_language"], settings.DEFAULT_LANGUAGE)
-        self.assertEqual(response.json()["enabled_languages"], [])
-        self.assertEqual(response.json()["translations"]["en"], {})
-        self.assertEqual(response.json()["translations"]["lt"], {})
-
-    def test_regenerate_manifest_creates_site_config_with_authenticated_user(self):
         url = reverse("regenerate-cache")
         url_final = reverse("app-config")
 
-        self.query_limits["ANY GET REQUEST"] = 10
-        response = self.get(url, HTTP_REFERER=url_final, follow=True)
+        response = client.get(url, format="json", HTTP_REFERER=url_final, follow=True)
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["version"] == site_config.manifest_version
+        assert response.json()["default_language"] == settings.DEFAULT_LANGUAGE
+        assert response.json()["enabled_languages"] == []
+        assert response.json()["translations"]["en"] == {}
+        assert response.json()["translations"]["lt"] == {}
+
+    def test_regenerate_manifest_creates_site_config_with_authenticated_user(self, settings,
+                                                                             client: APIClientWithQueryCounter):
+        url = reverse("regenerate-cache")
+        url_final = reverse("app-config")
+
+        response = client.get(url, HTTP_REFERER=url_final, follow=True, query_limit=6)
         site_config = SiteConfiguration.get_solo()
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["version"], site_config.manifest_version)
-        self.assertEqual(response.json()["default_language"], settings.DEFAULT_LANGUAGE)
-        self.assertEqual(response.json()["enabled_languages"], [])
-        self.assertEqual(response.json()["translations"]["en"], {})
-        self.assertEqual(response.json()["translations"]["lt"], {})
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["version"] == site_config.manifest_version
+        assert response.json()["default_language"] == settings.DEFAULT_LANGUAGE
+        assert response.json()["enabled_languages"] == []
+        assert response.json()["translations"]["en"] == {}
+        assert response.json()["translations"]["lt"] == {}
