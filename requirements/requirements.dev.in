@@ -12,7 +12,6 @@ flake8-logging-format
 flake8-variables-names
 flake8-functions
 flake8-comprehensions
-flake8-bandit
 django-stubs
 mypy
 flake8-print
