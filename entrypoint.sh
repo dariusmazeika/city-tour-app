@@ -33,6 +33,10 @@ if [[ $(expr match "$RUN_MODE" "CELERY_") == 0 ]]; then
   if [[ $RUN_MODE == "DEVELOPMENT" ]]; then
     python3 manage.py runserver 0.0.0.0:8000
   else
-    gunicorn -b 0.0.0.0:8000 -c /app/conf/gunicorn.conf.py wsgi:application
+		if [[ $DJANGO_SETTINGS_MODULE == "conf.settings_aws" ]]; then
+			gunicorn -b 0.0.0.0:8000 -c /app/conf/gunicorn.conf.aws.py wsgi:application --log-file=-
+		else
+			gunicorn -b 0.0.0.0:8000 -c /app/conf/gunicorn.conf.py wsgi:application
+		fi
   fi
 fi

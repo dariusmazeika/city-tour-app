@@ -1,4 +1,4 @@
 include:
-  - project: 'corner-case-technologies/backend/operations'
+  - project: 'corner-case-technologies/operations'
     ref: master
-    file: 'default-django-ci.yml'
+    file: 'django.default.yml'

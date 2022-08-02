@@ -13,6 +13,8 @@ services:
             - "9432:5432"
     redis:
         image: redis
+        ports:
+            - "6379:6379"
     django:
         # image: registry.gitlab.com/corner-case-technologies/<project subgroup>/<repo>/runner:stable
         build:
@@ -20,7 +22,7 @@ services:
             dockerfile: Dockerfile
         volumes:
             - ".:/app"
-        command: ./bin/startup.sh
+        command: ./entrypoint.sh
         ports:
             - "8000:8000"
         environment:
@@ -33,6 +35,9 @@ services:
             DB_HOST: postgres
             DB_PORT: 5432
             RUN_MODE: "DEVELOPMENT"
+            REDIS_URL: "redis://redis:6379/0"
+        env_file:
+          - .env
         depends_on:
             - postgres
             - redis

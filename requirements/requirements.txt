@@ -54,7 +54,7 @@ deprecated==1.2.13
     # via redis
 dj-database-url==0.5.0
     # via -r requirements/requirements.in
-django==4.0.3
+django==4.0.6
     # via
     #   -r requirements/requirements.in
     #   django-amazon-ses
@@ -138,7 +138,7 @@ py==1.10.0
     # via
     #   pytest
     #   pytest-forked
-pyjwt==2.0.1
+pyjwt==2.4.0
     # via djangorestframework-simplejwt
 pyparsing==2.4.7
     # via packaging

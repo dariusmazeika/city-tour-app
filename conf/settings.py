@@ -268,16 +268,31 @@ SIMPLE_JWT = {
 # Documentation settings
 SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': r'/api/',
-    'SERVE_PUBLIC': True,
-    'SERVE_PERMISSIONS': ('rest_framework.permissions.AllowAny',),
+    'SERVE_PUBLIC': False,
+    'SERVE_PERMISSIONS': ('rest_framework.permissions.IsAdminUser',),
     'TITLE': '',
     'VERSION': VERSION,
 }
 
 sentry_sdk.init(
-    os.getenv('SENTRY_URL'),
+    os.getenv('SENTRY_DSN'),
     environment=ENVIRONMENT,
     integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
-    traces_sample_rate=1.0,
+    traces_sample_rate=0,
     send_default_pii=True,
 )
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
