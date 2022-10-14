@@ -1,56 +1,58 @@
 [tool.pytest.ini_options]
-python_files = 'tests.py test_*.py tests_*.py'
-addopts = '--numprocesses=auto'
-DJANGO_SETTINGS_MODULE = 'conf.settings_test'
+python_files = "tests.py test_*.py tests_*.py"
+addopts = "--numprocesses=auto -v -s"
+DJANGO_SETTINGS_MODULE = "conf.settings_test"
 filterwarnings = [
 	# To ignore a warning: copy begging of the warning message and
-	# escape special characters (like brackets) with '\\', e.g.:
+	# escape special characters (like brackets) with "\\", e.g.:
 	#
 	#	"ignore:django.utils.translation.ugettext_lazy\\(\\) is deprecated in favor of",
 	#
 	"ignore:::^(?!apps)",
 	"error:::^apps",
 ]
+norecursedirs = "requirements .gitlab"
 
 [tool.coverage.report]
-fail_under = 90.0
+fail_under = 89.0
 
 [tool.coverage.run]
 include = [
-	'apps/*',
-	'conf/settings.py',
+	"apps/*",
+	"conf/settings.py",
 ]
 omit = [
-	'*/migrations/*',
-	'*/tests.py',
+	"*/migrations/*",
+	"*/tests.py",
 ]
 
 [tool.flake8]
 exclude = [
-	'.git',
-	'.idea',
-	'.pytest_cache',
-	'docker',
-	'docs',
-	'*.egg-info',
-	'migrations',
-	'conf',
+	".git",
+	".idea",
+	".pytest_cache",
+	"docker",
+	"docs",
+	"*.egg-info",
+	"migrations",
+	"conf",
 ]
-show_source = 'true'
+show_source = "true"
 max_line_length = 120
 max_complexity = 7
-import_order_style = 'google'
-include = 'apps/'
-application_import_names = 'apps'
+import_order_style = "google"
+include = "apps/"
+application_import_names = "apps"
 
 ignore = [
-	'I101',
-	'DJ09',
-	'DJ05',
-	'W503',
-	'CFQ004',
+	"I101",
+	"DJ09",
+	"DJ05",
+	"W503",
+	"CFQ004",
+	"S101",
 ]
 per-file-ignores = [
-    'apps/utils/authentication.py:A003',
-    'apps/utils/tests_utils.py:A002, VNE003, S105',
+    "apps/utils/authentication.py:A003",
+    "apps/utils/tests_utils.py:A002, VNE003, S105",
 ]

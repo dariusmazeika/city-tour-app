@@ -1,10 +1,10 @@
-from django.db import DEFAULT_DB_ALIAS, connections
-from django.test import TestCase
+from django.db import connections, DEFAULT_DB_ALIAS
 from django.test.utils import CaptureQueriesContext
 from rest_framework.test import APIClient
 
 
-QUERY_LIMIT_DEFAULT_FORMAT = "ANY {} REQUEST"
+class QueryLimitExceededError(ValueError):
+    pass
 
 
 class APIClientWithQueryCounter(APIClient):
@@ -13,9 +13,9 @@ class APIClientWithQueryCounter(APIClient):
     not greater than some configured limit.
     """
 
-    def __init__(self, test_case: TestCase, *args, **kwargs):
+    def __init__(self, count: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.test_case = test_case
+        self.count = count
 
     def get(self, *args, **kwargs):
         with self._assert_num_queries("GET", *args, **kwargs):
@@ -23,47 +23,36 @@ class APIClientWithQueryCounter(APIClient):
 
     def post(self, *args, **kwargs):
         with self._assert_num_queries("POST", *args, **kwargs):
-            return super().post(*args, **{"format": "json", **kwargs})
+            return super().post(*args, **kwargs)
 
     def put(self, *args, **kwargs):
         with self._assert_num_queries("PUT", *args, **kwargs):
-            return super().put(*args, **{"format": "json", **kwargs})
+            return super().put(*args, **kwargs)
 
     def patch(self, *args, **kwargs):
         with self._assert_num_queries("PATCH", *args, **kwargs):
-            return super().patch(*args, **{"format": "json", **kwargs})
+            return super().patch(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         with self._assert_num_queries("DELETE", *args, **kwargs):
-            return super().delete(*args, **{"format": "json", **kwargs})
+            return super().delete(*args, **kwargs)
 
     def _assert_num_queries(self, http_method: str, *args, **kwargs):
-        url = args[0] if args else kwargs.get("url")
+        url = args[0] if args else kwargs.get("path")
         request_key = f"{http_method} {url}"
-        max_query_limit = self._get_configured_query_limit(http_method, request_key)
+        query_limit = kwargs.get("query_limit")
+        max_query_limit = query_limit if isinstance(query_limit, int) else self.count
         connection = connections[DEFAULT_DB_ALIAS]
-        return AssertMaxNumQueriesContext(connection, self.test_case, max_query_limit, request_key)
-
-    def _get_configured_query_limit(self, http_method: str, request_key: str) -> int:
-        configuration = self.test_case.query_limits  # type: ignore
-        matching_key = next((key for key in configuration.keys() if key in request_key), None)
-        if matching_key:
-            return configuration[matching_key]
-
-        default_key = QUERY_LIMIT_DEFAULT_FORMAT.format(http_method)
-        default = configuration.get(default_key)
-        return default if default else 0
+        return AssertMaxNumQueriesContext(connection, max_query_limit, request_key)
 
 
 class AssertMaxNumQueriesContext(CaptureQueriesContext):
     def __init__(
-        self,
-        connection,
-        test_case: TestCase,
-        max_query_limit: int,
-        request_key: str,
+            self,
+            connection,
+            max_query_limit: int,
+            request_key: str,
     ):
-        self.test_case = test_case
         self.max_query_limit = max_query_limit
         self.request_key = request_key
         super().__init__(connection)
@@ -102,7 +91,7 @@ class AssertMaxNumQueriesContext(CaptureQueriesContext):
             error_message_lines.extend(f"{index + 1}. {query}" for index, query in enumerate(filtered_queries))
 
             error_msg = "\n\n".join(error_message_lines)
-            self.test_case.fail(error_msg)
+            raise QueryLimitExceededError(error_msg)
 
     def _include_query_in_results(self, query: str) -> bool:
         return "SAVEPOINT" not in query  # For now exclude queries, which are for transaction handling
