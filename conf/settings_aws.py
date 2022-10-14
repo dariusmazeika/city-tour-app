@@ -34,9 +34,9 @@ PRIVATE_FILE_STORAGE = "apps.utils.storage.PrivateMediaStorage"
 AWS_QUERYSTRING_AUTH = False
 
 INSTALLED_APPS = list(INSTALLED_APPS) + [
-    'health_check.db',
-    'health_check.cache',
-    'health_check.contrib.migrations',
-    'health_check.contrib.s3boto3_storage',
-    'health_check.contrib.redis',
+    "health_check.db",
+    "health_check.cache",
+    "health_check.contrib.migrations",
+    "health_check.contrib.s3boto3_storage",
+    "health_check.contrib.redis",
 ]

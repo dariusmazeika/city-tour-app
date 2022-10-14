@@ -12,13 +12,12 @@ from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
 class TestSendEmail:
-
     def _add_email_template_and_translation(
-            self,
-            site_config: SiteConfiguration,
-            template_name: str,
-            language: Language,
-            dynamic_content_fragment: str,
+        self,
+        site_config: SiteConfiguration,
+        template_name: str,
+        language: Language,
+        dynamic_content_fragment: str,
     ) -> None:
         template, _create = EmailTemplate.objects.get_or_create(name=template_name)
         setattr(site_config, template_name, template)
@@ -54,9 +53,7 @@ class TestSendEmail:
     def test_send_email_task(self, unverified_user, settings):
         password_url = "http://example.com/api/reset"  # noqa: S105
         send_email_task(
-            email=unverified_user.email,
-            template="password_renewal_template",
-            context={"passwordUrl": password_url}
+            email=unverified_user.email, template="password_renewal_template", context={"passwordUrl": password_url}
         )
         assert len(mail.outbox) == 1
         assert mail.outbox[0].to == [unverified_user.email]
@@ -73,7 +70,7 @@ class TestSendEmail:
             cc=cc,
             bcc=bcc,
             template="password_renewal_template",
-            context={"passwordUrl": password_url}
+            context={"passwordUrl": password_url},
         )
         assert len(mail.outbox) == 1
         assert mail.outbox[0].to == [unverified_user.email]

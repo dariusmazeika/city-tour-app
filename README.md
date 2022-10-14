@@ -60,8 +60,9 @@ make sync            - Compile and then install pip depenecys
 make super           - Creates superuser with u:test@test.com, p:test.
 make mypy            - runs MyPy.
 make flake8          - runs Flake8
+make black           - runs Black formatter
 make test            - runs tests.
-make check           - runs tests and other checks (Flake8 and MyPy). These checks should pass before pushing code.
+make check           - runs tests and code quality checks. These checks should pass before pushing code
 make migrations      - runs django makemigrations command.
 make migrate         - applies django migrations.
 make run             - starts django server at http://localhost:8000 for local development.

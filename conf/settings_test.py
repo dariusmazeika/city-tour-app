@@ -8,4 +8,4 @@ CELERY_TASK_ALWAYS_EAGER = True
 REDIS_URL = ""
 CELERY_BROKER_URL = REDIS_URL
 
-INSTALLED_APPS = list(INSTALLED_APPS) + ['django_extensions']
+INSTALLED_APPS = list(INSTALLED_APPS) + ["django_extensions"]

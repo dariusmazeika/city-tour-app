@@ -6,6 +6,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 class PrivateMediaStorage(S3Boto3Storage):
     """Class for restricted uploaded files that will have a querystring auth"""
+
     querystring_auth = True
     default_acl = "private"
 

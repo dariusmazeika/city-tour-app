@@ -8,22 +8,25 @@ from solo.models import SingletonModel
 
 from apps.utils.validation import check_template
 
-LOGGER = logging.getLogger('app')
+LOGGER = logging.getLogger("app")
 
 
 class SiteConfiguration(SingletonModel):
-    enabled_languages = models.ManyToManyField('translations.Language', related_name='enabled_inform_languages')
+    enabled_languages = models.ManyToManyField("translations.Language", related_name="enabled_inform_languages")
     default_language = models.ForeignKey(
-        'translations.Language',
-        related_name='default_inform_language',
+        "translations.Language",
+        related_name="default_inform_language",
         null=True,
-        blank=True, on_delete=models.SET_NULL
+        blank=True,
+        on_delete=models.SET_NULL,
     )
-    manifest_version = models.CharField(max_length=300, default='1')
-    password_renewal_template = models.ForeignKey('home.EmailTemplate', related_name='password_renewal_template',
-                                                  blank=True, null=True, on_delete=models.SET_NULL)
-    verify_email_template = models.ForeignKey('home.EmailTemplate', related_name='verify_email_template',
-                                              blank=True, null=True, on_delete=models.SET_NULL)
+    manifest_version = models.CharField(max_length=300, default="1")
+    password_renewal_template = models.ForeignKey(
+        "home.EmailTemplate", related_name="password_renewal_template", blank=True, null=True, on_delete=models.SET_NULL
+    )
+    verify_email_template = models.ForeignKey(
+        "home.EmailTemplate", related_name="verify_email_template", blank=True, null=True, on_delete=models.SET_NULL
+    )
 
     class Meta:
         verbose_name = "Site Configuration"
@@ -36,7 +39,7 @@ class SiteConfiguration(SingletonModel):
 
         template = email.email_template_translations.filter(language__code=language.lower()).first()
         if not template:
-            LOGGER.error('No template %s with language %s', email, language)
+            LOGGER.error("No template %s with language %s", email, language)
         return template
 
     def get_password_renewal_template(self, language):
@@ -66,22 +69,22 @@ class EmailTemplate(models.Model):
 class EmailTemplateTranslation(models.Model):
     content = RichTextField()
     language = models.ForeignKey(
-        'translations.Language',
+        "translations.Language",
         default=settings.DEFAULT_LANGUAGE,
         on_delete=models.SET_DEFAULT,
     )
     subject = models.CharField(max_length=100)
     template = models.ForeignKey(
-        'home.EmailTemplate',
-        related_name='email_template_translations',
+        "home.EmailTemplate",
+        related_name="email_template_translations",
         on_delete=models.CASCADE,
     )
 
     class Meta:
-        unique_together = (('template', 'language'),)
+        unique_together = (("template", "language"),)
 
     def __str__(self):
-        return f'{self.subject} {self.language}'
+        return f"{self.subject} {self.language}"
 
     def clean(self):
         check_template(self.content)

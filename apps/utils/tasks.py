@@ -7,18 +7,18 @@ from apps.home.models import EmailTemplateTranslation, SiteConfiguration
 from apps.translations.exceptions import MissingTemplateError, MissingTemplateTranslationError
 from apps.utils.email import render_email_template_with_base, send_email
 
-LOGGER = logging.getLogger('app')
+LOGGER = logging.getLogger("app")
 
 
 @app.task
 def send_email_task(  # noqa: CFQ002
-        email: str,
-        template: str,
-        category: Optional[str] = None,
-        context: Optional[dict] = None,
-        language: Optional[str] = None,
-        cc: Optional[List[str]] = None,
-        bcc: Optional[List[str]] = None,
+    email: str,
+    template: str,
+    category: Optional[str] = None,
+    context: Optional[dict] = None,
+    language: Optional[str] = None,
+    cc: Optional[List[str]] = None,
+    bcc: Optional[List[str]] = None,
 ):
     """
     Email send task, which firstly collects all the information from SiteConfiguration
@@ -27,7 +27,7 @@ def send_email_task(  # noqa: CFQ002
     send_email_task.delay('some@email.com', VERIFICATION_EMAIL_TEMPLATE, 'Verify Email', {'context': 'value'}, 'en')
     """
     try:
-        LOGGER.info('sending email %s to %s ', template, email)
+        LOGGER.info("sending email %s to %s ", template, email)
         translation = _get_translation(template, language)
         html_message = render_email_template_with_base(
             html_content=translation.content,
@@ -43,7 +43,7 @@ def send_email_task(  # noqa: CFQ002
             bcc=bcc,
         )
     except Exception as e:  # noqa: B902
-        LOGGER.error('Error during sending %s: %s ', translation, e)  # noqa: G200
+        LOGGER.error("Error during sending %s: %s ", translation, e)  # noqa: G200
 
 
 def _get_translation(template: str, language: str) -> Optional[EmailTemplateTranslation]:
@@ -67,10 +67,10 @@ def _get_translation(template: str, language: str) -> Optional[EmailTemplateTran
         if translation := site_config.get_localized_email_template(template, language):
             return translation
         else:
-            error_msg = f'No notification translation {translation}'
+            error_msg = f"No notification translation {translation}"
             LOGGER.error(error_msg)
             raise MissingTemplateTranslationError(error_msg)
     else:
-        error_msg = f'No notification template {template}'
+        error_msg = f"No notification template {template}"
         LOGGER.error(error_msg)
         raise MissingTemplateError(error_msg)

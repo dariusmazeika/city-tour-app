@@ -14,7 +14,6 @@ from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
 class TestAuthentication:
-
     def test_login_valid(self, client: APIClientWithQueryCounter, user_credentials, user):
         response = client.post(reverse("login"), user_credentials, format="json")
         assert response.status_code == status.HTTP_201_CREATED, response.json()
@@ -67,9 +66,7 @@ class TestAuthentication:
         assert response.json()["non_field_errors"][0] == "error_login_bad_credentials"
 
     def test_invalid_email(self, client: APIClientWithQueryCounter, user):
-        response = client.post(
-            reverse("login"), {"email": "invalid@email", "password": user.password}, format="json"
-        )
+        response = client.post(reverse("login"), {"email": "invalid@email", "password": user.password}, format="json")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["email"][0] == "error_invalid_email"
 
@@ -110,15 +107,15 @@ class TestAuthentication:
         assert not mock.called
 
     @patch.object(PasswordKey, "send_password_key")
-    def test_reset_password_after_forgot_password(self, _, authorized_client: APIClientWithQueryCounter,
-                                                  user_credentials, user):
+    def test_reset_password_after_forgot_password(
+        self, _, authorized_client: APIClientWithQueryCounter, user_credentials, user
+    ):
         user.create_new_password_token()
         previous_psw = user_credentials.get("password")
         uuid = str(uuid4())
         reset_key = user.create_new_password_token()
         response = authorized_client.put(
-            reverse("reset-password", args=[reset_key]),
-            data={"password": uuid, "confirm_password": uuid}
+            reverse("reset-password", args=[reset_key]), data={"password": uuid, "confirm_password": uuid}
         )
         assert response.status_code == status.HTTP_204_NO_CONTENT, response.json()
         user.refresh_from_db()
@@ -199,7 +196,7 @@ class TestAuthentication:
         previous_psw_datetime = user.password_last_change
         response = authorized_client.post(
             reverse("change-password"),
-            data={"old_password": user_credentials["password"], "password": uuid, "confirm_password": uuid}
+            data={"old_password": user_credentials["password"], "password": uuid, "confirm_password": uuid},
         )
         assert response.status_code == status.HTTP_201_CREATED, response.json()
         user.refresh_from_db()
@@ -218,8 +215,8 @@ class TestAuthentication:
             data={
                 "old_password": user_credentials["password"],
                 "password": str(uuid4()),
-                "confirm_password": str(uuid4())
-            }
+                "confirm_password": str(uuid4()),
+            },
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         user.refresh_from_db()

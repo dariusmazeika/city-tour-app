@@ -23,4 +23,4 @@ class RegenerateManifest(View):
             site_config = SiteConfiguration.get_solo()
             site_config.manifest_version = uuid.uuid4().hex
             site_config.save()
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.META["HTTP_REFERER"])

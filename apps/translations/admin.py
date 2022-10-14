@@ -17,27 +17,27 @@ class BaseTranslationFormSet(BaseInlineFormSet):
         uniq = set()
         has_default = False
         for form in self.forms:
-            if form.cleaned_data.get('text'):
-                language = form.cleaned_data.get('language')
+            if form.cleaned_data.get("text"):
+                language = form.cleaned_data.get("language")
 
                 key = language.pk
                 if key in uniq:
-                    raise ValidationError('Cannot have multiple default {} messages'.format(language))
+                    raise ValidationError("Cannot have multiple default {} messages".format(language))
                 uniq.add(key)
 
-                if language and form.cleaned_data.get('text'):
+                if language and form.cleaned_data.get("text"):
                     has_default = True
 
         if not has_default:
-            raise ValidationError('Default translation must exist.')
+            raise ValidationError("Default translation must exist.")
 
 
 class TranslationForm(ModelForm):
     class Meta:
-        fields = ('language', 'text')
+        fields = ("language", "text")
         model = Translation
         widgets = {
-            'text': Textarea(attrs={'cols': 40, 'rows': 2}),
+            "text": Textarea(attrs={"cols": 40, "rows": 2}),
         }
 
 
@@ -49,15 +49,14 @@ class TranslationInline(admin.TabularInline):
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    search_fields = ('message_id', 'translation__text')
-    list_display = ('message_id', 'trans')
-    inlines = [
-        TranslationInline
-    ]
+    search_fields = ("message_id", "translation__text")
+    list_display = ("message_id", "trans")
+    inlines = [TranslationInline]
 
     @staticmethod
     def trans(obj):
-        trans = format_html_join('\n', '<b>{}:</b> "{}"<br/>',
-                                 ((t.language.code, t.text) for t in obj.translation_set.all()))
-        trans.short_description = 'Translations'
+        trans = format_html_join(
+            "\n", '<b>{}:</b> "{}"<br/>', ((t.language.code, t.text) for t in obj.translation_set.all())
+        )
+        trans.short_description = "Translations"
         return trans

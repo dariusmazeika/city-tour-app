@@ -8,8 +8,9 @@ help:
 	@echo 'make super           - Creates superuser with u:test@test.com, p:test.'
 	@echo 'make mypy            - runs MyPy.'
 	@echo 'make flake8          - runs Flake8'
+	@echo 'make black           - runs Black formatter'
 	@echo 'make test            - runs tests.'
-	@echo 'make check           - runs tests and other checks (Flake8 and MyPy). These checks should pass before pushing code.'
+	@echo 'make check           - runs tests and code quality checks. These checks should pass before pushing code'
 	@echo 'make migrations      - runs django makemigrations command.'
 	@echo 'make migrate         - applies django migrations.'
 	@echo 'make run             - starts django server at http://localhost:8000 for local development.'
@@ -43,10 +44,13 @@ mypy:
 flake8:
 	pflake8 apps
 
+black:
+	black apps conf
+
 test:
 	pytest apps
 
-check: flake8 mypy test
+check: black flake8 mypy test
 
 migrations:
 	python manage.py makemigrations
