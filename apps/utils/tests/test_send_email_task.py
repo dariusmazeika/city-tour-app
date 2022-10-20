@@ -25,12 +25,6 @@ class TestSendEmail:
         content = f"Follow this link: {{{{ {dynamic_content_fragment} }}}}"
         make(EmailTemplateTranslation, language=language, template=template, subject=subject, content=content)
 
-    # @pytest.fixture
-    # def default_language(self, settings):
-    #     settings.DEFAULT_LANGUAGE = "en"
-    #     return Language.objects.get_or_create(code=settings.DEFAULT_LANGUAGE, defaults={"name": "Default Language"})
-    #     [0]
-
     @pytest.fixture
     def unverified_user(self, user):
         user.is_verified = False

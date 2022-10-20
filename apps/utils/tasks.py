@@ -1,12 +1,12 @@
 import logging
 from typing import List, Optional
 
-from conf.celery import app
 from django.conf import settings
 
 from apps.home.models import EmailTemplate, EmailTemplateTranslation
 from apps.translations.exceptions import MissingTemplateTranslationError
 from apps.utils.email import render_email_template_with_base, send_email
+from conf.celery import app
 
 LOGGER = logging.getLogger("app")
 

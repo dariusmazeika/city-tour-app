@@ -42,7 +42,7 @@ max_line_length = 120
 max_complexity = 7
 import_order_style = "google"
 include = "apps/"
-application_import_names = "apps"
+application_import_names = "apps, conf"
 
 ignore = [
 	"I101",
