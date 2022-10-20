@@ -31,29 +31,6 @@ class SiteConfiguration(SingletonModel):
     class Meta:
         verbose_name = "Site Configuration"
 
-    @staticmethod
-    def get_localized_email_template(email, language=None):
-        if not language:
-            # Lets use system default language if no other is present
-            language = settings.DEFAULT_LANGUAGE
-
-        template = email.email_template_translations.filter(language__code=language.lower()).first()
-        if not template:
-            LOGGER.error("No template %s with language %s", email, language)
-        return template
-
-    def get_password_renewal_template(self, language):
-        if self.password_renewal_template:
-            template = self.get_localized_email_template(self.password_renewal_template, language)
-            return template
-        return None
-
-    def get_verification_template(self, language):
-        if self.verify_email_template:
-            template = self.get_localized_email_template(self.verify_email_template, language)
-            return template
-        return None
-
     def save(self, *args, **kwargs):
         self.manifest_version = uuid.uuid4().hex
         return super(SiteConfiguration, self).save(*args, **kwargs)
@@ -76,7 +53,7 @@ class EmailTemplateTranslation(models.Model):
     subject = models.CharField(max_length=100)
     template = models.ForeignKey(
         "home.EmailTemplate",
-        related_name="email_template_translations",
+        related_name="translations",
         on_delete=models.CASCADE,
     )
 

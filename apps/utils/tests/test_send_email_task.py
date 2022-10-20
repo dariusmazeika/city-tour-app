@@ -7,7 +7,7 @@ from rest_framework import status
 from apps.home.models import EmailTemplate, EmailTemplateTranslation, SiteConfiguration
 from apps.translations.models import Language
 from apps.users.models import ActivationKey, PasswordKey
-from apps.utils.tasks import send_email_task
+from apps.utils.tasks import send_template_email_task
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
@@ -52,8 +52,10 @@ class TestSendEmail:
 
     def test_send_email_task(self, unverified_user, settings):
         password_url = "http://example.com/api/reset"  # noqa: S105
-        send_email_task(
-            email=unverified_user.email, template="password_renewal_template", context={"passwordUrl": password_url}
+        send_template_email_task(
+            email=unverified_user.email,
+            template_id=SiteConfiguration.get_solo().password_renewal_template_id,
+            context={"passwordUrl": password_url},
         )
         assert len(mail.outbox) == 1
         assert mail.outbox[0].to == [unverified_user.email]
@@ -65,11 +67,11 @@ class TestSendEmail:
         bcc = ["test3@example.com"]
 
         password_url = "http://example.com/api/reset"  # noqa: S105
-        send_email_task(
+        send_template_email_task(
             email=unverified_user.email,
             cc=cc,
             bcc=bcc,
-            template="password_renewal_template",
+            template_id=SiteConfiguration.get_solo().password_renewal_template_id,
             context={"passwordUrl": password_url},
         )
         assert len(mail.outbox) == 1

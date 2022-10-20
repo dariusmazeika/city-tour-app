@@ -12,13 +12,6 @@ from apps.utils.templates import render_template_message
 LOGGER = logging.getLogger("app")
 
 
-PASSWORD_RESET_EMAIL_TEMPLATE = "get_password_renewal_template"  # noqa: S105
-PASSWORD_RESET_EMAIL_CATEGORY = "Password Reset Email"  # noqa: S105
-
-VERIFICATION_EMAIL_TEMPLATE = "get_verification_template"
-VERIFICATION_EMAIL_CATEGORY = "Verify Email"
-
-
 def send_email(  # noqa: CFQ002
     email: str,
     subject: str,
