@@ -1,7 +1,7 @@
-from apps.utils.enums import ChoicesEnum
+from django.db.models import TextChoices
 
 
-class Errors(str, ChoicesEnum):
+class ApiErrors(TextChoices):
     BAD_CREDENTIALS = "error_login_bad_credentials"
     COMMON_PASSWORD_VALIDATION = "error_password_too_common"  # noqa S105
     FIELD_IS_REQUIRED = "error_field_is_required"
