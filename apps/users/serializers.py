@@ -53,14 +53,14 @@ class LoginSerializer(CustomTokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ("first_name", "last_name", "email")
 
 
 class ChangeLanguageSerializer(serializers.Serializer):
     language = serializers.CharField(max_length=10, required=True)
 
     class Meta:
-        fields = ('language',)
+        fields = ("language",)
 
     @staticmethod
     def validate_language(attrs):
@@ -74,10 +74,10 @@ class BasePasswordSerializer(serializers.Serializer):
     confirm_password = serializers.CharField(max_length=255, write_only=True, required=True)
 
     class Meta:
-        fields = ('password', 'confirm_password')
+        fields = ("password", "confirm_password")
 
     def validate(self, attrs):
-        if attrs.get('password') != attrs.get('confirm_password'):
+        if attrs.get("password") != attrs.get("confirm_password"):
             raise serializers.ValidationError(ApiErrors.PASSWORDS_NOT_EQUAL)
         return attrs
 
@@ -95,7 +95,7 @@ class ChangePasswordSerializer(BasePasswordSerializer):
 
     def to_representation(self, instance):
         refresh = get_token(self.context["request"].user)
-        return {'refresh': str(refresh), 'access': str(refresh.access_token)}
+        return {"refresh": str(refresh), "access": str(refresh.access_token)}
 
     def create(self, validated_data):
         self.context["request"].user.set_password(validated_data["password"])
@@ -107,7 +107,7 @@ class ForgottenPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255, required=True)
 
     def create(self, validated_data):
-        user = User.objects.filter(email__iexact=validated_data['email']).first()
+        user = User.objects.filter(email__iexact=validated_data["email"]).first()
 
         if not user:
             # To prevent registered email checking we just do nothing here
@@ -122,7 +122,7 @@ class VerificationEmailResendSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255, required=True)
 
     def create(self, validated_data):
-        user = User.objects.filter(email__iexact=validated_data['email'], is_verified=False).first()
+        user = User.objects.filter(email__iexact=validated_data["email"], is_verified=False).first()
 
         if not user:
             # To prevent registered email checking we just do nothing here

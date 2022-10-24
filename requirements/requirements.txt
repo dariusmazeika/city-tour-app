@@ -184,7 +184,7 @@ sqlparse==0.4.2
     # via django
 toml==0.10.2
     # via coverage
-tomli==2.0.1
+tomli==1.2.3
     # via pytest
 typing-extensions==4.1.1
     # via -r requirements/requirements.in

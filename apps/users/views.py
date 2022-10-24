@@ -8,8 +8,15 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.users.models import ActivationKey, PasswordKey, User
-from apps.users.serializers import BasePasswordSerializer, ChangeLanguageSerializer, ChangePasswordSerializer, \
-    ForgottenPasswordSerializer, LoginSerializer, UserSerializer, VerificationEmailResendSerializer
+from apps.users.serializers import (
+    BasePasswordSerializer,
+    ChangeLanguageSerializer,
+    ChangePasswordSerializer,
+    ForgottenPasswordSerializer,
+    LoginSerializer,
+    UserSerializer,
+    VerificationEmailResendSerializer,
+)
 from apps.utils.error_codes import ApiErrors
 
 
@@ -40,11 +47,10 @@ class VerifyUserView(APIView):
 
 
 class ChangeLanguageView(APIView):
-
     def post(self, request):
         serializer = ChangeLanguageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        lang = serializer.validated_data['language']
+        lang = serializer.validated_data["language"]
         request.user.change_language(lang)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -81,12 +87,12 @@ class ResetPasswordView(APIView):
         password_key = get_object_or_404(PasswordKey, password_key=str(password_key))
         if not password_key.validate_expiration():
             password_key.delete()
-            return Response({'detail': ApiErrors.RESET_PASSWORD_KEY_EXPIRED}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": ApiErrors.RESET_PASSWORD_KEY_EXPIRED}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = BasePasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        password_key.user.set_password(serializer.validated_data['password'])
+        password_key.user.set_password(serializer.validated_data["password"])
         password_key.user.save()
 
         # On success - deleting all the remaining password keys and authentication keys
@@ -97,7 +103,7 @@ class ResetPasswordView(APIView):
 class TokenRefreshViewWithActiveChecks(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        access_token = response.data.get('access')
+        access_token = response.data.get("access")
         if access_token:
             self._validate_user_state(access_token)
         return response
@@ -109,7 +115,7 @@ class TokenRefreshViewWithActiveChecks(TokenRefreshView):
         user = User.objects.filter(id=user_id).first() if user_id else None
         if not user:
             raise ValidationError(ApiErrors.USER_DOES_NOT_EXIST)
-        if user.password_last_change and int(user.password_last_change.timestamp()) != token['datetime_claim']:
+        if user.password_last_change and int(user.password_last_change.timestamp()) != token["datetime_claim"]:
             raise ValidationError(ApiErrors.USER_DATETIME_CLAIM_CHANGED)
         if not user.is_active:
             raise ValidationError(ApiErrors.USER_IS_NOT_ACTIVE)

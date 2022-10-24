@@ -6,7 +6,7 @@ from django.db import models
 class Language(models.Model):
     code = models.CharField(max_length=10, primary_key=True, unique=True)
     name = models.CharField(max_length=200)
-    flag = models.ImageField(upload_to='languages', blank=True, default='')
+    flag = models.ImageField(upload_to="languages", blank=True, default="")
 
     def __str__(self):
         return self.name
@@ -27,8 +27,8 @@ class Message(models.Model):
         return super().save(*args, **kwargs)
 
     def clean(self):
-        if not self.message_id.startswith('msg_'):
-            raise ValidationError('Translation key must start with `msg_` prefix')
+        if not self.message_id.startswith("msg_"):
+            raise ValidationError("Translation key must start with `msg_` prefix")
 
 
 class TranslationManager(models.Manager):
@@ -44,10 +44,10 @@ class Translation(models.Model):
     objects = TranslationManager()
 
     class Meta:
-        unique_together = (('message', 'language'),)
+        unique_together = (("message", "language"),)
 
     def __str__(self):
-        return '{}'.format(self.language)
+        return "{}".format(self.language)
 
     def natural_key(self):
         return self.message.pk, self.language.pk

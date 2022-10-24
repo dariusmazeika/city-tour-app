@@ -3,8 +3,8 @@ from django.template import Template, exceptions
 
 
 def check_template(template):
-    """ Checks whether the template is valid """
+    """Checks whether the template is valid"""
     try:
         Template(template)
     except exceptions.TemplateSyntaxError:
-        raise ValidationError('Invalid template syntax')
+        raise ValidationError("Invalid template syntax")

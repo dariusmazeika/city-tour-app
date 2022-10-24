@@ -8,6 +8,8 @@ amqp==5.0.9
     # via kombu
 apipkg==1.5
     # via execnet
+appnope==0.1.3
+    # via ipython
 asgiref==3.5.0
     # via django
 asttokens==2.0.5
@@ -21,6 +23,8 @@ backcall==0.2.0
     # via ipython
 billiard==3.6.4.0
     # via celery
+black==22.10.0
+    # via flake8-black
 boto3==1.17.34
     # via django-amazon-ses
 botocore==1.20.34
@@ -39,6 +43,7 @@ chardet==4.0.0
     # via requests
 click==8.0.3
     # via
+    #   black
     #   celery
     #   click-didyoumean
     #   click-plugins
@@ -119,6 +124,7 @@ executing==0.8.2
 flake8==3.9.2
     # via
     #   -r requirements/requirements.dev.in
+    #   flake8-black
     #   flake8-bugbear
     #   flake8-builtins
     #   flake8-comprehensions
@@ -129,6 +135,8 @@ flake8==3.9.2
     #   flake8-type-annotations
     #   pep8-naming
     #   pyproject-flake8
+flake8-black==0.3.3
+    # via -r requirements/requirements.dev.in
 flake8-blind-except==0.2.0
     # via -r requirements/requirements.dev.in
 flake8-bugbear==22.1.11
@@ -190,7 +198,9 @@ mypy==0.931
     #   -r requirements/requirements.dev.in
     #   django-stubs
 mypy-extensions==0.4.3
-    # via mypy
+    # via
+    #   black
+    #   mypy
 packaging==21.3
     # via
     #   dparse
@@ -201,6 +211,8 @@ parameterized==0.8.1
     # via -r requirements/requirements.in
 parso==0.8.3
     # via jedi
+pathspec==0.10.1
+    # via black
 pep8-naming==0.12.1
     # via -r requirements/requirements.dev.in
 pexpect==4.8.0
@@ -209,6 +221,8 @@ pickleshare==0.7.5
     # via ipython
 pillow==9.0.1
     # via -r requirements/requirements.in
+platformdirs==2.5.2
+    # via black
 pluggy==0.13.1
     # via pytest
 premailer==3.10.0
@@ -301,6 +315,8 @@ toml==0.10.2
     #   pyproject-flake8
 tomli==1.2.3
     # via
+    #   black
+    #   flake8-black
     #   mypy
     #   pytest
 traitlets==5.1.1

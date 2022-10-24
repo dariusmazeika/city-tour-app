@@ -48,10 +48,10 @@ class APIClientWithQueryCounter(APIClient):
 
 class AssertMaxNumQueriesContext(CaptureQueriesContext):
     def __init__(
-            self,
-            connection,
-            max_query_limit: int,
-            request_key: str,
+        self,
+        connection,
+        max_query_limit: int,
+        request_key: str,
     ):
         self.max_query_limit = max_query_limit
         self.request_key = request_key

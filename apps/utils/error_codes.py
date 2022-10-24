@@ -13,7 +13,7 @@ class ApiErrors(TextChoices):
     NUMERIC_PASSWOD_VALIDATION = "error_password_entirely_numeric"  # noqa S105
     PASSWORDS_NOT_EQUAL = "error_passwords_not_equal"
     PASSWORD_IS_INCORRECT = "error_password_is_incorrect"  # noqa S105
-    RESET_PASSWORD_KEY_EXPIRED = "error_reset_password_key_expired" # noqa S105
+    RESET_PASSWORD_KEY_EXPIRED = "error_reset_password_key_expired"  # noqa S105
     USER_ALREADY_VERIFIED = "error_verify_already_verified"
     USER_ATRIBUTE_SIMILARITY_VALIDATION = "error_password_too_similar_to_email"
     USER_DATETIME_CLAIM_CHANGED = "error_user_datetime_claim_changed"

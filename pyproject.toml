@@ -56,3 +56,13 @@ per-file-ignores = [
     "apps/utils/authentication.py:A003",
     "apps/utils/tests_utils.py:A002, VNE003, S105",
 ]
+
+[tool.black]
+max-line-length = 120
+line_length = 120
+target-version = ['py310']
+exclude = '''
+/(
+  | migrations
+)/
+'''

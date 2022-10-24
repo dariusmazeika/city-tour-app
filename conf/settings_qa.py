@@ -45,8 +45,8 @@ LOGGING["loggers"] = {
 }
 
 INSTALLED_APPS = list(INSTALLED_APPS) + [
-    'health_check.db',
-    'health_check.cache',
-    'health_check.contrib.migrations',
-    'health_check.contrib.s3boto3_storage',
+    "health_check.db",
+    "health_check.cache",
+    "health_check.contrib.migrations",
+    "health_check.contrib.s3boto3_storage",
 ]

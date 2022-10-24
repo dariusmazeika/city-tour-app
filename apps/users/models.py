@@ -9,12 +9,16 @@ from django.db import models
 from django.utils import timezone
 
 from apps.translations.models import Language
-from apps.utils.email import VERIFICATION_EMAIL_TEMPLATE, VERIFICATION_EMAIL_CATEGORY, PASSWORD_RESET_EMAIL_CATEGORY, \
-    PASSWORD_RESET_EMAIL_TEMPLATE
+from apps.utils.email import (
+    VERIFICATION_EMAIL_TEMPLATE,
+    VERIFICATION_EMAIL_CATEGORY,
+    PASSWORD_RESET_EMAIL_CATEGORY,
+    PASSWORD_RESET_EMAIL_TEMPLATE,
+)
 from apps.utils.models import BaseModel
 from apps.utils.tasks import send_email_task
 
-LOGGER = logging.getLogger('app')
+LOGGER = logging.getLogger("app")
 
 
 class UserManager(BaseUserManager):
@@ -25,7 +29,7 @@ class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
         """Create and save a User with the given email and password."""
         if not email:
-            raise ValueError('The given email must be set')
+            raise ValueError("The given email must be set")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -34,20 +38,20 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
         """Create and save a regular User with the given email and password."""
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
         """Create and save a SuperUser with the given email and password."""
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_verified', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_verified", True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(email, password, **extra_fields)
 
@@ -93,23 +97,21 @@ class User(AbstractUser):
             self.language = lang
             self.save()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     # Here we need to ignore mypy error https://github.com/typeddjango/django-stubs/issues/174#issuecomment-534210437
     # but setting explicit type will help to avoid multiple ignores in the usages (User.objects...)
-    objects: 'models.QuerySet[User]' = UserManager()  # type: ignore
+    objects: "models.QuerySet[User]" = UserManager()  # type: ignore
 
 
 class ActivationKey(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activation_keys')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="activation_keys")
     activation_key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     def send_verification(self):
-        LOGGER.info('Sending verification email to %s', self.user.email)
-        context = {
-            'activationUrl': settings.VERIFICATION_BASE_URL.format(settings.APP_HOST, self.activation_key)
-        }
+        LOGGER.info("Sending verification email to %s", self.user.email)
+        context = {"activationUrl": settings.VERIFICATION_BASE_URL.format(settings.APP_HOST, self.activation_key)}
 
         send_email_task.delay(
             self.user.email,
@@ -127,7 +129,7 @@ class ActivationKey(BaseModel):
 
 
 class PasswordKey(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_keys')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="password_keys")
     password_key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     expires_at = models.DateTimeField()
 
@@ -144,10 +146,8 @@ class PasswordKey(BaseModel):
         return self.expires_at >= timezone.now()
 
     def send_password_key(self):
-        LOGGER.info('Sending password renewal email to %s', self.user.email)
-        context = {
-            'passwordUrl': settings.RESET_PASSWORD_BASE_URL.format(settings.APP_HOST, self.password_key)
-        }
+        LOGGER.info("Sending password renewal email to %s", self.user.email)
+        context = {"passwordUrl": settings.RESET_PASSWORD_BASE_URL.format(settings.APP_HOST, self.password_key)}
 
         send_email_task.delay(
             self.user.email,
