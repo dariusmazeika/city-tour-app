@@ -1,33 +1,30 @@
 import logging
 from typing import List, Optional
 
-from conf.celery import app
+from django.conf import settings
 
-from apps.home.models import EmailTemplateTranslation, SiteConfiguration
-from apps.translations.exceptions import MissingTemplateError, MissingTemplateTranslationError
+from apps.home.models import EmailTemplate, EmailTemplateTranslation
+from apps.translations.exceptions import MissingTemplateTranslationError
 from apps.utils.email import render_email_template_with_base, send_email
+from conf.celery import app
 
 LOGGER = logging.getLogger("app")
 
 
 @app.task
-def send_email_task(  # noqa: CFQ002
+def send_template_email_task(  # noqa: CFQ002
     email: str,
-    template: str,
+    template_id: int,
     category: Optional[str] = None,
     context: Optional[dict] = None,
-    language: Optional[str] = None,
+    language: Optional[str] = settings.DEFAULT_LANGUAGE,
     cc: Optional[List[str]] = None,
     bcc: Optional[List[str]] = None,
 ):
-    """
-    Email send task, which firstly collects all the information from SiteConfiguration
-    and then calls send_email function.
-    Example call:
-    send_email_task.delay('some@email.com', VERIFICATION_EMAIL_TEMPLATE, 'Verify Email', {'context': 'value'}, 'en')
-    """
+    """Email send task, use template ant its translations to fill all email content."""
     try:
-        LOGGER.info("sending email %s to %s ", template, email)
+        LOGGER.info("sending email using template (%s) to %s ", template_id, email)
+        template = EmailTemplate.objects.get(id=template_id)
         translation = _get_translation(template, language)
         html_message = render_email_template_with_base(
             html_content=translation.content,
@@ -43,34 +40,13 @@ def send_email_task(  # noqa: CFQ002
             bcc=bcc,
         )
     except Exception as e:  # noqa: B902
-        LOGGER.error("Error during sending %s: %s ", translation, e)  # noqa: G200
+        LOGGER.error(f"Error when sending email to {email} with template ({template_id}): {e}")  # noqa: G200
 
 
-def _get_translation(template: str, language: str) -> Optional[EmailTemplateTranslation]:
-    """
-    Gets translation for template.
-    Accepts template to be a method or a field of site config.
-    This "flexibility" is temporary, while refactoring is in progress:
-    - Method is accepted for old parts.
-    = Field is accepted for new parts (idea: to avoid the need to create
-        duplicated "get_" methods in site config)
-    """
-
-    site_config = SiteConfiguration.get_solo()
-    site_config_member = getattr(site_config, template)
-
-    if callable(site_config_member):
-        return site_config_member(language)
-
-    template = site_config_member
-    if template:
-        if translation := site_config.get_localized_email_template(template, language):
-            return translation
-        else:
-            error_msg = f"No notification translation {translation}"
-            LOGGER.error(error_msg)
-            raise MissingTemplateTranslationError(error_msg)
+def _get_translation(template: EmailTemplate, language: str = settings.DEFAULT_LANGUAGE) -> EmailTemplateTranslation:
+    if translation := template.translations.filter(language=language).first():
+        return translation
     else:
-        error_msg = f"No notification template {template}"
+        error_msg = f"No email template translation for template ({template}) in {language} language."
         LOGGER.error(error_msg)
-        raise MissingTemplateError(error_msg)
+        raise MissingTemplateTranslationError(error_msg)

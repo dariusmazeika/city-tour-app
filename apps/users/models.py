@@ -8,15 +8,10 @@ from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 from django.utils import timezone
 
+from apps.home.models import SiteConfiguration
 from apps.translations.models import Language
-from apps.utils.email import (
-    VERIFICATION_EMAIL_TEMPLATE,
-    VERIFICATION_EMAIL_CATEGORY,
-    PASSWORD_RESET_EMAIL_CATEGORY,
-    PASSWORD_RESET_EMAIL_TEMPLATE,
-)
 from apps.utils.models import BaseModel
-from apps.utils.tasks import send_email_task
+from apps.utils.tasks import send_template_email_task
 
 LOGGER = logging.getLogger("app")
 
@@ -113,12 +108,11 @@ class ActivationKey(BaseModel):
         LOGGER.info("Sending verification email to %s", self.user.email)
         context = {"activationUrl": settings.VERIFICATION_BASE_URL.format(settings.APP_HOST, self.activation_key)}
 
-        send_email_task.delay(
-            self.user.email,
-            VERIFICATION_EMAIL_TEMPLATE,
-            VERIFICATION_EMAIL_CATEGORY,
-            context,
-            self.user.language.code,
+        send_template_email_task.delay(
+            email=self.user.email,
+            template_id=SiteConfiguration.get_solo().verify_email_template_id,
+            context=context,
+            language=self.user.language.code,
         )
 
     def activate(self) -> bool:
@@ -149,10 +143,9 @@ class PasswordKey(BaseModel):
         LOGGER.info("Sending password renewal email to %s", self.user.email)
         context = {"passwordUrl": settings.RESET_PASSWORD_BASE_URL.format(settings.APP_HOST, self.password_key)}
 
-        send_email_task.delay(
-            self.user.email,
-            PASSWORD_RESET_EMAIL_TEMPLATE,
-            PASSWORD_RESET_EMAIL_CATEGORY,
-            context,
-            self.user.language.code,
+        send_template_email_task.delay(
+            email=self.user.email,
+            template_id=SiteConfiguration.get_solo().password_renewal_template_id,
+            context=context,
+            language=self.user.language.code,
         )
