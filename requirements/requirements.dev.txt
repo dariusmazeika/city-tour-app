@@ -17,6 +17,7 @@ asttokens==2.0.5
 attrs==20.3.0
     # via
     #   flake8-bugbear
+    #   flake8-eradicate
     #   jsonschema
     #   pytest
 backcall==0.2.0
@@ -117,6 +118,8 @@ dparse==0.5.1
     # via safety
 drf-spectacular==0.21.2
     # via -r requirements/requirements.in
+eradicate==2.1.0
+    # via flake8-eradicate
 execnet==1.8.0
     # via pytest-xdist
 executing==0.8.2
@@ -129,6 +132,7 @@ flake8==3.9.2
     #   flake8-builtins
     #   flake8-comprehensions
     #   flake8-django
+    #   flake8-eradicate
     #   flake8-gl-codeclimate
     #   flake8-polyfill
     #   flake8-print
@@ -146,6 +150,8 @@ flake8-builtins==1.5.3
 flake8-comprehensions==3.8.0
     # via -r requirements/requirements.dev.in
 flake8-django==1.1.2
+    # via -r requirements/requirements.dev.in
+flake8-eradicate==1.4.0
     # via -r requirements/requirements.dev.in
 flake8-functions==0.0.7
     # via -r requirements/requirements.dev.in
