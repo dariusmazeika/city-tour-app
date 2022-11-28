@@ -183,7 +183,7 @@ inflection==0.5.1
     # via drf-spectacular
 iniconfig==1.1.1
     # via pytest
-ipython==8.7.0
+ipython==8.6.0
     # via -r requirements/requirements.dev.in
 jedi==0.18.1
     # via ipython
@@ -231,7 +231,7 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pillow==9.0.1
+pillow==9.3.0
     # via -r requirements/requirements.in
 platformdirs==2.5.2
     # via black
