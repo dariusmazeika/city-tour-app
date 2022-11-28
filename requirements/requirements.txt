@@ -207,7 +207,7 @@ toml==0.10.2
     # via coverage
 tomli==1.2.3
     # via pytest
-typing-extensions==4.1.1
+typing-extensions==4.4.0
     # via -r requirements/requirements.in
 tzdata==2021.5
     # via pytz-deprecation-shim

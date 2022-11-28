@@ -350,7 +350,7 @@ traitlets==5.1.1
     #   matplotlib-inline
 types-redis==4.1.17
     # via -r requirements/requirements.dev.in
-typing-extensions==4.1.1
+typing-extensions==4.4.0
     # via
     #   -r requirements/requirements.in
     #   django-stubs
