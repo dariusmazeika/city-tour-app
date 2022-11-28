@@ -125,6 +125,8 @@ drf-spectacular==0.24.2
     # via -r requirements/requirements.in
 eradicate==2.1.0
     # via flake8-eradicate
+exceptiongroup==1.0.4
+    # via pytest
 execnet==1.8.0
     # via pytest-xdist
 executing==0.8.2
@@ -183,7 +185,7 @@ inflection==0.5.1
     # via drf-spectacular
 iniconfig==1.1.1
     # via pytest
-ipython==8.7.0
+ipython==8.6.0
     # via -r requirements/requirements.dev.in
 jedi==0.18.1
     # via ipython
@@ -249,8 +251,6 @@ ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.1
     # via stack-data
-py==1.10.0
-    # via pytest
 pycodestyle==2.7.0
     # via
     #   flake8
@@ -268,7 +268,7 @@ pyproject-flake8==0.0.1a2
     # via -r requirements/requirements.dev.in
 pyrsistent==0.17.3
     # via jsonschema
-pytest==7.0.1
+pytest==7.2.0
     # via
     #   -r requirements/requirements.in
     #   pytest-cov
