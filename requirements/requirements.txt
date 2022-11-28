@@ -28,7 +28,7 @@ botocore==1.20.34
     #   s3transfer
 cachetools==4.2.1
     # via premailer
-celery==5.2.3
+celery==5.2.7
     # via -r requirements/requirements.in
 certifi==2020.12.5
     # via
@@ -89,7 +89,7 @@ django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.12.3
     # via -r requirements/requirements.in
-git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
 djangorestframework==3.13.1
     # via
