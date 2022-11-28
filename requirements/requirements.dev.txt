@@ -162,7 +162,7 @@ flake8-eradicate==1.4.0
     # via -r requirements/requirements.dev.in
 flake8-functions==0.0.7
     # via -r requirements/requirements.dev.in
-flake8-gl-codeclimate @ git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
+git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
     # via -r requirements/requirements.dev.in
 flake8-import-order==0.18.2
     # via -r requirements/requirements.dev.in
@@ -224,8 +224,6 @@ packaging==21.3
     #   pytest
     #   redis
     #   safety
-parameterized==0.8.1
-    # via -r requirements/requirements.in
 parso==0.8.3
     # via jedi
 pathspec==0.10.1

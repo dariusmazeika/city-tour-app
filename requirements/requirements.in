@@ -24,6 +24,5 @@ pytest-django
 pytest-xdist
 django-cleanup
 sentry-sdk
-parameterized
 django-extensions
 UnleashClient
