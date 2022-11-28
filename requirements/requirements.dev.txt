@@ -118,7 +118,7 @@ djangorestframework-simplejwt==5.2.2
     # via -r requirements/requirements.in
 dparse==0.5.1
     # via safety
-drf-spectacular==0.21.2
+drf-spectacular==0.24.2
     # via -r requirements/requirements.in
 eradicate==2.1.0
     # via flake8-eradicate
