@@ -13,14 +13,13 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from datetime import timedelta
 import os
 
+from UnleashClient import UnleashClient
 from corsheaders.defaults import default_headers
 import dj_database_url
 import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
-
-ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -80,6 +79,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.utils.middleware.PerformanceLoggingMiddleware",
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -299,12 +299,12 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PUBLIC": False,
     "SERVE_PERMISSIONS": ("rest_framework.permissions.IsAdminUser",),
     "TITLE": "",
-    "VERSION": VERSION,
+    "VERSION": BUILD_VERSION,
 }
 
 sentry_sdk.init(
     os.getenv("SENTRY_DSN"),
-    environment=ENVIRONMENT,
+    environment=os.getenv('CI_ENVIRONMENT_NAME', 'local'),
     integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
     traces_sample_rate=0,
     send_default_pii=True,
@@ -324,3 +324,11 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+UNLEASH_CLIENT = UnleashClient(
+    url=f"https://gitlab.com/api/v4/feature_flags/unleash/{os.getenv('CI_PROJECT_ID', '')}",
+    app_name=os.getenv('CI_ENVIRONMENT_NAME', ""),
+    instance_id=os.getenv('UNLEASH_INSTANCE_ID', ""),
+    disable_metrics=True,
+)
+UNLEASH_CLIENT.initialize_client()

@@ -13,6 +13,7 @@ Project To-Do's:
 * Create Development environment `https://<domain>.cornercase.tech/admin/`
 * Add master to protected branches, disable direct push
 * Add CI pre-build image support to docker-compose.yml
+* Add `UNLEASH_INSTANCE_ID` variable from https://docs.gitlab.com/ee/operations/feature_flags.html#get-access-credentials
 
 ## OpenAPI documentation
 

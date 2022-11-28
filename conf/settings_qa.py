@@ -30,21 +30,6 @@ PRIVATE_FILE_STORAGE = "apps.utils.storage.PrivateMediaStorage"
 
 AWS_S3_ENDPOINT_URL = f"https://minio.{os.getenv('CI_ENVIRONMENT_URL')}"
 
-LOGGING["handlers"] = {
-    "applogfile": {
-        "level": "DEBUG",
-        "class": "logging.FileHandler",
-        "filename": "/var/log/app.log",
-    },
-}
-
-LOGGING["loggers"] = {
-    "django": {
-        "handlers": ["applogfile"],
-        "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
-    },
-}
-
 INSTALLED_APPS = list(INSTALLED_APPS) + [
     "health_check.db",
     "health_check.cache",

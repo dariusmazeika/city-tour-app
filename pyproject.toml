@@ -14,7 +14,7 @@ filterwarnings = [
 norecursedirs = "requirements .gitlab"
 
 [tool.coverage.report]
-fail_under = 89.0
+fail_under = 87.0
 
 [tool.coverage.run]
 include = [
