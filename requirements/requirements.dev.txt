@@ -157,7 +157,7 @@ flake8-builtins==2.0.1
     # via -r requirements/requirements.dev.in
 flake8-comprehensions==3.10.1
     # via -r requirements/requirements.dev.in
-flake8-django==1.1.2
+flake8-django==1.1.5
     # via -r requirements/requirements.dev.in
 flake8-eradicate==1.4.0
     # via -r requirements/requirements.dev.in
