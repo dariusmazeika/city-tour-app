@@ -3,8 +3,8 @@
 ![Python](https://img.shields.io/badge/python-v3.10-informational)
 ![Postgres](https://img.shields.io/badge/postgres-14-informational)
 ![pip-tools](https://img.shields.io/badge/pip--tools-6.2.0-informational)
-![Django](https://img.shields.io/badge/Django-latest-informational)
-![DRF](https://img.shields.io/badge/DRF-latest-informational)
+![Django](https://img.shields.io/badge/Django-4.0.8-informational)
+![DRF](https://img.shields.io/badge/DRF-3.14.0-informational)
 ![Redis](https://img.shields.io/badge/Redis-latest-informational)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-v3-informational)
 
