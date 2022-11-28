@@ -85,7 +85,7 @@ django==4.0.6
     #   djangorestframework-simplejwt
     #   drf-spectacular
     #   model-bakery
-django-amazon-ses==4.0.0
+django-amazon-ses==4.0.1
     # via -r requirements/requirements.in
 django-ckeditor==6.2.0
     # via -r requirements/requirements.in
