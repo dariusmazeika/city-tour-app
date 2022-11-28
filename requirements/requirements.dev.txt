@@ -75,9 +75,11 @@ django==4.0.6
     #   -r requirements/requirements.in
     #   dj-database-url
     #   django-amazon-ses
+    #   django-ckeditor
     #   django-cors-headers
     #   django-extensions
     #   django-health-check
+    #   django-js-asset
     #   django-solo
     #   django-storages
     #   django-stubs
@@ -88,7 +90,7 @@ django==4.0.6
     #   model-bakery
 django-amazon-ses==4.0.1
     # via -r requirements/requirements.in
-django-ckeditor==6.2.0
+django-ckeditor==6.5.1
     # via -r requirements/requirements.in
 django-cleanup==6.0.0
     # via -r requirements/requirements.in
@@ -98,7 +100,7 @@ django-extensions==3.2.1
     # via -r requirements/requirements.in
 django-health-check==3.16.5
     # via -r requirements/requirements.in
-django-js-asset==1.2.2
+django-js-asset==2.0.0
     # via django-ckeditor
 django-solo==2.0.0
     # via -r requirements/requirements.in
