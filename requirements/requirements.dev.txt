@@ -98,7 +98,7 @@ django-cors-headers==3.13.0
     # via -r requirements/requirements.in
 django-extensions==3.2.1
     # via -r requirements/requirements.in
-django-health-check==3.16.5
+django-health-check==3.17.0
     # via -r requirements/requirements.in
 django-js-asset==2.0.0
     # via django-ckeditor

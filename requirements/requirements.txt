@@ -84,7 +84,7 @@ django-cors-headers==3.13.0
     # via -r requirements/requirements.in
 django-extensions==3.2.1
     # via -r requirements/requirements.in
-django-health-check==3.16.5
+django-health-check==3.17.0
     # via -r requirements/requirements.in
 django-js-asset==2.0.0
     # via django-ckeditor
@@ -92,7 +92,7 @@ django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.12.3
     # via -r requirements/requirements.in
-git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
 djangorestframework==3.14.0
     # via
