@@ -167,7 +167,7 @@ flake8-logging-format==0.6.0
     # via -r requirements/requirements.dev.in
 flake8-polyfill==1.0.2
     # via pep8-naming
-flake8-print==4.0.0
+flake8-print==5.0.0
     # via -r requirements/requirements.dev.in
 flake8-type-annotations==0.1.0
     # via -r requirements/requirements.dev.in
@@ -322,7 +322,6 @@ six==1.15.0
     #   apscheduler
     #   asttokens
     #   click-repl
-    #   flake8-print
     #   jsonschema
     #   python-dateutil
 sqlparse==0.4.2
