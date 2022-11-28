@@ -161,7 +161,7 @@ flake8-functions==0.0.7
     # via -r requirements/requirements.dev.in
 flake8-gl-codeclimate @ git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
     # via -r requirements/requirements.dev.in
-flake8-import-order==0.18.1
+flake8-import-order==0.18.2
     # via -r requirements/requirements.dev.in
 flake8-logging-format==0.6.0
     # via -r requirements/requirements.dev.in
