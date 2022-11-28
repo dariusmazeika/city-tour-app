@@ -11,7 +11,7 @@ RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg postgresql-client
 COPY requirements/requirements.dev.txt requirements/requirements.dev.txt
 COPY Makefile Makefile
 
-RUN apk add --no-cache --virtual build-deps gcc musl-dev postgresql-dev libxslt-dev jpeg-dev libffi-dev rust cargo && make install
+RUN apk add --no-cache --virtual build-deps gcc g++ musl-dev postgresql-dev libxslt-dev jpeg-dev libffi-dev rust cargo && make install
 
 RUN rm -rf requirements
 RUN rm -f Makefile

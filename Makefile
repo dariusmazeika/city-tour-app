@@ -21,7 +21,7 @@ help:
 	@echo 'make purge-databases - stop postgres and purge data volume'
 	@echo 'make run-docker      - starts django docker environment'
 	@echo 'make pull-docker     - starts django docker environment (pull from CI registry)'
-	@echo 'make restore         - restores database.sql to docker-compose database'
+	@echo 'make restore         - restores database.sql to podman-compose database'
 
 check-tools:
 	pip install pip-tools==6.2.0 pip==21.2.4
@@ -68,24 +68,24 @@ ishell:
 	export DJANGO_SETTINGS_MODULE=conf.settings_test; python manage.py shell_plus --ipython
 
 start-databases:
-	docker-compose -f docker-compose.yml up -d postgres
-	docker-compose -f docker-compose.yml up -d redis
+	podman-compose -f docker-compose.yml up -d postgres
+	podman-compose -f docker-compose.yml up -d redis
 
 down-docker:
-	docker-compose -f docker-compose.yml down
+	podman-compose -f docker-compose.yml down
 
 purge-databases: down-docker
-	docker-compose -f docker-compose.yml rm postgres -fv
-	docker-compose -f docker-compose.yml rm redis -f
+	podman-compose -f docker-compose.yml rm postgres -fv
+	podman-compose -f docker-compose.yml rm redis -f
 
 pull-docker:
 	@echo "Login with gitlab credentials"
 	docker login registry.gitlab.com
-	docker-compose -f docker-compose.yml pull
-	docker-compose -f docker-compose.yml run -p 8000:8000 django /bin/sh
+	podman-compose -f docker-compose.yml pull
+	podman-compose -f docker-compose.yml run -p 8000:8000 django /bin/sh
 
 run-docker:
-	docker-compose -f docker-compose.yml run -p 8000:8000 django /bin/sh
+	podman-compose -f docker-compose.yml run -p 8000:8000 django /bin/sh
 
 restore:
 	export PGPASSWORD=django; cat database.sql | psql -h 127.0.0.1 -p 9432 -U django
