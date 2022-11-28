@@ -109,7 +109,7 @@ django-stubs-ext==0.2.0
     # via django-stubs
 django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
-djangorestframework==3.13.1
+djangorestframework==3.14.0
     # via
     #   -r requirements/requirements.in
     #   djangorestframework-simplejwt
