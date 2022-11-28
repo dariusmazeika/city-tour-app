@@ -243,7 +243,7 @@ prompt-toolkit==3.0.18
     # via
     #   click-repl
     #   ipython
-psycopg2-binary==2.9.3
+psycopg2-binary==2.9.5
     # via -r requirements/requirements.in
 ptyprocess==0.7.0
     # via pexpect
