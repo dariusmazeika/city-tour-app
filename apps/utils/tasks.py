@@ -40,7 +40,7 @@ def send_template_email_task(  # noqa: CFQ002
             bcc=bcc,
         )
     except Exception as e:  # noqa: B902
-        LOGGER.error(f"Error when sending email to {email} with template ({template_id}): {e}")  # noqa: G200
+        LOGGER.error(f"Error when sending email to {email} with template ({template_id}): {e}")  # noqa: G200 G004
 
 
 def _get_translation(template: EmailTemplate, language: str = settings.DEFAULT_LANGUAGE) -> EmailTemplateTranslation:
