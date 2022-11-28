@@ -131,7 +131,7 @@ lxml==4.9.1
     # via premailer
 mmh3==3.0.0
     # via unleashclient
-model-bakery==1.4.0
+model-bakery==1.9.0
     # via -r requirements/requirements.in
 packaging==21.3
     # via
