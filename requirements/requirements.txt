@@ -91,7 +91,7 @@ django-storages==1.12.3
     # via -r requirements/requirements.in
 django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
-djangorestframework==3.13.1
+djangorestframework==3.14.0
     # via
     #   -r requirements/requirements.in
     #   djangorestframework-simplejwt
