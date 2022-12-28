@@ -205,7 +205,7 @@ mccabe==0.6.1
     # via flake8
 mmh3==3.0.0
     # via unleashclient
-model-bakery==1.4.0
+model-bakery==1.9.0
     # via -r requirements/requirements.in
 mr-proper==0.0.6
     # via flake8-functions

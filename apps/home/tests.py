@@ -1,4 +1,5 @@
 from django.contrib.admin import site
+from django.db.models import Model
 from django.urls import reverse
 from model_bakery.baker import make
 import pytest
@@ -31,7 +32,7 @@ class TestAdminSmokerCase:
 
     @pytest.mark.parametrize("site_admin", [site._registry[model] for model in site._registry], ids=get_model_name)
     def test_admin(self, site_admin, authorized_admin_client: APIClientWithQueryCounter):
-        obj = make(site_admin.model)
+        obj: Model = make(site_admin.model)
         for url in site_admin.urls:
             args = []
             if not url.name or url.name.endswith("autocomplete") or url.name in self.exclude:
