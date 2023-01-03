@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -27,13 +28,16 @@ class LoginView(generics.CreateAPIView):
 
 class GetUserView(APIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
 
     def get(self, request):
         return Response(UserSerializer(instance=request.user).data)
 
 
+@extend_schema_view(put=extend_schema(responses={status.HTTP_204_NO_CONTENT: None}))
 class VerifyUserView(APIView):
     permission_classes = (permissions.AllowAny,)
+    serializer_class = None
 
     @staticmethod
     def put(request, activation_key):
@@ -47,6 +51,8 @@ class VerifyUserView(APIView):
 
 
 class ChangeLanguageView(APIView):
+    serializer_class = ChangeLanguageSerializer
+
     def post(self, request):
         serializer = ChangeLanguageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -61,7 +67,9 @@ class ChangePasswordView(generics.CreateAPIView):
 
 class ForgottenPasswordView(APIView):
     permission_classes = (permissions.AllowAny,)
+    serializer_class = ForgottenPasswordSerializer
 
+    @extend_schema(responses={status.HTTP_204_NO_CONTENT: None})
     def post(self, request):
         serializer = ForgottenPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -71,7 +79,9 @@ class ForgottenPasswordView(APIView):
 
 class ResendVerificationView(APIView):
     permission_classes = (permissions.AllowAny,)
+    serializer_class = VerificationEmailResendSerializer
 
+    @extend_schema(responses={status.HTTP_204_NO_CONTENT: None})
     def post(self, request):
         serializer = VerificationEmailResendSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -79,8 +89,10 @@ class ResendVerificationView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema_view(put=extend_schema(responses={status.HTTP_204_NO_CONTENT: None}))
 class ResetPasswordView(APIView):
     permission_classes = (permissions.AllowAny,)
+    serializer_class = BasePasswordSerializer
 
     @staticmethod
     def put(request, password_key):

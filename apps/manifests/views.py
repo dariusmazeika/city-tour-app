@@ -2,6 +2,8 @@ import uuid
 
 from django.shortcuts import redirect
 from django.views import View
+from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,6 +12,7 @@ from apps.home.models import SiteConfiguration
 from apps.manifests.generator import generate_config
 
 
+@extend_schema(responses={status.HTTP_200_OK: None})
 class AppConfigView(APIView):
     permission_classes = (AllowAny,)
 
