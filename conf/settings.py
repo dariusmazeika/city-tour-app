@@ -287,7 +287,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
-    "AUTH_HEADER_TYPES": ("Bearer", "Token", "JWT"),
+    "AUTH_HEADER_TYPES": ("Token",),
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
@@ -304,7 +304,7 @@ SPECTACULAR_SETTINGS = {
 
 sentry_sdk.init(
     os.getenv("SENTRY_DSN"),
-    environment=os.getenv('CI_ENVIRONMENT_NAME', 'local'),
+    environment=os.getenv("CI_ENVIRONMENT_NAME", "local"),
     integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
     traces_sample_rate=0,
     send_default_pii=True,
@@ -327,8 +327,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 UNLEASH_CLIENT = UnleashClient(
     url=f"https://gitlab.com/api/v4/feature_flags/unleash/{os.getenv('CI_PROJECT_ID', '')}",
-    app_name=os.getenv('CI_ENVIRONMENT_NAME', ""),
-    instance_id=os.getenv('UNLEASH_INSTANCE_ID', ""),
+    app_name=os.getenv("CI_ENVIRONMENT_NAME", ""),
+    instance_id=os.getenv("UNLEASH_INSTANCE_ID", ""),
     disable_metrics=True,
 )
 UNLEASH_CLIENT.initialize_client()
