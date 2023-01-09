@@ -134,9 +134,7 @@ mmhash3==3.0.1
 model-bakery==1.9.0
     # via -r requirements/requirements.in
 packaging==21.3
-    # via
-    #   pytest
-    #   redis
+    # via pytest
 pillow==9.3.0
     # via -r requirements/requirements.in
 pluggy==0.13.1
@@ -178,7 +176,7 @@ pytz-deprecation-shim==0.1.0.post0
     # via tzlocal
 pyyaml==5.4.1
     # via drf-spectacular
-redis==4.3.5
+redis==4.4.1
     # via -r requirements/requirements.in
 requests==2.25.1
     # via
