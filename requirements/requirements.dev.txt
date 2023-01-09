@@ -221,7 +221,6 @@ packaging==21.3
     # via
     #   dparse
     #   pytest
-    #   redis
     #   safety
 parso==0.8.3
     # via jedi
@@ -293,7 +292,7 @@ pytz-deprecation-shim==0.1.0.post0
     # via tzlocal
 pyyaml==5.4.1
     # via drf-spectacular
-redis==4.3.5
+redis==4.4.1
     # via -r requirements/requirements.in
 requests==2.25.1
     # via
