@@ -58,7 +58,7 @@ cssutils==2.2.0
     # via premailer
 dj-database-url==1.0.0
     # via -r requirements/requirements.in
-django==4.0.8
+django==4.1.5
     # via
     #   -r requirements/requirements.in
     #   dj-database-url
@@ -92,7 +92,7 @@ django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.13.1
     # via -r requirements/requirements.in
-git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
 djangorestframework==3.14.0
     # via
