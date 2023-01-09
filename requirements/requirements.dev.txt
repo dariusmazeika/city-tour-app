@@ -110,7 +110,7 @@ django-stubs==1.8.0
     # via -r requirements/requirements.dev.in
 django-stubs-ext==0.2.0
     # via django-stubs
-git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
 djangorestframework==3.14.0
     # via
@@ -121,7 +121,7 @@ djangorestframework-simplejwt==5.2.2
     # via -r requirements/requirements.in
 dparse==0.6.2
     # via safety
-drf-spectacular==0.24.2
+drf-spectacular==0.25.1
     # via -r requirements/requirements.in
 eradicate==2.1.0
     # via flake8-eradicate
@@ -163,7 +163,7 @@ flake8-eradicate==1.4.0
     # via -r requirements/requirements.dev.in
 flake8-functions==0.0.7
     # via -r requirements/requirements.dev.in
-git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
+flake8-gl-codeclimate @ git+https://github.com/osechet/flake8-gl-codeclimate.git@bugfix/add-severity
     # via -r requirements/requirements.dev.in
 flake8-import-order==0.18.2
     # via -r requirements/requirements.dev.in

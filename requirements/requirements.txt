@@ -92,7 +92,7 @@ django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.13.1
     # via -r requirements/requirements.in
-git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
 djangorestframework==3.14.0
     # via
@@ -101,7 +101,7 @@ djangorestframework==3.14.0
     #   drf-spectacular
 djangorestframework-simplejwt==5.2.2
     # via -r requirements/requirements.in
-drf-spectacular==0.24.2
+drf-spectacular==0.25.1
     # via -r requirements/requirements.in
 exceptiongroup==1.0.4
     # via pytest
