@@ -92,7 +92,7 @@ django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.13.1
     # via -r requirements/requirements.in
-git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
+django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
 djangorestframework==3.14.0
     # via
@@ -163,7 +163,7 @@ pytest-cov==4.0.0
     # via -r requirements/requirements.in
 pytest-django==4.5.2
     # via -r requirements/requirements.in
-pytest-xdist==3.0.2
+pytest-xdist==3.1.0
     # via -r requirements/requirements.in
 python-dateutil==2.8.1
     # via
