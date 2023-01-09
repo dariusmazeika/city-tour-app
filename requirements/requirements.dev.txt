@@ -147,7 +147,7 @@ flake8==3.9.2
     #   flake8-type-annotations
     #   pep8-naming
     #   pyproject-flake8
-flake8-black==0.3.5
+flake8-black==0.3.6
     # via -r requirements/requirements.dev.in
 flake8-blind-except==0.2.1
     # via -r requirements/requirements.dev.in
