@@ -106,9 +106,9 @@ django-solo==2.0.0
     # via -r requirements/requirements.in
 django-storages==1.13.2
     # via -r requirements/requirements.in
-django-stubs==1.8.0
+django-stubs==1.13.1
     # via -r requirements/requirements.dev.in
-django-stubs-ext==0.2.0
+django-stubs-ext==0.7.0
     # via django-stubs
 django-tabbed-admin @ git+https://github.com/CornerCaseTechnologies/django-tabbed-admin.git
     # via -r requirements/requirements.in
@@ -332,6 +332,7 @@ toml==0.10.2
 tomli==1.2.3
     # via
     #   black
+    #   django-stubs
     #   flake8-black
     #   mypy
     #   pytest
@@ -339,12 +340,17 @@ traitlets==5.1.1
     # via
     #   ipython
     #   matplotlib-inline
+types-pytz==2022.7.0.0
+    # via django-stubs
+types-pyyaml==6.0.12.2
+    # via django-stubs
 types-redis==4.4.0.0
     # via -r requirements/requirements.dev.in
 typing-extensions==4.4.0
     # via
     #   -r requirements/requirements.in
     #   django-stubs
+    #   django-stubs-ext
     #   mypy
 tzdata==2022.7
     # via pytz-deprecation-shim
