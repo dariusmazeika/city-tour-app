@@ -104,7 +104,7 @@ django-js-asset==2.0.0
     # via django-ckeditor
 django-solo==2.0.0
     # via -r requirements/requirements.in
-django-storages==1.13.1
+django-storages==1.13.2
     # via -r requirements/requirements.in
 django-stubs==1.8.0
     # via -r requirements/requirements.dev.in
