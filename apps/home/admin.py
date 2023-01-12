@@ -34,7 +34,7 @@ class ConfigAdmin(TabbedModelAdmin, SingletonModelAdmin):
 
     @staticmethod
     def regenerate_cache(*args):
-        hyper = format_html('<a class="button" href="/admin/regenerate_cache/">Regenerate cache</a>', *args)
+        hyper = format_html('<a class="button" href="/admin/regenerate-cache/">Regenerate cache</a>', *args)
         hyper.short_description = "Regenerate cache"
         hyper.allow_tags = True
         return hyper
