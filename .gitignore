@@ -60,3 +60,5 @@ conf/settings_local.py
 # Virtualenv
 .venv
 
+# Environment variables file
+.env
