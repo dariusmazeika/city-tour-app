@@ -292,7 +292,7 @@ pytz-deprecation-shim==0.1.0.post0
     # via tzlocal
 pyyaml==5.4.1
     # via drf-spectacular
-redis==4.4.1
+redis==4.4.2
     # via -r requirements/requirements.in
 requests==2.25.1
     # via
