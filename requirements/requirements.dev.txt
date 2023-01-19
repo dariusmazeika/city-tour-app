@@ -267,7 +267,7 @@ pyproject-flake8==0.0.1a2
     # via -r requirements/requirements.dev.in
 pyrsistent==0.17.3
     # via jsonschema
-pytest==7.2.0
+pytest==7.2.1
     # via
     #   -r requirements/requirements.in
     #   pytest-cov
