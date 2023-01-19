@@ -44,6 +44,8 @@ certifi==2020.12.5
     # via
     #   requests
     #   sentry-sdk
+cffi==1.15.1
+    # via cryptography
 chardet==4.0.0
     # via requests
 click==8.0.3
@@ -62,6 +64,10 @@ click-repl==0.2.0
     # via celery
 coverage[toml]==5.5
     # via pytest-cov
+cryptography==39.0.0
+    # via
+    #   types-pyopenssl
+    #   types-redis
 cssselect==1.1.0
     # via premailer
 cssutils==2.2.0
@@ -255,6 +261,8 @@ pycodestyle==2.7.0
     #   flake8
     #   flake8-import-order
     #   flake8-print
+pycparser==2.21
+    # via cffi
 pyflakes==2.3.0
     # via flake8
 pygments==2.11.2
@@ -339,7 +347,9 @@ traitlets==5.1.1
     # via
     #   ipython
     #   matplotlib-inline
-types-redis==4.4.0.0
+types-pyopenssl==23.0.0.2
+    # via types-redis
+types-redis==4.4.0.3
     # via -r requirements/requirements.dev.in
 typing-extensions==4.4.0
     # via
