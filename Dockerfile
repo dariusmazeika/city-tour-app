@@ -16,7 +16,8 @@ RUN apk add --no-cache --virtual build-deps gcc g++ musl-dev postgresql-dev libx
 RUN rm -rf requirements
 RUN rm -f Makefile
 
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
 RUN apk add kubectl
 RUN curl -sL https://sentry.io/get-cli/ | bash
 
