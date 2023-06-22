@@ -44,6 +44,8 @@ certifi==2020.12.5
     # via
     #   requests
     #   sentry-sdk
+cffi==1.15.1
+    # via cryptography
 chardet==4.0.0
     # via requests
 click==8.0.3
@@ -62,13 +64,17 @@ click-repl==0.2.0
     # via celery
 coverage[toml]==5.5
     # via pytest-cov
+cryptography==39.0.0
+    # via
+    #   types-pyopenssl
+    #   types-redis
 cssselect==1.1.0
     # via premailer
 cssutils==2.2.0
     # via premailer
 decorator==5.1.1
     # via ipython
-dj-database-url==1.0.0
+dj-database-url==1.2.0
     # via -r requirements/requirements.in
 django==4.1.5
     # via
@@ -104,7 +110,7 @@ django-js-asset==2.0.0
     # via django-ckeditor
 django-solo==2.0.0
     # via -r requirements/requirements.in
-django-storages==1.13.1
+django-storages==1.13.2
     # via -r requirements/requirements.in
 django-stubs==1.8.0
     # via -r requirements/requirements.dev.in
@@ -121,7 +127,7 @@ djangorestframework-simplejwt==5.2.2
     # via -r requirements/requirements.in
 dparse==0.6.2
     # via safety
-drf-spectacular==0.24.2
+drf-spectacular==0.25.1
     # via -r requirements/requirements.in
 eradicate==2.1.0
     # via flake8-eradicate
@@ -147,13 +153,13 @@ flake8==3.9.2
     #   flake8-type-annotations
     #   pep8-naming
     #   pyproject-flake8
-flake8-black==0.3.5
+flake8-black==0.3.6
     # via -r requirements/requirements.dev.in
 flake8-blind-except==0.2.1
     # via -r requirements/requirements.dev.in
-flake8-bugbear==22.10.27
+flake8-bugbear==23.1.17
     # via -r requirements/requirements.dev.in
-flake8-builtins==2.0.1
+flake8-builtins==2.1.0
     # via -r requirements/requirements.dev.in
 flake8-comprehensions==3.10.1
     # via -r requirements/requirements.dev.in
@@ -185,7 +191,7 @@ inflection==0.5.1
     # via drf-spectacular
 iniconfig==1.1.1
     # via pytest
-ipython==8.6.0
+ipython==8.8.0
     # via -r requirements/requirements.dev.in
 jedi==0.18.1
     # via ipython
@@ -221,7 +227,6 @@ packaging==21.3
     # via
     #   dparse
     #   pytest
-    #   redis
     #   safety
 parso==0.8.3
     # via jedi
@@ -233,7 +238,7 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pillow==9.3.0
+pillow==9.4.0
     # via -r requirements/requirements.in
 platformdirs==2.5.2
     # via black
@@ -256,6 +261,8 @@ pycodestyle==2.7.0
     #   flake8
     #   flake8-import-order
     #   flake8-print
+pycparser==2.21
+    # via cffi
 pyflakes==2.3.0
     # via flake8
 pygments==2.11.2
@@ -268,7 +275,7 @@ pyproject-flake8==0.0.1a2
     # via -r requirements/requirements.dev.in
 pyrsistent==0.17.3
     # via jsonschema
-pytest==7.2.0
+pytest==7.2.1
     # via
     #   -r requirements/requirements.in
     #   pytest-cov
@@ -278,7 +285,7 @@ pytest-cov==4.0.0
     # via -r requirements/requirements.in
 pytest-django==4.5.2
     # via -r requirements/requirements.in
-pytest-xdist==3.0.2
+pytest-xdist==3.1.0
     # via -r requirements/requirements.in
 python-dateutil==2.8.1
     # via
@@ -293,7 +300,7 @@ pytz-deprecation-shim==0.1.0.post0
     # via tzlocal
 pyyaml==5.4.1
     # via drf-spectacular
-redis==4.3.5
+redis==4.4.2
     # via -r requirements/requirements.in
 requests==2.25.1
     # via
@@ -306,11 +313,11 @@ ruamel.yaml.clib==0.2.7
     # via ruamel.yaml
 s3transfer==0.3.6
     # via boto3
-safety==2.3.3
+safety==2.3.5
     # via -r requirements/requirements.dev.in
 semver==2.13.0
     # via unleashclient
-sentry-sdk==1.11.1
+sentry-sdk==1.13.0
     # via -r requirements/requirements.in
 six==1.15.0
     # via
@@ -340,7 +347,9 @@ traitlets==5.1.1
     # via
     #   ipython
     #   matplotlib-inline
-types-redis==4.3.21.6
+types-pyopenssl==23.0.0.2
+    # via types-redis
+types-redis==4.4.0.3
     # via -r requirements/requirements.dev.in
 typing-extensions==4.4.0
     # via
