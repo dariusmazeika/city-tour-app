@@ -82,7 +82,7 @@ class LogEntryAdmin(admin.ModelAdmin):
         if obj.action_flag == DELETION:
             link = escape(obj.object_repr)
         else:
-            link = '<a href="%s">%s</a>' % (obj.get_admin_url(), escape(obj.object_repr))
+            link = f'<a href="{obj.get_admin_url()}">{escape(obj.object_repr)}</a>'
         return format_html(link)
 
     @staticmethod
