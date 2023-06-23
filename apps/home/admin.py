@@ -77,20 +77,13 @@ class LogEntryAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    @staticmethod
-    def object_link(obj):
+    @admin.display(description="object", ordering="object_repr")  # type: ignore [attr-defined]
+    def object_link(self, obj):
         if obj.action_flag == DELETION:
             link = escape(obj.object_repr)
         else:
-            link = '<a href="%s">%s</a>' % (
-                obj.get_admin_url(),
-                escape(obj.object_repr),
-            )
-        link = format_html(link)
-        link.allow_tags = True
-        link.admin_order_field = "object_repr"
-        link.short_description = "object"
-        return link
+            link = f'<a href="{obj.get_admin_url()}">{escape(obj.object_repr)}</a>'
+        return format_html(link)
 
     @staticmethod
     def action_flag(obj):

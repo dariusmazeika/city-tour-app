@@ -58,7 +58,7 @@ cssutils==2.2.0
     # via premailer
 dj-database-url==1.2.0
     # via -r requirements/requirements.in
-django==4.0.8
+django==4.1.5
     # via
     #   -r requirements/requirements.in
     #   dj-database-url

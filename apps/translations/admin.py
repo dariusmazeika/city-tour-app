@@ -53,10 +53,10 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = ("message_id", "trans")
     inlines = [TranslationInline]
 
-    @staticmethod
-    def trans(obj):
-        trans = format_html_join(
-            "\n", '<b>{}:</b> "{}"<br/>', ((t.language.code, t.text) for t in obj.translation_set.all())
+    @admin.display(description="Translations")  # type: ignore [attr-defined]
+    def trans(self, obj):
+        return format_html_join(
+            "\n",
+            '<b>{}:</b> "{}"<br/>',
+            (tuple(t) for t in obj.translation_set.prefetch_related("language").values_list("language__code", "text")),
         )
-        trans.short_description = "Translations"
-        return trans
