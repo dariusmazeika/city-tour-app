@@ -111,9 +111,9 @@ WSGI_APPLICATION = "wsgi.application"
 
 if os.getenv("DATABASE_URL"):
     # For heroku
-    DATABASES = dj_database_url.config(os.getenv("DATABASE_URL"), conn_max_age=os.getenv("CONN_MAX_AGE", 600))
+    DATABASES = dj_database_url.config(os.getenv("DATABASE_URL"), conn_max_age=os.getenv("CONN_MAX_AGE", 600))  # type: ignore [arg-type]
 else:
-    DATABASES = {
+    DATABASES = {  # type: ignore [typeddict-unknown-key]
         "default": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
             "NAME": os.getenv("DB_NAME", "django"),

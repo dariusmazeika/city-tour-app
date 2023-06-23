@@ -32,6 +32,9 @@ class SiteConfiguration(SingletonModel):
     class Meta:
         verbose_name = "Site Configuration"
 
+    def __str__(self):
+        return "Site Configuration"
+
     def save(self, *args, **kwargs):
         self.manifest_version = uuid.uuid4().hex
         return super(SiteConfiguration, self).save(*args, **kwargs)

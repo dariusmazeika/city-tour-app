@@ -51,6 +51,8 @@ ignore = [
 	"W503",
 	"CFQ004",
 	"S101",
+	"DJ10",
+	"DJ11",
 ]
 per-file-ignores = [
     "apps/utils/authentication.py:A003",
