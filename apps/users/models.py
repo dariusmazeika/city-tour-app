@@ -51,7 +51,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class User(AbstractUser):
+class User(AbstractUser):  # noqa DJ08
     username = None
 
     email = CIEmailField(max_length=255, unique=True)
@@ -104,6 +104,9 @@ class ActivationKey(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="activation_keys")
     activation_key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
+    def __str__(self):
+        return f"key={self.activation_key} for user={self.user_id}"
+
     def send_verification(self):
         LOGGER.info("Sending verification email to %s", self.user.email)
         context = {"activationUrl": settings.VERIFICATION_BASE_URL.format(settings.APP_HOST, self.activation_key)}
@@ -127,14 +130,17 @@ class PasswordKey(BaseModel):
     password_key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     expires_at = models.DateTimeField()
 
-    @staticmethod
-    def _default_expiration_period():
-        return timezone.now() + datetime.timedelta(hours=settings.PASSWORD_TOKEN_EXPIRATION_PERIOD)
+    def __str__(self):
+        return f"key={self.password_key} for user={self.user_id}"
 
     def save(self, *args, **kwargs):
         if not self.pk:
             self.expires_at = self._default_expiration_period()
         super().save(*args, **kwargs)
+
+    @staticmethod
+    def _default_expiration_period() -> datetime.datetime:
+        return timezone.now() + datetime.timedelta(hours=settings.PASSWORD_TOKEN_EXPIRATION_PERIOD)
 
     def validate_expiration(self) -> bool:
         return self.expires_at >= timezone.now()
