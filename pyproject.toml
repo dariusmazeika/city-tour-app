@@ -56,7 +56,7 @@ per-file-ignores = [
     "apps/utils/authentication.py:A003",
     "apps/utils/tests_utils.py:A002, VNE003, S105",
     "apps/translations/models.py:E800",
-	"apps/home/models.py:E800",
+    "apps/home/models.py:E800",
 ]
 
 [tool.black]
