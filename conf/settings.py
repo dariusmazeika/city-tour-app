@@ -43,7 +43,7 @@ VERSION = f"0.0.0_{BUILD_VERSION}"
 # Returns user even if it's not active, lets do handle it manually
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.AllowAllUsersModelBackend"]
 
-APP_HOST = os.getenv("APP_HOST", "http://localhost:8000/")
+APP_HOST: str = os.getenv("APP_HOST", "http://localhost:8000/")
 
 # Application definition
 
@@ -152,7 +152,7 @@ USE_L10N = True
 USE_TZ = True
 
 DEFAULT_LANGUAGE = "lt"
-TRANSLATIONS_BASE_LANGUAGE = (DEFAULT_LANGUAGE, "Lithuanian")
+TRANSLATIONS_BASE_LANGUAGE: tuple = (DEFAULT_LANGUAGE, "Lithuanian")
 MANIFEST_JS_MAX_AGE = 0
 
 # Static files (CSS, JavaScript, Images)
