@@ -1,3 +1,4 @@
+# mypy: disable-error-code="django-manager-missing"
 import logging
 import uuid
 
