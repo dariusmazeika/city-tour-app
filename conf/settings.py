@@ -106,6 +106,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "wsgi.application"
 
+# Do not redirect requests to URLs with trailing slashes, return 404 status code for URLs without slashes instead.
+# Redirection might create hard to debug issues, because http method is being changed to GET and
+# request body is being lost during redirection.
+APPEND_SLASH = False
+
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
