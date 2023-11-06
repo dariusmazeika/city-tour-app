@@ -1,4 +1,4 @@
 include:
-  - project: 'corner-case-technologies/operations'
+  - project: 'corner-case-technologies/be-internship-2023/operations'
     ref: master
     file: 'django.default.yml'
