@@ -26,3 +26,5 @@ django-cleanup
 sentry-sdk
 django-extensions
 UnleashClient
+pyyaml>=6.0.1  # TODO drf-spectacular dependency resolves to breaking 6.0, pinning for now
+

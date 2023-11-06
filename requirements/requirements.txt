@@ -166,8 +166,10 @@ pytz==2023.3
     # via
     #   apscheduler
     #   djangorestframework
-pyyaml==6.0
-    # via drf-spectacular
+pyyaml==6.0.1
+    # via
+    #   -r requirements/requirements.in
+    #   drf-spectacular
 redis==4.5.5
     # via -r requirements/requirements.in
 requests==2.31.0
