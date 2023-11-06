@@ -335,5 +335,6 @@ UNLEASH_CLIENT = UnleashClient(
     app_name=os.getenv("CI_ENVIRONMENT_NAME", ""),
     instance_id=os.getenv("UNLEASH_INSTANCE_ID", ""),
     disable_metrics=True,
+    disable_registration=True,
 )
 UNLEASH_CLIENT.initialize_client()
