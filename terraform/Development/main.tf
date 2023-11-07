@@ -36,8 +36,7 @@ variable "CI_COMMIT_SHORT_SHA" {
 }
 
 module "development" {
-  source  = "gitlab.com/corner-case-technologies/django/kubernetes"
-  version = "1.0.0"
+  source = "./django"
 
   PROJECT_NAME        = var.PROJECT_NAME
   KUBE_NAMESPACE      = var.KUBE_NAMESPACE
@@ -54,8 +53,7 @@ module "development" {
 }
 
 module "dependencies" {
-  source  = "gitlab.com/corner-case-technologies/django-dependencies/kubernetes"
-  version = "1.0.0"
+  source = "./dependencies"
 
   PROJECT_NAME      = var.PROJECT_NAME
   KUBE_NAMESPACE    = var.KUBE_NAMESPACE
