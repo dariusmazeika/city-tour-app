@@ -61,6 +61,8 @@ module "dependencies" {
   ENVIRONMENT_URL   = var.ENVIRONMENT_URL
   PROJECT_PATH_SLUG = var.PROJECT_PATH_SLUG
   ENVIRONMENT       = var.ENVIRONMENT
+
+  db_version = "postgis/postgis:14-3.4-alpine"
 }
 
 output "KUBERNETES_DEPLOYMENT" {
