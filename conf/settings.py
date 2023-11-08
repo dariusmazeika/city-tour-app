@@ -68,6 +68,9 @@ INSTALLED_APPS = [
     "apps.users.apps.UsersConfig",
     "corsheaders",
     "django_cleanup.apps.CleanupConfig",
+    "apps.tours.apps.ToursConfig",
+    "apps.locations.apps.LocationsConfig",
+    "apps.sites.apps.SitesConfig",
 ]
 
 MIDDLEWARE = [

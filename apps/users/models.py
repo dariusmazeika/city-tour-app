@@ -64,6 +64,8 @@ class User(AbstractUser):  # noqa DJ08
 
     password_last_change = models.DateTimeField(null=True, blank=True)
 
+    balance = models.PositiveIntegerField(default=0)
+
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         super(User, self).save(*args, **kwargs)
