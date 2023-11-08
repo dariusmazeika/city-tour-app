@@ -6,12 +6,12 @@ EXPOSE 8000 8000
 # Add system requirements
 RUN apk add --no-cache jq gettext sed bash curl docker-cli git binutils make
 # Add runtime dependencies
-RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg postgresql-client
+RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg postgresql-client gdal-dev geos-dev
 
 COPY requirements/requirements.dev.txt requirements/requirements.dev.txt
 COPY Makefile Makefile
 
-RUN apk add --no-cache --virtual build-deps gcc g++ musl-dev postgresql-dev libxslt-dev jpeg-dev libffi-dev rust cargo && make install
+RUN apk add --no-cache --virtual build-deps gcc g++ musl-dev postgresql-dev libxslt-dev jpeg-dev libffi-dev rust cargo gdal && make install
 
 RUN rm -rf requirements
 RUN rm -f Makefile
