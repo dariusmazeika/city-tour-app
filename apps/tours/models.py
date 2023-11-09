@@ -45,4 +45,4 @@ class UserTours(BaseModel):
     status = models.CharField(max_length=8, choices=STATUSES, default=NEW)
 
     def __str__(self):
-        return f"{self.tour} {self.user}"
+        return f"{self.tour}"
