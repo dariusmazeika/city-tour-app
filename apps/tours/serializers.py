@@ -9,4 +9,4 @@ class TourSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        exclude = ("bought_by",)
+        fields = "__all__"
