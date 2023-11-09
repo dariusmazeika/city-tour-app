@@ -6,9 +6,9 @@ from apps.tours.models import Tour, TourSite
 
 
 @pytest.fixture
-def expexted_tour_data(single_tour):
+def expected_tour_data(single_tour):
     site = single_tour.sites.first()
-    expexted_tour_data = {
+    expected_tour_data = {
         "id": single_tour.id,
         "sites": [
             {
@@ -35,7 +35,7 @@ def expexted_tour_data(single_tour):
         "is_approved": single_tour.is_approved,
         "author": None,
     }
-    return expexted_tour_data
+    return expected_tour_data
 
 
 @pytest.fixture
