@@ -11,6 +11,7 @@ class BaseSiteSerializer(serializers.ModelSerializer):
 
 class SiteSerializer(serializers.ModelSerializer):
     base_site = BaseSiteSerializer()
+
     class Meta:
         model = Site
         fields = (
