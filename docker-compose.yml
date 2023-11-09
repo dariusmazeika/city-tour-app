@@ -3,7 +3,7 @@ volumes:
     data:
 services:
     postgres:
-        image: postgres:14-alpine
+        image: postgis/postgis:14-3.4-alpine
         environment:
             POSTGRES_USER: django
             POSTGRES_PASSWORD: django
