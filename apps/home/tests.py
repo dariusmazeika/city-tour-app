@@ -25,6 +25,7 @@ class TestAdminSmokerCase:
         "admin_logentry_add",
         "admin_logentry_delete",
         "admin_logentry_list",
+        "users_user_change",
     ]
 
     @pytest.fixture
