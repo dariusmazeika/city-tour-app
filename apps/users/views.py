@@ -5,9 +5,11 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet, mixins
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from apps.tours.serializers import TourSerializer, TourWithoutSitesSerializer
 from apps.users.models import ActivationKey, PasswordKey, User
 from apps.users.serializers import (
     BasePasswordSerializer,
@@ -131,3 +133,17 @@ class TokenRefreshViewWithActiveChecks(TokenRefreshView):
             raise ValidationError(ApiErrors.USER_DATETIME_CLAIM_CHANGED)
         if not user.is_active:
             raise ValidationError(ApiErrors.USER_IS_NOT_ACTIVE)
+
+
+class GetUserToursViewSet(GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
+    serializer_class = TourWithoutSitesSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        current_user = self.request.user
+        return current_user.owned_tours.all()
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return TourSerializer
+        return TourWithoutSitesSerializer

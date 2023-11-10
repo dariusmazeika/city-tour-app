@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenVerifyView
 
@@ -12,9 +12,11 @@ from apps.users.views import (
     ResetPasswordView,
     TokenRefreshViewWithActiveChecks,
     VerifyUserView,
+    GetUserToursViewSet,
 )
 
 router = DefaultRouter()
+router.register("current-user/tours", viewset=GetUserToursViewSet, basename="current-user-tours")
 
 urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
@@ -27,4 +29,5 @@ urlpatterns = [
     path("forgot/", ForgottenPasswordView.as_view(), name="forgot"),
     path("reset-password/<uuid:password_key>/", ResetPasswordView.as_view(), name="reset-password"),
     path("resend-verification/", ResendVerificationView.as_view(), name="resend-verification"),
+    path("", include(router.urls)),
 ]

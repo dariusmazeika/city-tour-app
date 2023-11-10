@@ -10,3 +10,9 @@ class TourSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = "__all__"
+
+
+class TourWithoutSitesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        exclude = ("sites",)
