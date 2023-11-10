@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from apps.tours.models import Tour, UserTours
+from apps.tours.models import Tour, UserTour
 from apps.users.models import User
 
 
@@ -13,7 +13,7 @@ class CreatedTourInline(admin.StackedInline):
 
 
 class BoughtTourInline(admin.StackedInline):
-    model = UserTours
+    model = UserTour
     verbose_name = _("Bought Tour")
     extra = 0
 

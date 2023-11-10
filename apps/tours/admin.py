@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.tours.models import Tour, TourSite, UserTours
+from apps.tours.models import Tour, TourSite, UserTour
 
 
 class TourSiteInline(admin.StackedInline):
@@ -14,4 +14,4 @@ class TourAdmin(admin.ModelAdmin):
 
 admin.site.register(Tour, TourAdmin)
 admin.site.register(TourSite)
-admin.site.register(UserTours)
+admin.site.register(UserTour)

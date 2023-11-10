@@ -15,7 +15,7 @@ class TourSite(BaseModel):
 
 
 class Tour(BaseModel):
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_tours")
     language = models.CharField(max_length=3)
     overview = models.TextField()
     title = models.CharField(max_length=255)
@@ -30,7 +30,7 @@ class Tour(BaseModel):
         return f"{self.title}"
 
 
-class UserTours(BaseModel):
+class UserTour(BaseModel):
     STARTED = "Started"
     FINISHED = "Finished"
     NEW = "New"
