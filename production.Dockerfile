@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 EXPOSE 8000 8000
 
 # Add runtime dependencies
-RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg bash postgresql-client binutils
+RUN apk add --no-cache libpq libxslt libjpeg zlib jpeg bash postgresql-client binutils gdal-dev geos-dev
 
 COPY requirements/requirements.txt .
 
