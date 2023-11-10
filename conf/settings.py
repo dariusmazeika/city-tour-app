@@ -133,6 +133,9 @@ else:
         }
     }
 
+GDAL_LIBRARY_PATH = "/usr/lib/libgdal.so.32.3.6.4"
+GEOS_LIBRARY_PATH = "/usr/lib/libgeos_c.so.1"
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 LOGGING = {
