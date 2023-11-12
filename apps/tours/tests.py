@@ -1,6 +1,8 @@
 from django.urls import reverse
 from rest_framework import status
 
+from apps.tours.models import UserTour, Tour
+from apps.users.models import User
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
@@ -13,9 +15,44 @@ class TestGetTours:
 
         assert expected_tour_data == response.json()
 
-    def test_get_not_existing_tour_returns_not_found(self, client: APIClientWithQueryCounter):
-        not_existing_tour_id = 100
+    def test_get_not_existing_tour_returns_not_found(self, client: APIClientWithQueryCounter, not_existing_tour_id):
         path = reverse("tours-detail", args=[not_existing_tour_id])
         response = client.get(path)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
+
+
+class TestBuyTour:
+
+    def test_unauthorized_client_cannot_buy_tour(self, client: APIClientWithQueryCounter, single_tour: Tour):
+        response = client.post(reverse("tours-buy", args=[single_tour.id]))
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
+
+    def test_non_existing_tour_returns_not_found(self, authorized_client: APIClientWithQueryCounter,
+                                                 not_existing_tour_id):
+        response = authorized_client.post(reverse("tours-buy", args=[not_existing_tour_id]))
+        assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
+        assert response.json()["detail"] == "error_tour_does_not_exist"
+
+    def test_cannot_buy_already_owned_tour(self, authorized_client: APIClientWithQueryCounter, single_tour: Tour,
+                                           user: User):
+        UserTour.objects.create(tour=single_tour, user=user, price=single_tour.price)
+        response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
+        assert response.json()["non_field_errors"][0] == "error_tour_already_owned"
+
+    def test_user_money_balance_reduced_correctly(self, client: APIClientWithQueryCounter, single_tour: Tour):
+        pass
+
+    def test_tour_bought_successfully(self, authorized_client: APIClientWithQueryCounter, single_tour: Tour,
+                                      user: User):
+        user.balance = single_tour.price + 1
+        user.save(update_fields=["balance"])
+        response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
+
+        assert response.status_code == status.HTTP_201_CREATED, response.json()
+
+    def test_tour_price_greater_than_user_balance_response(self):
+        pass

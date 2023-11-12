@@ -1,12 +1,12 @@
-from model_bakery.baker import make
 import pytest
+from model_bakery.baker import make
 
 from apps.sites.models import BaseSite, Site
 from apps.tours.models import Tour, TourSite
 
 
 @pytest.fixture
-def expected_tour_data(single_tour: Tour):
+def expected_tour_data(single_tour: Tour) -> dict:
     site = single_tour.sites.first()
     base_site = site.base_site
     expected_tour_data = {
@@ -48,10 +48,15 @@ def expected_tour_data(single_tour: Tour):
 
 
 @pytest.fixture
-def single_tour():
+def single_tour() -> Tour:
     base_site = make(BaseSite)
     site = make(Site, base_site=base_site)
     tour = make(Tour)
     make(TourSite, site=site, tour=tour, order=1)
 
     return tour
+
+
+@pytest.fixture
+def not_existing_tour_id() -> int:
+    return 100
