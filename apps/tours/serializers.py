@@ -20,10 +20,16 @@ class TourWithoutSitesSerializer(serializers.ModelSerializer):
         exclude = ("sites",)
 
 
+class UserTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserTour
+        exclude = ("updated_at",)
+
+
 class BuyTourSerializer(serializers.Serializer):
     def validate(self, attrs):
         current_user = self.context['request'].user
-        tour_to_buy = Tour.objects.filter(id=self.context["pk"]).first()
+        tour_to_buy = Tour.objects.filter(id=self.context["tour_id"]).first()
 
         if not tour_to_buy:
             raise NotFound("error_tour_does_not_exist")
@@ -34,10 +40,15 @@ class BuyTourSerializer(serializers.Serializer):
         if current_user.balance < tour_to_buy.price:
             raise ValidationError("error_wallet_balance_less_than_tour_price")
 
+        attrs["tour"] = tour_to_buy
+
         return attrs
 
-    @staticmethod
-    def create_user_tour(tour_to_buy, current_user):
+    def create(self, validated_data):
+        tour_to_buy = validated_data["tour"]
+        current_user = self.context['request'].user
         current_user.balance = F("balance") - tour_to_buy.price
         current_user.save(update_fields=["balance"])
-        UserTour.objects.create(tour=tour_to_buy, user=current_user, price=tour_to_buy.price)
+        created_user_tour = UserTour.objects.create(tour=tour_to_buy, user=current_user, price=tour_to_buy.price)
+
+        return created_user_tour

@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from apps.tours.models import Tour
-from apps.tours.serializers import TourSerializer, TourWithoutSitesSerializer, BuyTourSerializer
+from apps.tours.serializers import TourSerializer, BuyTourSerializer, UserTourSerializer
 
 
 class ToursViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
@@ -13,16 +13,13 @@ class ToursViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
 
+    @transaction.atomic
     @action(detail=True, methods=["post"], serializer_class=BuyTourSerializer, permission_classes=(IsAuthenticated,))
     def buy(self, request, pk):
-        with transaction.atomic():
-            serializer = BuyTourSerializer(data={}, context={"request": request, "pk": pk})
+        serializer = BuyTourSerializer(data={}, context={"request": request, "tour_id": pk})
 
-            if serializer.is_valid():
-                tour_to_buy = self.get_queryset().filter(id=pk).first()
-                serializer.create_user_tour(tour_to_buy, request.user)
+        serializer.is_valid(raise_exception=True)
+        created_user_tour = serializer.save()
 
-                return Response(data=TourWithoutSitesSerializer(tour_to_buy).data,
-                                status=status.HTTP_201_CREATED)
-
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data=UserTourSerializer(created_user_tour).data,
+                        status=status.HTTP_201_CREATED)
