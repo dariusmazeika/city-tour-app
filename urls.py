@@ -29,6 +29,7 @@ urlpatterns += [
     path('users/', include('apps.users.urls')),
     path('manifests/', include('apps.manifests.urls')),
     path('', include('apps.tours.urls')),
+    path('', include('apps.locations.urls')),
 ]
 
 admin.autodiscover()
