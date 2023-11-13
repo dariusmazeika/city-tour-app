@@ -21,5 +21,4 @@ class ToursViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
         serializer.is_valid(raise_exception=True)
         created_user_tour = serializer.save()
 
-        return Response(data=UserTourSerializer(created_user_tour).data,
-                        status=status.HTTP_201_CREATED)
+        return Response(data=UserTourSerializer(created_user_tour).data, status=status.HTTP_201_CREATED)

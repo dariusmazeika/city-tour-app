@@ -9,7 +9,8 @@ from rest_framework.viewsets import GenericViewSet, mixins
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from apps.tours.serializers import TourWithoutSitesSerializer
+from apps.tours.models import UserTour
+from apps.tours.serializers import UserTourSerializer
 from apps.users.models import ActivationKey, PasswordKey, User
 from apps.users.serializers import (
     BasePasswordSerializer,
@@ -135,10 +136,13 @@ class TokenRefreshViewWithActiveChecks(TokenRefreshView):
             raise ValidationError(ApiErrors.USER_IS_NOT_ACTIVE)
 
 
-class GetUserToursViewSet(GenericViewSet, mixins.ListModelMixin, ):
-    serializer_class = TourWithoutSitesSerializer
+class GetUserToursViewSet(
+    GenericViewSet,
+    mixins.ListModelMixin,
+):
+    serializer_class = UserTourSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         current_user = self.request.user
-        return current_user.owned_tours.all()
+        return UserTour.objects.filter(user=current_user)

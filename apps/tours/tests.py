@@ -23,27 +23,29 @@ class TestGetTours:
 
 
 class TestBuyTour:
-    def test_unauthorized_client_cannot_buy_tour(self, client: APIClientWithQueryCounter, single_tour: Tour):
+    def test_unauthenticated_client_cannot_buy_tour(self, client: APIClientWithQueryCounter, single_tour: Tour):
         response = client.post(reverse("tours-buy", args=[single_tour.id]))
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
 
-    def test_non_existing_tour_returns_not_found(self, authorized_client: APIClientWithQueryCounter,
-                                                 not_existing_tour_id):
+    def test_non_existing_tour_returns_not_found(
+        self, authorized_client: APIClientWithQueryCounter, not_existing_tour_id
+    ):
         response = authorized_client.post(reverse("tours-buy", args=[not_existing_tour_id]))
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
-        assert response.json()["detail"] == "error_tour_does_not_exist"
 
-    def test_cannot_buy_already_owned_tour(self, authorized_client: APIClientWithQueryCounter, single_tour: Tour,
-                                           user: User):
+    def test_cannot_buy_already_owned_tour(
+        self, authorized_client: APIClientWithQueryCounter, single_tour: Tour, user: User
+    ):
         UserTour.objects.create(tour=single_tour, user=user, price=single_tour.price)
         response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
         assert response.json()["non_field_errors"][0] == "error_tour_already_owned"
 
-    def test_tour_bought_successfully(self, authorized_client: APIClientWithQueryCounter, single_tour: Tour,
-                                      user: User):
+    def test_tour_bought_successfully(
+        self, authorized_client: APIClientWithQueryCounter, single_tour: Tour, user: User, expected_tour_data: dict
+    ):
         user.balance = single_tour.price + 1
         user.save(update_fields=["balance"])
         response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
@@ -57,18 +59,19 @@ class TestBuyTour:
         user.refresh_from_db()
         assert user.balance == 1
 
+        expected_tour_data.pop("sites", None)  # Tour will be serialized without sites
         expected_response_payload = {
             "id": user_tour_from_db.id,
             "created_at": user_tour_from_db.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "price": single_tour.price,
             "status": "New",
-            "tour": single_tour.id,
-            "user": user.id
+            "tour": expected_tour_data,
         }
         assert response.json() == expected_response_payload
 
-    def test_tour_price_greater_than_user_balance_response(self, authorized_client: APIClientWithQueryCounter,
-                                                           single_tour: Tour, user: User):
+    def test_tour_price_greater_than_user_balance_response(
+        self, authorized_client: APIClientWithQueryCounter, single_tour: Tour, user: User
+    ):
         user.balance = 1
         user.save(update_fields=["balance"])
         single_tour.price = 10

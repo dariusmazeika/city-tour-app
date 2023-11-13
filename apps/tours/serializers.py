@@ -1,6 +1,7 @@
 from django.db.models import F
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework.exceptions import ValidationError
 
 from apps.sites.serializers import SiteSerializer
 from apps.tours.models import Tour, UserTour
@@ -21,18 +22,17 @@ class TourWithoutSitesSerializer(serializers.ModelSerializer):
 
 
 class UserTourSerializer(serializers.ModelSerializer):
+    tour = TourWithoutSitesSerializer(read_only=True)
+
     class Meta:
         model = UserTour
-        exclude = ("updated_at",)
+        exclude = ("updated_at", "user")
 
 
 class BuyTourSerializer(serializers.Serializer):
     def validate(self, attrs):
-        current_user = self.context['request'].user
-        tour_to_buy = Tour.objects.filter(id=self.context["tour_id"]).first()
-
-        if not tour_to_buy:
-            raise NotFound("error_tour_does_not_exist")
+        current_user = self.context["request"].user
+        tour_to_buy = get_object_or_404(Tour, pk=self.context["tour_id"])
 
         if current_user.owned_tours.filter(id=tour_to_buy.id).exists():
             raise ValidationError("error_tour_already_owned")
@@ -46,7 +46,7 @@ class BuyTourSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         tour_to_buy = validated_data["tour"]
-        current_user = self.context['request'].user
+        current_user = self.context["request"].user
         current_user.balance = F("balance") - tour_to_buy.price
         current_user.save(update_fields=["balance"])
         created_user_tour = UserTour.objects.create(tour=tour_to_buy, user=current_user, price=tour_to_buy.price)

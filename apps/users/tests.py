@@ -222,3 +222,26 @@ class TestAuthentication:
         user.refresh_from_db()
         assert previous_psw == user.password
         assert response.json()["non_field_errors"][0] == "error_passwords_not_equal"
+
+
+class TestCurrentUserToursEndpoint:
+    def test_get_returns_expected_tours(
+        self, authorized_client: APIClientWithQueryCounter, expected_user_tour_list_response_results_payload: list
+    ):
+        response = authorized_client.get(reverse("current-user-tours-list"))
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["count"] == 2
+        assert response.json()["results"] == expected_user_tour_list_response_results_payload
+
+    def test_get_returns_empty_list_if_user_has_no_tours(self, authorized_client: APIClientWithQueryCounter):
+        response = authorized_client.get(reverse("current-user-tours-list"))
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["count"] == 0
+        assert response.json()["results"] == []
+
+    def test_unauthenticated_client_cannot_access_tours(self, client: APIClientWithQueryCounter):
+        response = client.get(reverse("current-user-tours-list"))
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()

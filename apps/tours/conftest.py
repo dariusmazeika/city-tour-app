@@ -1,5 +1,5 @@
-import pytest
 from model_bakery.baker import make
+import pytest
 
 from apps.sites.models import BaseSite, Site
 from apps.tours.models import Tour, TourSite
