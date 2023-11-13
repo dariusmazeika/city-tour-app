@@ -1,4 +1,5 @@
 from django.urls import reverse
+import pytest
 from rest_framework import status
 
 from apps.tours.models import UserTour, Tour
@@ -43,10 +44,16 @@ class TestBuyTour:
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
         assert response.json()["non_field_errors"][0] == "error_tour_already_owned"
 
+    @pytest.mark.parametrize("balance_difference", [(0, None), (1, None)])
     def test_tour_bought_successfully(
-        self, authorized_client: APIClientWithQueryCounter, single_tour: Tour, user: User, expected_tour_data: dict
+        self,
+        authorized_client: APIClientWithQueryCounter,
+        single_tour: Tour,
+        user: User,
+        expected_tour_data: dict,
+        balance_difference: tuple,
     ):
-        user.balance = single_tour.price + 1
+        user.balance = single_tour.price + balance_difference[0]
         user.save(update_fields=["balance"])
         response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
         assert response.status_code == status.HTTP_201_CREATED, response.json()
@@ -57,7 +64,7 @@ class TestBuyTour:
 
         # Check if user balance was updated
         user.refresh_from_db()
-        assert user.balance == 1
+        assert user.balance == balance_difference[0]
 
         expected_tour_data.pop("sites", None)  # Tour will be serialized without sites
         expected_response_payload = {
