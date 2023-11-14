@@ -1,6 +1,7 @@
 from model_bakery.baker import make
 import pytest
 
+from apps.locations.models import City
 from apps.sites.models import BaseSite, Site
 from apps.tours.models import Tour, TourSite
 
@@ -55,3 +56,59 @@ def single_tour():
     make(TourSite, site=site, tour=tour, order=1)
 
     return tour
+
+
+@pytest.fixture
+def expected_tours(get_tours_list):
+    expected_tour_list_data = [
+        {
+            "id": get_tours_list[0].id,
+            "created_at": get_tours_list[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "updated_at": get_tours_list[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "language": get_tours_list[0].language,
+            "overview": get_tours_list[0].overview,
+            "title": get_tours_list[0].title,
+            "price": get_tours_list[0].price,
+            "source": get_tours_list[0].source,
+            "is_audio": get_tours_list[0].is_audio,
+            "is_enabled": get_tours_list[0].is_enabled,
+            "is_approved": get_tours_list[0].is_approved,
+            "author": None,
+        },
+        {
+            "id": get_tours_list[2].id,
+            "created_at": get_tours_list[2].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "updated_at": get_tours_list[2].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "language": get_tours_list[2].language,
+            "overview": get_tours_list[2].overview,
+            "title": get_tours_list[2].title,
+            "price": get_tours_list[2].price,
+            "source": get_tours_list[2].source,
+            "is_audio": get_tours_list[2].is_audio,
+            "is_enabled": get_tours_list[2].is_enabled,
+            "is_approved": get_tours_list[2].is_approved,
+            "author": None,
+        },
+    ]
+
+    return expected_tour_list_data
+
+
+@pytest.fixture
+def get_tours_list():
+    city = make(City, id=5)
+    base_site = make(BaseSite, city=city)
+    site = make(Site, base_site=base_site)
+
+    tour1 = make(Tour, is_enabled=True, is_approved=True)
+    tour2 = make(Tour, is_enabled=True, is_approved=True)
+    tour3 = make(Tour, is_enabled=True, is_approved=True)
+    not_enabled_tour = make(Tour, is_enabled=False, is_approved=True)
+    not_approved_tour = make(Tour, is_enabled=False, is_approved=True)
+
+    make(TourSite, site=site, tour=tour1)
+    make(TourSite, site=site, tour=tour3)
+    make(TourSite, site=site, tour=not_enabled_tour)
+    make(TourSite, site=site, tour=not_approved_tour)
+
+    return [tour1, tour2, tour3, not_enabled_tour, not_approved_tour]
