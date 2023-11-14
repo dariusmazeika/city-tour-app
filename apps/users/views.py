@@ -20,8 +20,14 @@ from apps.users.serializers import (
     LoginSerializer,
     UserSerializer,
     VerificationEmailResendSerializer,
+    RegisterSerializer,
 )
 from apps.utils.error_codes import ApiErrors
+
+
+class RegisterView(generics.CreateAPIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = RegisterSerializer
 
 
 class LoginView(generics.CreateAPIView):

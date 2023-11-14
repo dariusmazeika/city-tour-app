@@ -13,12 +13,14 @@ from apps.users.views import (
     TokenRefreshViewWithActiveChecks,
     VerifyUserView,
     GetUserToursViewSet,
+    RegisterView,
 )
 
 router = DefaultRouter()
 router.register("current-user/tours", viewset=GetUserToursViewSet, basename="current-user-tours")
 
 urlpatterns = [
+    path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),
     path("token/refresh/", TokenRefreshViewWithActiveChecks.as_view(), name="token-refresh"),
     path("token/verify/", TokenVerifyView.as_view(), name="token-verify"),

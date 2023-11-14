@@ -14,6 +14,40 @@ from apps.users.models import ActivationKey, PasswordKey, User
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
+class TestRegistration:
+    def test_registration_valid(self, client, user_registration_data):
+        response = client.post(reverse("register"), user_registration_data, format="json")
+        created_user = User.objects.filter(email=user_registration_data["email"]).first()
+        assert response.status_code == status.HTTP_201_CREATED, response.json()
+        assert created_user is not None
+        assert created_user.first_name == user_registration_data["first_name"]
+        assert created_user.last_name == user_registration_data["last_name"]
+        assert created_user.email == user_registration_data["email"]
+
+    def test_registration_password_too_short(self, client, user_registration_data):
+        user_registration_data["password"] = "short"
+        user_registration_data["password2"] = "short"
+        response = client.post(reverse("register"), user_registration_data, format="json")
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json()["non_field_errors"][0] == (
+            "This password is too short. " "It must contain at least 8 characters."
+        ), response.json()
+
+    def test_registration_password_too_common(self, client, user_registration_data):
+        user_registration_data["password"] = "password"
+        user_registration_data["password2"] = "password"
+        response = client.post(reverse("register"), user_registration_data, format="json")
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json()["non_field_errors"][0] == "This password is too common.", response.json()
+
+    def test_registration_passwords_dont_match(self, client, user_registration_data):
+        user_registration_data["password"] = "uncommonpassword1"
+        user_registration_data["password2"] = "uncommonpassword2"
+        response = client.post(reverse("register"), user_registration_data, format="json")
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json()["non_field_errors"][0] == "Passwords do not match.", response.json()
+
+
 class TestAuthentication:
     def test_login_valid(self, client: APIClientWithQueryCounter, user_credentials, user):
         response = client.post(reverse("login"), user_credentials, format="json")

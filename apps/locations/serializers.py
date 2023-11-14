@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.locations.models import City, Country
+from apps.tours.models import Tour
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -24,3 +25,9 @@ class CitySerializer(serializers.ModelSerializer):
             "country",
             "image",
         ]
+
+
+class CityTourListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        exclude = ("sites",)

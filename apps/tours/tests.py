@@ -17,7 +17,8 @@ class TestGetTours:
         assert expected_tour_data == response.json()
 
     def test_get_not_existing_tour_returns_not_found(self, client: APIClientWithQueryCounter):
-        path = reverse("tours-detail", args=[100])
+        not_existing_tour_id = 100
+        path = reverse("tours-detail", args=[not_existing_tour_id])
         response = client.get(path)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
@@ -95,3 +96,19 @@ class TestBuyTour:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
         assert response.json()["non_field_errors"][0] == "error_wallet_balance_less_than_tour_price"
+
+
+class TestTourFilterByCity:
+    def test_filter_tours_by_city_id(self, client: APIClientWithQueryCounter, get_tours_list, expected_tours):
+        path = reverse("city-tours-list", kwargs={"city_id": 5})
+        response = client.get(path)
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+
+        assert expected_tours == response.json()["results"]
+
+    def test_filter_tours_by_nonexistent_city_id(self, client: APIClientWithQueryCounter, get_tours_list):
+        path = reverse("city-tours-list", kwargs={"city_id": 100000})
+        response = client.get(path)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
