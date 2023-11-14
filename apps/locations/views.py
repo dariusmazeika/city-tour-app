@@ -4,8 +4,8 @@ from rest_framework.permissions import AllowAny
 
 from apps.locations.models import City, Country
 from apps.locations.serializers import CitySerializer, CountrySerializer
-from apps.locations.serializers import CityTourListSerializer
 from apps.tours.models import Tour
+from apps.tours.serializers import TourWithoutSitesSerializer
 
 
 class CountryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
@@ -24,7 +24,7 @@ class CityTourListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     permission_classes = [
         AllowAny,
     ]
-    serializer_class = CityTourListSerializer
+    serializer_class = TourWithoutSitesSerializer
 
     def get_queryset(self):
         city_id = self.kwargs.get("city_id")
