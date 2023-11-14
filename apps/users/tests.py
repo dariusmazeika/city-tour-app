@@ -8,6 +8,7 @@ from django.utils import timezone
 from model_bakery.baker import make
 from rest_framework import status
 
+from apps.tours.models import UserTour, Tour
 from apps.translations.models import Language
 from apps.users.models import ActivationKey, PasswordKey, User
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
@@ -95,12 +96,20 @@ class TestAuthentication:
         assert response.json()[0], "error_user_does_not_exist"
 
     def test_invalid_password(self, client: APIClientWithQueryCounter, user):
-        response = client.post(reverse("login"), {"email": user.email, "password": "invalid"}, format="json")
+        response = client.post(
+            reverse("login"),
+            {"email": user.email, "password": "invalid"},
+            format="json",
+        )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["non_field_errors"][0] == "error_login_bad_credentials"
 
     def test_invalid_email(self, client: APIClientWithQueryCounter, user):
-        response = client.post(reverse("login"), {"email": "invalid@email", "password": user.password}, format="json")
+        response = client.post(
+            reverse("login"),
+            {"email": "invalid@email", "password": user.password},
+            format="json",
+        )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["email"][0] == "error_invalid_email"
 
@@ -149,7 +158,8 @@ class TestAuthentication:
         uuid = str(uuid4())
         reset_key = user.create_new_password_token()
         response = authorized_client.put(
-            reverse("reset-password", args=[reset_key]), data={"password": uuid, "confirm_password": uuid}
+            reverse("reset-password", args=[reset_key]),
+            data={"password": uuid, "confirm_password": uuid},
         )
         assert response.status_code == status.HTTP_204_NO_CONTENT, response.json()
         user.refresh_from_db()
@@ -230,7 +240,11 @@ class TestAuthentication:
         previous_psw_datetime = user.password_last_change
         response = authorized_client.post(
             reverse("change-password"),
-            data={"old_password": user_credentials["password"], "password": uuid, "confirm_password": uuid},
+            data={
+                "old_password": user_credentials["password"],
+                "password": uuid,
+                "confirm_password": uuid,
+            },
         )
         assert response.status_code == status.HTTP_201_CREATED, response.json()
         user.refresh_from_db()
@@ -256,3 +270,59 @@ class TestAuthentication:
         user.refresh_from_db()
         assert previous_psw == user.password
         assert response.json()["non_field_errors"][0] == "error_passwords_not_equal"
+
+
+class TestCurrentUserToursEndpoint:
+    def test_get_returns_expected_tours(self, authorized_client: APIClientWithQueryCounter, user):
+        def get_user_tour_data(user_tour: UserTour) -> dict:
+            tour = user_tour.tour
+            return {
+                "id": tour.id,
+                "created_at": tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "language": tour.language,
+                "overview": tour.overview,
+                "title": tour.title,
+                "price": tour.price,
+                "source": tour.source,
+                "is_audio": tour.is_audio,
+                "is_enabled": tour.is_enabled,
+                "is_approved": tour.is_approved,
+                "author": tour.author,
+            }
+
+        user_tour_1 = make(UserTour, tour=make(Tour), user=user)
+        user_tour_2 = make(UserTour, tour=make(Tour), user=user)
+        expected_response_payload = [
+            {
+                "id": user_tour_1.id,
+                "tour": get_user_tour_data(user_tour_1),
+                "created_at": user_tour_1.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "price": user_tour_1.price,
+                "status": user_tour_1.status,
+            },
+            {
+                "id": user_tour_2.id,
+                "tour": get_user_tour_data(user_tour_2),
+                "created_at": user_tour_2.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "price": user_tour_2.price,
+                "status": user_tour_2.status,
+            },
+        ]
+        response = authorized_client.get(reverse("current-user-tours-list"))
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["count"] == 2
+        assert response.json()["results"] == expected_response_payload
+
+    def test_get_returns_empty_list_if_user_has_no_tours(self, authorized_client: APIClientWithQueryCounter):
+        response = authorized_client.get(reverse("current-user-tours-list"))
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["count"] == 0
+        assert response.json()["results"] == []
+
+    def test_unauthenticated_client_cannot_access_tours(self, client: APIClientWithQueryCounter):
+        response = client.get(reverse("current-user-tours-list"))
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()

@@ -7,7 +7,7 @@ from apps.tours.models import Tour, TourSite
 
 
 @pytest.fixture
-def expected_tour_data(single_tour: Tour):
+def expected_tour_data(single_tour: Tour) -> dict:
     site = single_tour.sites.first()
     base_site = site.base_site
     expected_tour_data = {
@@ -49,7 +49,7 @@ def expected_tour_data(single_tour: Tour):
 
 
 @pytest.fixture
-def single_tour():
+def single_tour() -> Tour:
     base_site = make(BaseSite)
     site = make(Site, base_site=base_site)
     tour = make(Tour)
