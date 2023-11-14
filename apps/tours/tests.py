@@ -16,8 +16,8 @@ class TestGetTours:
 
         assert expected_tour_data == response.json()
 
-    def test_get_not_existing_tour_returns_not_found(self, client: APIClientWithQueryCounter, not_existing_tour_id):
-        path = reverse("tours-detail", args=[not_existing_tour_id])
+    def test_get_not_existing_tour_returns_not_found(self, client: APIClientWithQueryCounter):
+        path = reverse("tours-detail", args=[100])
         response = client.get(path)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
@@ -29,14 +29,15 @@ class TestBuyTour:
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
 
-    def test_non_existing_tour_returns_not_found(
-        self, authorized_client: APIClientWithQueryCounter, not_existing_tour_id
-    ):
-        response = authorized_client.post(reverse("tours-buy", args=[not_existing_tour_id]))
+    def test_non_existing_tour_returns_not_found(self, authorized_client: APIClientWithQueryCounter):
+        response = authorized_client.post(reverse("tours-buy", args=[100]))
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
 
     def test_cannot_buy_already_owned_tour(
-        self, authorized_client: APIClientWithQueryCounter, single_tour: Tour, user: User
+        self,
+        authorized_client: APIClientWithQueryCounter,
+        single_tour: Tour,
+        user: User,
     ):
         UserTour.objects.create(tour=single_tour, user=user, price=single_tour.price)
         response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
@@ -61,6 +62,10 @@ class TestBuyTour:
         # Check UserTour created in db
         user_tour_from_db = UserTour.objects.filter(tour__id=single_tour.id).first()
         assert user_tour_from_db is not None
+        assert user_tour_from_db.tour == single_tour
+        assert user_tour_from_db.user == user
+        assert user_tour_from_db.price == single_tour.price
+        assert user_tour_from_db.status == "New"
 
         # Check if user balance was updated
         user.refresh_from_db()
@@ -77,7 +82,10 @@ class TestBuyTour:
         assert response.json() == expected_response_payload
 
     def test_tour_price_greater_than_user_balance_response(
-        self, authorized_client: APIClientWithQueryCounter, single_tour: Tour, user: User
+        self,
+        authorized_client: APIClientWithQueryCounter,
+        single_tour: Tour,
+        user: User,
     ):
         user.balance = 1
         user.save(update_fields=["balance"])

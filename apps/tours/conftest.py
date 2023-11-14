@@ -55,8 +55,3 @@ def single_tour() -> Tour:
     make(TourSite, site=site, tour=tour, order=1)
 
     return tour
-
-
-@pytest.fixture
-def not_existing_tour_id() -> int:
-    return 100

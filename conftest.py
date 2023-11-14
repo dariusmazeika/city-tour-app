@@ -1,10 +1,10 @@
 import logging
 from pathlib import Path
 
-import pytest
 from django.conf import settings
 from model_bakery import generators
 from model_bakery.baker import make
+import pytest
 
 from apps.translations.models import Language
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
