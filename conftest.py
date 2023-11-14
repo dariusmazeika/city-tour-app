@@ -61,6 +61,17 @@ def user_data(user_credentials):
     }
 
 
+@pytest.fixture()
+def user_registration_data():
+    return {
+        "first_name": "First",
+        "last_name": "Last",
+        "email": "test@test.lt",
+        "password": "uncommon_password",
+        "password_validation": "uncommon_password",
+    }
+
+
 @pytest.fixture
 def user(user_credentials, django_user_model, default_language):
     user = make(django_user_model, **user_credentials, language=default_language, is_verified=True)
