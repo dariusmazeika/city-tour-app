@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate, user_logged_in
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import exceptions, serializers
+from rest_framework.validators import UniqueValidator, ValidationError
 from rest_framework_simplejwt.serializers import PasswordField, TokenObtainPairSerializer
 
 from apps.translations.models import Language
@@ -12,6 +14,44 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         return get_token(user)
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())],
+    )
+
+    password = PasswordField(required=True)
+    password_validation = PasswordField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email", "password", "password_validation")
+
+    def validate(self, attrs):
+        validated_data = super().validate(attrs)
+        validated_data["email"] = validated_data["email"].lower()
+        validate_password(validated_data["password"])
+
+        if validated_data["password"] != validated_data["password_validation"]:
+            raise ValidationError("Passwords do not match.")
+        if User.objects.filter(email=validated_data["email"]).exists():
+            raise ValidationError("User with this email already exists.")
+        return validated_data
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],
+            email=validated_data["email"],
+        )
+
+        user.set_password(validated_data["password"])
+        user.save(update_fields=["password"])
+        return user
 
 
 class LoginSerializer(CustomTokenObtainPairSerializer):
@@ -53,7 +93,7 @@ class LoginSerializer(CustomTokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email")
+        fields = ("first_name", "last_name", "email", "balance")
 
 
 class ChangeLanguageSerializer(serializers.Serializer):

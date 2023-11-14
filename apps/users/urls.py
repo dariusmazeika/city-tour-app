@@ -12,11 +12,13 @@ from apps.users.views import (
     ResetPasswordView,
     TokenRefreshViewWithActiveChecks,
     VerifyUserView,
+    RegisterView,
 )
 
 router = DefaultRouter()
 
 urlpatterns = [
+    path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),
     path("token/refresh/", TokenRefreshViewWithActiveChecks.as_view(), name="token-refresh"),
     path("token/verify/", TokenVerifyView.as_view(), name="token-verify"),
