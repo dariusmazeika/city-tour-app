@@ -2,6 +2,8 @@ from model_bakery.baker import make
 import pytest
 
 from apps.locations.models import City, Country
+from apps.sites.models import BaseSite, Site, SiteTag
+from apps.tours.models import Tour, TourSite
 
 
 @pytest.fixture
@@ -54,3 +56,34 @@ def get_city_data(city: City) -> dict:
         "image": city.image,
     }
     return city_data
+
+
+@pytest.fixture
+def tours_list_with_specific_tags():
+    city = make(City, id=5)
+    base_site = make(BaseSite, city=city)
+    site1 = make(Site, base_site=base_site)
+    site2 = make(Site, base_site=base_site)
+    site3 = make(Site, base_site=base_site)
+
+    tag3 = make(SiteTag, id=3)
+    tag4 = make(SiteTag, id=4)
+    tag5 = make(SiteTag, id=5)
+    tag6 = make(SiteTag, id=6)
+
+    tour1 = make(Tour, is_enabled=True, is_approved=True)
+    tour2 = make(Tour, is_enabled=True, is_approved=True)
+    tour3 = make(Tour, is_enabled=True, is_approved=True)
+    tour4 = make(Tour, is_enabled=True, is_approved=True)
+
+    site1.tags.set([tag3, tag4])
+    site2.tags.set([tag4, tag5])
+    site3.tags.set([tag6])
+
+    make(TourSite, site=site1, tour=tour1)
+    make(TourSite, site=site2, tour=tour1)
+    make(TourSite, site=site2, tour=tour2)
+    make(TourSite, site=site3, tour=tour3)
+    make(TourSite, site=site3, tour=tour4)
+
+    return [tour1, tour2, tour3, tour4]

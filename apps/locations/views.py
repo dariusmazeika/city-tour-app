@@ -29,5 +29,14 @@ class CityTourListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     def get_queryset(self):
         city_id = self.kwargs.get("city_id")
         queryset = Tour.objects.filter(is_enabled=True, is_approved=True)
+        tag_list = self.request.query_params.getlist("tag_id")
+
         city = get_object_or_404(City, id=city_id)
+
+        if tag_list:
+            return queryset.filter(
+                toursite__site__base_site__city__id=city.id,
+                toursite__site__tags__id__in=tag_list,
+            ).distinct()
+
         return queryset.filter(toursite__site__base_site__city__id=city.id).distinct()
