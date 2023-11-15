@@ -23,6 +23,7 @@ class TestRegistration:
         assert created_user.first_name == user_registration_data["first_name"]
         assert created_user.last_name == user_registration_data["last_name"]
         assert created_user.email == user_registration_data["email"]
+        assert created_user.is_verified is True
 
     def test_registration_password_too_short(self, client, user_registration_data):
         user_registration_data["password"] = "short"
