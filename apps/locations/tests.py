@@ -56,3 +56,60 @@ class TestGetCities:
 
         assert response.json()["count"] == 0
         assert response.json()["results"] == []
+
+
+class TestCityTourFilterByTag:
+    @staticmethod
+    def expected_tours(tours_list_with_specific_tags):
+        expected_tour_list_data = [
+            {
+                "id": tours_list_with_specific_tags[0].id,
+                "created_at": tours_list_with_specific_tags[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": tours_list_with_specific_tags[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "language": tours_list_with_specific_tags[0].language,
+                "overview": tours_list_with_specific_tags[0].overview,
+                "title": tours_list_with_specific_tags[0].title,
+                "price": tours_list_with_specific_tags[0].price,
+                "source": tours_list_with_specific_tags[0].source,
+                "is_audio": tours_list_with_specific_tags[0].is_audio,
+                "is_enabled": tours_list_with_specific_tags[0].is_enabled,
+                "is_approved": tours_list_with_specific_tags[0].is_approved,
+                "author": None,
+            },
+            {
+                "id": tours_list_with_specific_tags[1].id,
+                "created_at": tours_list_with_specific_tags[1].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": tours_list_with_specific_tags[1].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "language": tours_list_with_specific_tags[1].language,
+                "overview": tours_list_with_specific_tags[1].overview,
+                "title": tours_list_with_specific_tags[1].title,
+                "price": tours_list_with_specific_tags[1].price,
+                "source": tours_list_with_specific_tags[1].source,
+                "is_audio": tours_list_with_specific_tags[1].is_audio,
+                "is_enabled": tours_list_with_specific_tags[1].is_enabled,
+                "is_approved": tours_list_with_specific_tags[1].is_approved,
+                "author": None,
+            },
+        ]
+
+        return expected_tour_list_data
+
+    def test_get_tours_by_one_tag(self, client: APIClientWithQueryCounter, tours_list_with_specific_tags):
+        expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
+        tags = "?tag_id=4"
+        path = reverse("city-tours-list", kwargs={"city_id": 5}) + tags
+        response = client.get(path)
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert len(response.data["results"]) == 2
+        assert expected_tours_list == response.json()["results"]
+
+    def test_filter_tours_by_multiple_tags(self, client: APIClientWithQueryCounter, tours_list_with_specific_tags):
+        expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
+        tags = "?tag_id=4&tag_id=5"
+        path = reverse("city-tours-list", kwargs={"city_id": 5}) + tags
+        response = client.get(path)
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert len(response.data["results"]) == 2
+        assert expected_tours_list == response.json()["results"]
