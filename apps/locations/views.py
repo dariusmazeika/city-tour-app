@@ -1,11 +1,16 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 
-from apps.locations.models import City, Country
+from apps.locations.models import City
+from apps.locations.models import Country
 from apps.locations.serializers import CitySerializer, CountrySerializer
+from apps.sites.models import Site
+from apps.sites.serializers import SiteSerializer
 from apps.tours.models import Tour
 from apps.tours.serializers import TourWithoutSitesSerializer
+from apps.utils.pagination import CustomPagination
 
 
 class CountryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
@@ -19,24 +24,31 @@ class CityViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Lis
     queryset = City.objects.all()
     serializer_class = CitySerializer
 
+    @action(detail=True, methods=["get"], serializer_class=TourWithoutSitesSerializer)
+    def tours(self, request, pk):
+        city = get_object_or_404(City, id=pk)
+        tag_list = self.request.query_params.getlist("tag_id", [])
 
-class CityTourListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
-    permission_classes = [
-        AllowAny,
-    ]
-    serializer_class = TourWithoutSitesSerializer
-
-    def get_queryset(self):
-        city_id = self.kwargs.get("city_id")
         queryset = Tour.objects.filter(is_enabled=True, is_approved=True)
-        tag_list = self.request.query_params.getlist("tag_id")
-
-        city = get_object_or_404(City, id=city_id)
 
         if tag_list:
-            return queryset.filter(
-                toursite__site__base_site__city__id=city.id,
-                toursite__site__tags__id__in=tag_list,
+            queryset = queryset.filter(
+                toursite__site__base_site__city=city, toursite__site__tags__id__in=tag_list
             ).distinct()
+        else:
+            queryset = queryset.filter(toursite__site__base_site__city=city).distinct()
 
-        return queryset.filter(toursite__site__base_site__city__id=city.id).distinct()
+        pagination = CustomPagination()
+        paginated_queryset = pagination.paginate_queryset(queryset=queryset, request=request)
+        serialized_data = TourWithoutSitesSerializer(paginated_queryset, many=True)
+        return pagination.get_paginated_response(serialized_data.data)
+
+    @action(detail=True, methods=["get"], serializer_class=SiteSerializer)
+    def sites(self, request, pk):
+        get_object_or_404(City, id=pk)
+
+        queryset = Site.objects.filter(is_approved=True, base_site__city_id=pk)
+        pagination = CustomPagination()
+        paginated_queryset = pagination.paginate_queryset(queryset=queryset, request=request)
+        serialized_data = SiteSerializer(paginated_queryset, many=True)
+        return pagination.get_paginated_response(serialized_data.data)

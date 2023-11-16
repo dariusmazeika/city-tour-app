@@ -1,6 +1,9 @@
 from django.urls import reverse
+from model_bakery.baker import make
 from rest_framework import status
 
+from apps.locations.models import City
+from apps.sites.models import BaseSite, Site
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
@@ -97,7 +100,7 @@ class TestCityTourFilterByTag:
     def test_get_tours_by_one_tag(self, client: APIClientWithQueryCounter, tours_list_with_specific_tags):
         expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
         tags = "?tag_id=4"
-        path = reverse("city-tours-list", kwargs={"city_id": 5}) + tags
+        path = reverse("city-tours", args=[5]) + tags
         response = client.get(path)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
@@ -107,9 +110,83 @@ class TestCityTourFilterByTag:
     def test_filter_tours_by_multiple_tags(self, client: APIClientWithQueryCounter, tours_list_with_specific_tags):
         expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
         tags = "?tag_id=4&tag_id=5"
-        path = reverse("city-tours-list", kwargs={"city_id": 5}) + tags
+        path = reverse("city-tours", args=[5]) + tags
         response = client.get(path)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert len(response.data["results"]) == 2
         assert expected_tours_list == response.json()["results"]
+
+
+class TestSitesFilterByCity:
+    @staticmethod
+    def get_sites_list() -> list:
+        city = make(City, id=5)
+        base_site = make(BaseSite, city=city)
+        site1 = make(Site, base_site=base_site, is_approved=True)
+        site2 = make(Site, is_approved=True)
+        site3 = make(Site, base_site=base_site, is_approved=True)
+        non_approved_site = make(Site, base_site=base_site, is_approved=False)
+
+        return [site1, site2, site3, non_approved_site]
+
+    @staticmethod
+    def expected_sites(get_sites_list) -> list:
+        expected_sites_list = [
+            {
+                "id": get_sites_list[0].id,
+                "created_at": get_sites_list[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": get_sites_list[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "overview": get_sites_list[0].overview,
+                "language": get_sites_list[0].language,
+                "source": get_sites_list[0].source,
+                "is_approved": get_sites_list[0].is_approved,
+                "author": None,
+                "base_site": {
+                    "id": get_sites_list[0].base_site.id,
+                    "created_at": get_sites_list[0].base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "updated_at": get_sites_list[0].base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "longitude": get_sites_list[0].base_site.longitude,
+                    "latitude": get_sites_list[0].base_site.latitude,
+                    "title": get_sites_list[0].base_site.title,
+                    "city": get_sites_list[0].base_site.city.id,
+                },
+            },
+            {
+                "id": get_sites_list[2].id,
+                "created_at": get_sites_list[2].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": get_sites_list[2].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "overview": get_sites_list[2].overview,
+                "language": get_sites_list[2].language,
+                "source": get_sites_list[2].source,
+                "is_approved": get_sites_list[2].is_approved,
+                "author": None,
+                "base_site": {
+                    "id": get_sites_list[2].base_site.id,
+                    "created_at": get_sites_list[2].base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "updated_at": get_sites_list[2].base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "longitude": get_sites_list[2].base_site.longitude,
+                    "latitude": get_sites_list[2].base_site.latitude,
+                    "title": get_sites_list[2].base_site.title,
+                    "city": get_sites_list[2].base_site.city.id,
+                },
+            },
+        ]
+        return expected_sites_list
+
+    def test_filter_sites_by_city_id(self, client: APIClientWithQueryCounter):
+        sites_list = self.get_sites_list()
+        expected_sites_list = self.expected_sites(sites_list)
+
+        path = reverse("city-sites", args=[5])
+        response = client.get(path)
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+
+        assert expected_sites_list == response.json()["results"]
+
+    def test_filter_sites_by_nonexistent_city_id(self, client: APIClientWithQueryCounter):
+        path = reverse("city-sites", args=[10000])
+        response = client.get(path)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
