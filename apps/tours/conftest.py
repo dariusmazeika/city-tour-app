@@ -52,7 +52,7 @@ def expected_tour_data(single_tour: Tour) -> dict:
 def single_tour() -> Tour:
     base_site = make(BaseSite)
     site = make(Site, base_site=base_site)
-    tour = make(Tour)
+    tour = make(Tour, is_approved=True, is_enabled=True)
     make(TourSite, site=site, tour=tour, order=1)
 
     return tour
@@ -112,3 +112,18 @@ def get_tours_list():
     make(TourSite, site=site, tour=not_approved_tour)
 
     return [tour1, tour2, tour3, not_enabled_tour, not_approved_tour]
+
+
+@pytest.fixture
+def create_tour_request_data():
+    city = make(City)
+    sites = make(Site, _quantity=3, language="EN", base_site__city=city, is_approved=True)
+    request_data = {
+        "sites_ids_ordered": [sites[2].id, sites[1].id, sites[0].id],
+        "language": "EN",
+        "overview": "string",
+        "title": "string",
+        "price": 10,
+        "source": "string",
+    }
+    return request_data

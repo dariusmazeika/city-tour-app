@@ -1,14 +1,15 @@
-from django.db.models import F
+from django.db.models import F, Count, Case, When
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, NotFound
 
+from apps.sites.models import Site
 from apps.sites.serializers import SiteSerializer
-from apps.tours.models import Tour, UserTour
+from apps.tours.models import Tour, UserTour, TourSite
 
 
 class TourSerializer(serializers.ModelSerializer):
-    sites = SiteSerializer(many=True, read_only=True)
+    sites = SiteSerializer(many=True)
 
     class Meta:
         model = Tour
@@ -52,3 +53,81 @@ class BuyTourSerializer(serializers.Serializer):
         created_user_tour = UserTour.objects.create(tour=tour_to_buy, user=current_user, price=tour_to_buy.price)
 
         return created_user_tour
+
+
+class CreateTourSerializer(serializers.ModelSerializer):
+    sites_ids_ordered = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+
+    class Meta:
+        model = Tour
+        fields = (
+            "id",
+            "sites_ids_ordered",
+            "language",
+            "overview",
+            "title",
+            "price",
+            "source",
+            "is_audio",
+            "sites",
+        )
+        read_only_fields = (
+            "is_audio",
+            "id",
+            "sites",
+        )
+
+    def validate(self, attrs):
+        validated_data = super().validate(attrs)
+        sites_ids_ordered = validated_data["sites_ids_ordered"]
+
+        # check site ids are unique
+        if len(sites_ids_ordered) != len(set(sites_ids_ordered)):
+            raise ValidationError("error_site_ids_non_unique")
+
+        site_field_counts = (
+            Site.objects.filter(id__in=sites_ids_ordered)
+            .values("language", "base_site__city", "siteaudio")
+            .aggregate(
+                different_language_count=Count("language", distinct=True),
+                different_city_count=Count("base_site__city", distinct=True),
+                site_audio_count=Count("siteaudio"),
+                all_existing_sites_count=Count("*"),
+                approved_sites_count=Count(Case(When(is_approved=True, then=1))),
+            )
+        )
+
+        # check all sites are approved
+        if site_field_counts["approved_sites_count"] != site_field_counts["all_existing_sites_count"]:
+            raise ValidationError("error_not_all_sites_are_approved")
+
+        # check all sites exist
+        if site_field_counts["all_existing_sites_count"] != len(sites_ids_ordered):
+            raise NotFound("error_one_or_more_sites_do_not_exist")
+
+        # check all sites have same language
+        if site_field_counts["different_language_count"] != 1:
+            raise ValidationError("error_sites_languages_not_same")
+
+        # check all sites are in same city
+        if site_field_counts["different_city_count"] != 1:
+            raise ValidationError("error_all_sites_not_in_same_city")
+
+        # if at least one site has audio, tour has audio
+        if site_field_counts["site_audio_count"]:
+            validated_data["is_audio"] = True
+
+        return validated_data
+
+    def create(self, validated_data):
+        site_ids_ordered = validated_data.pop("sites_ids_ordered")
+        validated_data["author"] = self.context["request"].user
+        created_tour = super().create(validated_data)
+
+        tour_sites_to_create = [
+            TourSite(site_id=site_id, tour=created_tour, order=order) for order, site_id in enumerate(site_ids_ordered)
+        ]
+
+        TourSite.objects.bulk_create(tour_sites_to_create)
+
+        return created_tour
