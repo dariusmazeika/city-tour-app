@@ -100,7 +100,7 @@ class TestBuyTour:
 
 class TestTourFilterByCity:
     def test_filter_tours_by_city_id(self, client: APIClientWithQueryCounter, get_tours_list, expected_tours):
-        path = reverse("city-tours-list", kwargs={"city_id": 5})
+        path = reverse("city-tours", args=[5])
         response = client.get(path)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
@@ -108,7 +108,7 @@ class TestTourFilterByCity:
         assert expected_tours == response.json()["results"]
 
     def test_filter_tours_by_nonexistent_city_id(self, client: APIClientWithQueryCounter, get_tours_list):
-        path = reverse("city-tours-list", kwargs={"city_id": 100000})
+        path = reverse("city-tours", args=[100000])
         response = client.get(path)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
