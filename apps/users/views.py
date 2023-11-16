@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics, permissions, status
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,7 +11,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.tours.models import UserTour
-from apps.tours.serializers import UserTourSerializer
+from apps.tours.serializers import UserTourSerializer, UserTourUpdateStatusSerializer
 from apps.users.models import ActivationKey, PasswordKey, User
 from apps.users.serializers import (
     BasePasswordSerializer,
@@ -152,3 +153,15 @@ class GetUserToursViewSet(
     def get_queryset(self):
         current_user = self.request.user
         return UserTour.objects.filter(user=current_user)
+
+    @action(detail=True, methods=["put"], url_path="update-status", serializer_class=UserTourUpdateStatusSerializer)
+    def update_status(self, request, pk=None):
+        user = self.request.user
+        user_tour = get_object_or_404(UserTour, user=user, pk=pk)
+
+        request.data["status"] = request.data.get("status", "").capitalize()
+        serializer = self.get_serializer(user_tour, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)

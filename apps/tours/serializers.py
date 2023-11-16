@@ -30,6 +30,29 @@ class UserTourSerializer(serializers.ModelSerializer):
         exclude = ("updated_at", "user")
 
 
+class UserTourUpdateStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserTour
+        fields = ["status"]
+
+    def validate(self, attrs):
+
+        status_transitions = {
+            UserTour.NEW: [UserTour.STARTED],
+            UserTour.STARTED: [UserTour.FINISHED],
+            UserTour.FINISHED: [UserTour.STARTED],
+        }
+        if attrs["status"].capitalize() not in status_transitions:
+            raise serializers.ValidationError("error_tour_status_does_not_exist.")
+
+        current_status = self.instance.status if self.instance else None
+
+        if current_status and attrs["status"].capitalize() not in status_transitions.get(current_status, []):
+            raise serializers.ValidationError("error_status_transition_is_not_allowed.")
+
+        return attrs
+
+
 class BuyTourSerializer(serializers.Serializer):
     def validate(self, attrs):
         current_user = self.context["request"].user

@@ -327,3 +327,72 @@ class TestCurrentUserToursEndpoint:
         response = client.get(reverse("current-user-tours-list"))
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
+
+
+class TestUpdateUserToursStatus:
+    def test_update_status_unauthenticated_client(self, client: APIClientWithQueryCounter, user):
+        user_tour = make(UserTour, tour=make(Tour), user=user, status="New", id=1)
+        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        data = {"status": "Started"}
+
+        response = client.put(path, data, format="json")
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
+
+    def test_update_status_valid(self, authorized_client: APIClientWithQueryCounter, user):
+        user_tour = make(UserTour, tour=make(Tour), user=user, status="New", id=1)
+        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        data = {"status": "Started"}
+
+        response = authorized_client.put(path, data, format="json")
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+
+        updated_user_tour = UserTour.objects.get(pk=user_tour.id)
+        assert updated_user_tour.status == "Started" == response.data["status"]
+
+    def test_update_status_invalid(self, authorized_client: APIClientWithQueryCounter, user):
+        user_tour = make(UserTour, tour=make(Tour), user=user, status="New", id=1)
+
+        url = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        data = {"status": "InvalidStatus"}
+
+        response = authorized_client.put(url, data, format="json")
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+        unchanged_user_tour = UserTour.objects.get(pk=user_tour.id)
+        assert unchanged_user_tour.status == "New"
+
+    def test_update_status_transition_is_not_allowed(self, authorized_client: APIClientWithQueryCounter, user):
+        user_tour = make(UserTour, tour=make(Tour), user=user, status="Finished", id=1)
+
+        url = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        data = {"status": "New"}
+
+        response = authorized_client.put(url, data, format="json")
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+        unchanged_user_tour = UserTour.objects.get(pk=user_tour.id)
+        assert unchanged_user_tour.status == "Finished"
+
+    def test_update_status_writen_lowercase(self, authorized_client: APIClientWithQueryCounter, user):
+        user_tour = make(UserTour, tour=make(Tour), user=user, status="Started", id=1)
+        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        data = {"status": "finished"}
+
+        response = authorized_client.put(path, data, format="json")
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+
+        updated_user_tour = UserTour.objects.get(pk=user_tour.id)
+        assert updated_user_tour.status == "Finished" == response.data["status"]
+
+    def test_update_status_nonexistent_tour(self, authorized_client: APIClientWithQueryCounter, user):
+        path = reverse("current-user-tours-update-status", kwargs={"pk": 10000})
+        data = {"status": "Started"}
+
+        response = authorized_client.put(path, data, format="json")
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
