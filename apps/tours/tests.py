@@ -4,6 +4,7 @@ import pytest
 from rest_framework import status
 
 from apps.locations.models import City
+from apps.reviews.models import Review
 from apps.sites.models import Site, BaseSite, SiteAudio
 from apps.tours.models import UserTour, Tour, TourSite
 from apps.users.models import User
@@ -17,6 +18,7 @@ class TestGetTours:
 
         assert response.status_code == status.HTTP_200_OK, response.json()
 
+        expected_tour_data.pop("rating")
         assert expected_tour_data == response.json()
 
     def test_get_not_existing_tour_returns_not_found(self, client: APIClientWithQueryCounter):
@@ -33,6 +35,15 @@ class TestGetTours:
         tour = make(Tour, is_approved=is_approved, is_enabled=is_enabled)
         response = client.get(reverse("tours-detail", args=[tour.id]))
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
+
+    def test_get_tours_response_includes_reviews(
+        self, user, client: APIClientWithQueryCounter, single_tour, expected_tour_data_with_1_review
+    ):
+        Review.objects.create(tour=single_tour, reviewer=user, text="some text with over 20 symbols", rating=5)
+        path = reverse("tours-detail", args=[single_tour.id])
+        response = client.get(path)
+
+        assert expected_tour_data_with_1_review == response.json()
 
 
 class TestBuyTour:
@@ -68,7 +79,7 @@ class TestBuyTour:
     ):
         user.balance = single_tour.price + balance_difference[0]
         user.save(update_fields=["balance"])
-        response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
+        response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]), query_limit=6)
         assert response.status_code == status.HTTP_201_CREATED, response.json()
 
         # Check UserTour created in db
@@ -83,6 +94,7 @@ class TestBuyTour:
         user.refresh_from_db()
         assert user.balance == balance_difference[0]
 
+        expected_tour_data.pop("reviews", None)
         expected_tour_data.pop("sites", None)  # Tour will be serialized without sites
         expected_response_payload = {
             "id": user_tour_from_db.id,

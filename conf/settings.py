@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "apps.tours.apps.ToursConfig",
     "apps.locations.apps.LocationsConfig",
     "apps.sites.apps.SitesConfig",
+    "apps.reviews.apps.ReviewsConfig",
 ]
 
 MIDDLEWARE = [
