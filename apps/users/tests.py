@@ -290,6 +290,7 @@ class TestCurrentUserToursEndpoint:
                 "is_enabled": tour.is_enabled,
                 "is_approved": tour.is_approved,
                 "author": tour.author,
+                "rating": None,
             }
 
         user_tour_1 = make(UserTour, tour=make(Tour), user=user)
@@ -310,7 +311,7 @@ class TestCurrentUserToursEndpoint:
                 "status": user_tour_2.status,
             },
         ]
-        response = authorized_client.get(reverse("current-user-tours-list"))
+        response = authorized_client.get(reverse("current-user-tours-list"), query_limit=7)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert response.json()["count"] == 2

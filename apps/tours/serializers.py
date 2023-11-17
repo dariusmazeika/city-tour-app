@@ -1,8 +1,10 @@
-from django.db.models import F, Count, Case, When
+from django.db.models import F, Avg, Count, Case, When
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError, NotFound
 
+from apps.reviews.models import Review
+from apps.reviews.serializers import ReviewSerializer
 from apps.sites.models import Site
 from apps.sites.serializers import SiteSerializer
 from apps.tours.models import Tour, UserTour, TourSite
@@ -10,6 +12,7 @@ from apps.tours.models import Tour, UserTour, TourSite
 
 class TourSerializer(serializers.ModelSerializer):
     sites = SiteSerializer(many=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Tour
@@ -17,9 +20,15 @@ class TourSerializer(serializers.ModelSerializer):
 
 
 class TourWithoutSitesSerializer(serializers.ModelSerializer):
+    rating = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Tour
         exclude = ("sites",)
+
+    def get_rating(self, obj):
+        reviews = Review.objects.filter(tour=obj, is_approved=True)
+        return reviews.aggregate(Avg("rating"))["rating__avg"]
 
 
 class UserTourSerializer(serializers.ModelSerializer):

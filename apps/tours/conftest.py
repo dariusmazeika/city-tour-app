@@ -33,6 +33,59 @@ def expected_tour_data(single_tour: Tour) -> dict:
                 },
             }
         ],
+        "reviews": [],
+        "created_at": single_tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+        "updated_at": single_tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+        "language": single_tour.language,
+        "overview": single_tour.overview,
+        "title": single_tour.title,
+        "price": single_tour.price,
+        "source": single_tour.source,
+        "is_audio": single_tour.is_audio,
+        "is_enabled": single_tour.is_enabled,
+        "is_approved": single_tour.is_approved,
+        "author": None,
+        "rating": None,
+    }
+    return expected_tour_data
+
+
+@pytest.fixture
+def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
+    site = single_tour.sites.first()
+    base_site = site.base_site
+    expected_tour_data = {
+        "id": single_tour.id,
+        "sites": [
+            {
+                "id": site.id,
+                "created_at": site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "overview": site.overview,
+                "language": site.language,
+                "source": site.source,
+                "is_approved": site.is_approved,
+                "author": None,
+                "base_site": {
+                    "id": base_site.id,
+                    "created_at": base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "updated_at": base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "longitude": base_site.longitude,
+                    "latitude": base_site.latitude,
+                    "title": base_site.title,
+                    "city": base_site.city.id,
+                },
+            }
+        ],
+        "reviews": [
+            {
+                "id": 1,
+                "text": "some text with over 20 symbols",
+                "rating": 5,
+                "reviewer": 1,
+                "tour": single_tour.id,
+            }
+        ],
         "created_at": single_tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "updated_at": single_tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "language": single_tour.language,
@@ -69,6 +122,7 @@ def expected_tours(get_tours_list):
             "overview": get_tours_list[0].overview,
             "title": get_tours_list[0].title,
             "price": get_tours_list[0].price,
+            "rating": None,
             "source": get_tours_list[0].source,
             "is_audio": get_tours_list[0].is_audio,
             "is_enabled": get_tours_list[0].is_enabled,
@@ -83,6 +137,7 @@ def expected_tours(get_tours_list):
             "overview": get_tours_list[2].overview,
             "title": get_tours_list[2].title,
             "price": get_tours_list[2].price,
+            "rating": None,
             "source": get_tours_list[2].source,
             "is_audio": get_tours_list[2].is_audio,
             "is_enabled": get_tours_list[2].is_enabled,
