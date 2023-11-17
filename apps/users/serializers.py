@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, user_logged_in
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import exceptions, serializers
-from rest_framework.validators import UniqueValidator, ValidationError
+from rest_framework.validators import ValidationError
 from rest_framework_simplejwt.serializers import PasswordField, TokenObtainPairSerializer
 
 from apps.translations.models import Language
@@ -19,10 +19,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())],
-    )
+    email = serializers.EmailField(required=True)
 
     password = PasswordField(required=True)
     password_validation = PasswordField(write_only=True, required=True)
@@ -37,9 +34,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         validate_password(validated_data["password"])
 
         if validated_data["password"] != validated_data["password_validation"]:
-            raise ValidationError("Passwords do not match.")
+            raise ValidationError("error_passwords_do_not_match")
         if User.objects.filter(email=validated_data["email"]).exists():
-            raise ValidationError("User with this email already exists.")
+            raise ValidationError("error_user_with_this_email_already_exists")
         return validated_data
 
     def create(self, validated_data):
