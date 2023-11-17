@@ -40,7 +40,7 @@ class CityViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Lis
 
         pagination = CustomPagination()
         paginated_queryset = pagination.paginate_queryset(queryset=queryset, request=request)
-        serialized_data = TourWithoutSitesSerializer(paginated_queryset, many=True)
+        serialized_data = self.get_serializer(paginated_queryset, many=True)
         return pagination.get_paginated_response(serialized_data.data)
 
     @action(detail=True, methods=["get"], serializer_class=SiteSerializer)
@@ -50,5 +50,5 @@ class CityViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Lis
         queryset = Site.objects.filter(is_approved=True, base_site__city_id=pk)
         pagination = CustomPagination()
         paginated_queryset = pagination.paginate_queryset(queryset=queryset, request=request)
-        serialized_data = SiteSerializer(paginated_queryset, many=True)
+        serialized_data = self.get_serializer(paginated_queryset, many=True)
         return pagination.get_paginated_response(serialized_data.data)

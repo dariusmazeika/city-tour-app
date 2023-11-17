@@ -5,7 +5,7 @@ from rest_framework import status
 
 from apps.locations.models import City
 from apps.reviews.models import Review
-from apps.sites.models import Site, BaseSite, SiteAudio
+from apps.sites.models import Site, BaseSite, SiteAudio, SiteImage
 from apps.tours.models import UserTour, Tour, TourSite
 from apps.users.models import User
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
@@ -39,11 +39,24 @@ class TestGetTours:
     def test_get_tours_response_includes_reviews(
         self, user, client: APIClientWithQueryCounter, single_tour, expected_tour_data_with_1_review
     ):
-        Review.objects.create(tour=single_tour, reviewer=user, text="some text with over 20 symbols", rating=5)
+        review = Review.objects.create(tour=single_tour, reviewer=user, text="some text with over 20 symbols", rating=5)
         path = reverse("tours-detail", args=[single_tour.id])
         response = client.get(path)
-
+        # adding these as quick fix since the id's were hardcoded in.
+        expected_tour_data_with_1_review["reviews"][0]["id"] = review.id
+        expected_tour_data_with_1_review["reviews"][0]["reviewer"] = user.id
         assert expected_tour_data_with_1_review == response.json()
+
+    def test_tour_returns_first_site_image(self, client: APIClientWithQueryCounter):
+        site_image_1 = make(SiteImage, image="first_tour_test_image.jpg")
+        site_image_2 = make(SiteImage, image="second_tour_test_image.jpg")
+        tour_with_image = make(Tour, is_approved=True, is_enabled=True)
+        make(TourSite, site__base_site=site_image_1.base_site, tour=tour_with_image, order=0)
+        make(TourSite, site__base_site=site_image_2.base_site, tour=tour_with_image, order=1)
+
+        response = client.get(reverse("tours-detail", args=[tour_with_image.id]), query_limit=7)
+
+        assert response.json().get("image", None) == {"url": "http://testserver/media/first_tour_test_image.jpg"}
 
 
 class TestBuyTour:
@@ -79,7 +92,7 @@ class TestBuyTour:
     ):
         user.balance = single_tour.price + balance_difference[0]
         user.save(update_fields=["balance"])
-        response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]), query_limit=6)
+        response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]), query_limit=7)
         assert response.status_code == status.HTTP_201_CREATED, response.json()
 
         # Check UserTour created in db
@@ -124,7 +137,7 @@ class TestBuyTour:
 class TestTourFilterByCity:
     def test_filter_tours_by_city_id(self, client: APIClientWithQueryCounter, get_tours_list, expected_tours):
         path = reverse("city-tours", args=[5])
-        response = client.get(path)
+        response = client.get(path, query_limit=7)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
 

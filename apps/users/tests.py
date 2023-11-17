@@ -279,6 +279,7 @@ class TestCurrentUserToursEndpoint:
             tour = user_tour.tour
             return {
                 "id": tour.id,
+                "image": {"url": None},
                 "created_at": tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "language": tour.language,
@@ -311,7 +312,7 @@ class TestCurrentUserToursEndpoint:
                 "status": user_tour_2.status,
             },
         ]
-        response = authorized_client.get(reverse("current-user-tours-list"), query_limit=7)
+        response = authorized_client.get(reverse("current-user-tours-list"), query_limit=9)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert response.json()["count"] == 2

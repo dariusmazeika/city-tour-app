@@ -33,6 +33,7 @@ def expected_tour_data(single_tour: Tour) -> dict:
                 },
             }
         ],
+        "image": {"url": None},
         "reviews": [],
         "created_at": single_tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "updated_at": single_tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
@@ -86,6 +87,7 @@ def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
                 "tour": single_tour.id,
             }
         ],
+        "image": {"url": None},
         "created_at": single_tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "updated_at": single_tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "language": single_tour.language,
@@ -116,6 +118,7 @@ def expected_tours(get_tours_list):
     expected_tour_list_data = [
         {
             "id": get_tours_list[0].id,
+            "image": {"url": None},
             "created_at": get_tours_list[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "updated_at": get_tours_list[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "language": get_tours_list[0].language,
@@ -131,6 +134,7 @@ def expected_tours(get_tours_list):
         },
         {
             "id": get_tours_list[2].id,
+            "image": {"url": None},
             "created_at": get_tours_list[2].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "updated_at": get_tours_list[2].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "language": get_tours_list[2].language,
