@@ -187,6 +187,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "COERCE_DECIMAL_TO_STRING": False,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "UPLOADED_FILES_USE_URL": True,
 }
 
 # user uploads

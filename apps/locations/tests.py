@@ -67,6 +67,7 @@ class TestCityTourFilterByTag:
         expected_tour_list_data = [
             {
                 "id": tours_list_with_specific_tags[0].id,
+                "image": {"url": None},
                 "created_at": tours_list_with_specific_tags[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tours_list_with_specific_tags[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "language": tours_list_with_specific_tags[0].language,
@@ -82,6 +83,7 @@ class TestCityTourFilterByTag:
             },
             {
                 "id": tours_list_with_specific_tags[1].id,
+                "image": {"url": None},
                 "created_at": tours_list_with_specific_tags[1].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tours_list_with_specific_tags[1].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "language": tours_list_with_specific_tags[1].language,
@@ -103,7 +105,7 @@ class TestCityTourFilterByTag:
         expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
         tags = "?tag_id=4"
         path = reverse("city-tours", args=[5]) + tags
-        response = client.get(path)
+        response = client.get(path, query_limit=7)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert len(response.data["results"]) == 2
@@ -113,7 +115,7 @@ class TestCityTourFilterByTag:
         expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
         tags = "?tag_id=4&tag_id=5"
         path = reverse("city-tours", args=[5]) + tags
-        response = client.get(path)
+        response = client.get(path, query_limit=7)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert len(response.data["results"]) == 2

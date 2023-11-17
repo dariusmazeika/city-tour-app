@@ -35,7 +35,7 @@ class SiteImage(BaseModel):
     source = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.image}"
+        return f"{self.base_site.title}"
 
 
 class SiteTag(BaseModel):
