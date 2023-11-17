@@ -311,6 +311,7 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ("rest_framework.permissions.IsAdminUser",),
     "TITLE": "",
     "VERSION": BUILD_VERSION,
+    "COMPONENT_SPLIT_REQUEST": True,
 }
 
 sentry_sdk.init(
