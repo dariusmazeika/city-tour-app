@@ -30,6 +30,7 @@ urlpatterns += [
     path('manifests/', include('apps.manifests.urls')),
     path('', include('apps.tours.urls')),
     path('', include('apps.locations.urls')),
+    path('', include('apps.sites.urls')),
 ]
 
 admin.autodiscover()

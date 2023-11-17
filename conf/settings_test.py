@@ -9,3 +9,5 @@ REDIS_URL = ""
 CELERY_BROKER_URL = REDIS_URL
 
 INSTALLED_APPS = list(INSTALLED_APPS) + ["django_extensions"]
+
+TEST_DIR = "test_data"
