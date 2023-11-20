@@ -67,7 +67,7 @@ class TestCityTourFilterByTag:
         expected_tour_list_data = [
             {
                 "id": tours_list_with_specific_tags[0].id,
-                "image": {"url": None},
+                "image": None,
                 "created_at": tours_list_with_specific_tags[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tours_list_with_specific_tags[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "language": tours_list_with_specific_tags[0].language,
@@ -83,7 +83,7 @@ class TestCityTourFilterByTag:
             },
             {
                 "id": tours_list_with_specific_tags[1].id,
-                "image": {"url": None},
+                "image": None,
                 "created_at": tours_list_with_specific_tags[1].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tours_list_with_specific_tags[1].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "language": tours_list_with_specific_tags[1].language,

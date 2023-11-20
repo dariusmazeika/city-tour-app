@@ -56,7 +56,7 @@ class TestGetTours:
 
         response = client.get(reverse("tours-detail", args=[tour_with_image.id]), query_limit=7)
 
-        assert response.json().get("image", None) == {"url": "http://testserver/media/first_tour_test_image.jpg"}
+        assert response.json().get("image", None) == "http://testserver/media/first_tour_test_image.jpg"
 
 
 class TestBuyTour:
