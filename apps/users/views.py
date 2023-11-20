@@ -10,6 +10,8 @@ from rest_framework.viewsets import GenericViewSet, mixins
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from apps.sites.models import Site
+from apps.sites.serializers import SiteSerializer
 from apps.tours.models import UserTour
 from apps.tours.serializers import UserTourSerializer, UserTourUpdateStatusSerializer
 from apps.users.models import ActivationKey, PasswordKey, User
@@ -165,3 +167,12 @@ class GetUserToursViewSet(
         serializer.save()
 
         return Response(serializer.data)
+
+
+class GetUserSitesViewSet(GenericViewSet, mixins.ListModelMixin):
+    serializer_class = SiteSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        current_user = self.request.user
+        return Site.objects.filter(author=current_user)

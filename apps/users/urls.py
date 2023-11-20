@@ -14,10 +14,12 @@ from apps.users.views import (
     VerifyUserView,
     GetUserToursViewSet,
     RegisterView,
+    GetUserSitesViewSet,
 )
 
 router = DefaultRouter()
 router.register("current-user/tours", viewset=GetUserToursViewSet, basename="current-user-tours")
+router.register("current-user/created-sites", viewset=GetUserSitesViewSet, basename="current-user-created-sites")
 
 urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),

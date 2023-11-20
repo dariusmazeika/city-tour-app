@@ -10,6 +10,7 @@ from rest_framework import status
 
 from apps.locations.models import City
 from apps.sites.models import BaseSite, Site, SiteImage, SiteTag
+from apps.users.models import User
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
 from conf.settings_test import TEST_DIR
 
@@ -295,3 +296,66 @@ class TestUploadImageViewSet:
         image.save(tmp_file)
         tmp_file.seek(0)
         return SimpleUploadedFile("test_image.png", tmp_file.read(), content_type="image/png")
+
+
+class TestGetUserSites:
+    def test_unauthenticated_client_can_not_get_created_sites(self, client: APIClientWithQueryCounter):
+        path = reverse("current-user-created-sites-list")
+        response = client.get(path)
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
+
+    def test_get_user_created_sites(self, authorized_client: APIClientWithQueryCounter, user):
+        user_site_one = make(Site, author=user)
+        user_site_two = make(Site, author=user)
+        second_user = make(User)
+        make(Site, author=second_user)
+
+        expected_sites = [
+            {
+                "id": user_site_one.id,
+                "created_at": user_site_one.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": user_site_one.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "overview": user_site_one.overview,
+                "language": user_site_one.language,
+                "source": user_site_one.source,
+                "is_approved": user_site_one.is_approved,
+                "author": user_site_one.author.id,
+                "base_site": {
+                    "id": user_site_one.base_site.id,
+                    "created_at": user_site_one.base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "updated_at": user_site_one.base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "city": user_site_one.base_site.city.id,
+                    "longitude": user_site_one.base_site.longitude,
+                    "latitude": user_site_one.base_site.latitude,
+                    "title": user_site_one.base_site.title,
+                },
+            },
+            {
+                "id": user_site_two.id,
+                "created_at": user_site_two.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": user_site_two.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "overview": user_site_two.overview,
+                "language": user_site_two.language,
+                "source": user_site_two.source,
+                "is_approved": user_site_two.is_approved,
+                "author": user_site_two.author.id,
+                "base_site": {
+                    "id": user_site_two.base_site.id,
+                    "created_at": user_site_two.base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "updated_at": user_site_two.base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "city": user_site_two.base_site.city.id,
+                    "longitude": user_site_two.base_site.longitude,
+                    "latitude": user_site_two.base_site.latitude,
+                    "title": user_site_two.base_site.title,
+                },
+            },
+        ]
+
+        path = reverse("current-user-created-sites-list")
+        response = authorized_client.get(path)
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+
+        assert Site.objects.count() == 3
+        assert expected_sites == response.json()["results"], response.json()
