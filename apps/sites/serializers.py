@@ -89,6 +89,7 @@ class SiteSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
             "updated_at",
+            "title",
             "overview",
             "language",
             "source",
@@ -99,6 +100,7 @@ class SiteSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "created_at",
             "updated_at",
+            "title",
             "overview",
             "language",
             "source",
@@ -113,6 +115,7 @@ class CreateSiteSerializer(serializers.ModelSerializer):
         model = Site
         fields = (
             "id",
+            "title",
             "overview",
             "language",
             "source",
