@@ -29,6 +29,7 @@ class TestCreateSite:
         site_tag_two = make(SiteTag, id=2)
 
         site_data = {
+            "title": "string",
             "overview": "string",
             "language": "str",
             "source": "string",
@@ -48,6 +49,7 @@ class TestCreateSite:
         created_site = Site.objects.first()
         created_site_tags_ids = list(created_site.tags.values_list("id", flat=True))
 
+        assert created_site.title == site_data["title"]
         assert created_site.overview == site_data["overview"]
         assert created_site.language == site_data["language"]
         assert created_site.source == site_data["source"]
@@ -62,6 +64,7 @@ class TestCreateSite:
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
 
         expected_error = {
+            "title": ["This field is required."],
             "overview": ["This field is required."],
             "language": ["This field is required."],
             "source": ["This field is required."],
@@ -78,6 +81,7 @@ class TestCreateSite:
 
         invalid_tag_id = 100
         invalid_site_data = {
+            "title": "string",
             "overview": "string",
             "language": "str",
             "source": "string",
@@ -316,6 +320,7 @@ class TestGetUserSites:
                 "id": user_site_one.id,
                 "created_at": user_site_one.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": user_site_one.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "title": user_site_one.title,
                 "overview": user_site_one.overview,
                 "language": user_site_one.language,
                 "source": user_site_one.source,
@@ -335,6 +340,7 @@ class TestGetUserSites:
                 "id": user_site_two.id,
                 "created_at": user_site_two.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": user_site_two.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "title": user_site_two.title,
                 "overview": user_site_two.overview,
                 "language": user_site_two.language,
                 "source": user_site_two.source,
