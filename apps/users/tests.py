@@ -291,7 +291,7 @@ class TestCurrentUserToursEndpoint:
             tour = user_tour.tour
             return {
                 "id": tour.id,
-                "image": {"url": None},
+                "image": None,
                 "created_at": tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "language": tour.language,

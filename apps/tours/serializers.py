@@ -11,9 +11,9 @@ from apps.tours.models import Tour, UserTour, TourSite
 
 
 class TourImageSerializer(serializers.Serializer):
-    url = serializers.SerializerMethodField(read_only=True)
+    image = serializers.SerializerMethodField(read_only=True)
 
-    def get_url(self, tour: Tour) -> str | None:
+    def get_image(self, tour: Tour) -> str | None:
         request = self.context.get("request")
         if site := tour.sites.filter(toursite__order=0).select_related("base_site").first():
             base_site_image = site.base_site.siteimage_set.first()
@@ -23,19 +23,17 @@ class TourImageSerializer(serializers.Serializer):
         return None
 
 
-class TourSerializer(serializers.ModelSerializer):
+class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     sites = SiteSerializer(many=True, read_only=True)
-    image = TourImageSerializer(source="*", read_only=True)
 
     class Meta:
         model = Tour
         fields = "__all__"
 
 
-class TourWithoutSitesSerializer(serializers.ModelSerializer):
+class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerializer):
     rating = serializers.SerializerMethodField(read_only=True)
-    image = TourImageSerializer(source="*", read_only=True)
 
     class Meta:
         model = Tour
