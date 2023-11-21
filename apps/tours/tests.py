@@ -6,7 +6,7 @@ from rest_framework import status
 from apps.locations.models import City
 from apps.reviews.models import Review
 from apps.sites.models import Site, BaseSite, SiteAudio, SiteImage
-from apps.tours.models import UserTour, Tour, TourSite
+from apps.tours.models import SharedPrivateTour, UserTour, Tour, TourSite
 from apps.users.models import User
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
@@ -135,7 +135,7 @@ class TestBuyTour:
 
 
 class TestTourFilterByCity:
-    def test_filter_tours_by_city_id(self, client: APIClientWithQueryCounter, get_tours_list, expected_tours):
+    def test_filter_tours_by_city_id(self, client: APIClientWithQueryCounter, tours_list, expected_tours):
         path = reverse("city-tours", args=[5])
         response = client.get(path, query_limit=7)
 
@@ -143,7 +143,7 @@ class TestTourFilterByCity:
 
         assert expected_tours == response.json()["results"]
 
-    def test_filter_tours_by_nonexistent_city_id(self, client: APIClientWithQueryCounter, get_tours_list):
+    def test_filter_tours_by_nonexistent_city_id(self, client: APIClientWithQueryCounter, tours_list):
         path = reverse("city-tours", args=[100000])
         response = client.get(path)
 
@@ -223,6 +223,7 @@ class TestCreateTourEndpoint:
                 Site.objects.filter(id__in=create_tour_request_data["sites_ids_ordered"]).values_list("id", flat=True)
             ),
             "is_audio": False,
+            "is_private": False,
         }
 
         assert response.json() == expected_response_payload
@@ -263,3 +264,126 @@ class TestCreateTourEndpoint:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
         assert response.json()["detail"] == "error_one_or_more_sites_do_not_exist"
+
+
+class TestShareTour:
+    def test_unauthenticated_user_can_not_share_tour(self, client: APIClientWithQueryCounter):
+        path = reverse("tours-share", args=[100])
+        response = client.post(path, data={})
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
+
+    def test_non_existing_tour_returns_not_found(self, authorized_client: APIClientWithQueryCounter):
+        path = reverse("tours-share", args=[100])
+        share_data = {
+            "receiver_email": "receiver@test.com",
+        }
+        response = authorized_client.post(path, data=share_data)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
+
+    def test_non_existing_user_email_returns_not_found(self, authorized_client: APIClientWithQueryCounter, single_tour):
+        path = reverse("tours-share", args=[single_tour.id])
+        share_data = {
+            "receiver_email": "receiver@test.com",
+        }
+        response = authorized_client.post(path, data=share_data)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
+
+    def test_share_tour(self, authorized_client: APIClientWithQueryCounter, single_tour):
+        path = reverse("tours-share", args=[single_tour.id])
+        second_user = make(User)
+        share_data = {
+            "receiver_email": second_user.email,
+        }
+
+        response = authorized_client.post(path, data=share_data, query_limit=7)
+
+        assert response.status_code == status.HTTP_201_CREATED, response.json()
+        assert SharedPrivateTour.objects.count() == 1
+
+        shared_tour = SharedPrivateTour.objects.first()
+
+        assert shared_tour.user_tour.tour == single_tour
+        assert shared_tour.user_tour.user.email == share_data["receiver_email"]
+        assert shared_tour.shared_by == single_tour.author
+
+    def test_can_not_share_not_your_created_tour(self, authorized_client: APIClientWithQueryCounter, single_tour):
+        path = reverse("tours-share", args=[single_tour.id])
+        second_user = make(User)
+        tour_creator = make(User)
+        single_tour.author = tour_creator
+        single_tour.save()
+        share_data = {
+            "receiver_email": second_user.email,
+        }
+
+        response = authorized_client.post(path, data=share_data, query_limit=7)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
+        assert SharedPrivateTour.objects.count() == 0
+        assert response.json()["non_field_errors"][0] == "error_current_user_does_not_own_this_tour"
+
+    def test_can_not_share_tour_if_receiver_has_it(self, authorized_client: APIClientWithQueryCounter, single_tour):
+        path = reverse("tours-share", args=[single_tour.id])
+        second_user = make(User)
+        make(UserTour, user=second_user, tour=single_tour)
+        share_data = {
+            "receiver_email": second_user.email,
+        }
+
+        response = authorized_client.post(path, data=share_data, query_limit=7)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
+        assert SharedPrivateTour.objects.count() == 0
+        assert response.json()["non_field_errors"][0] == "error_tour_is_already_owned_by_user"
+
+    def test_can_not_share_tour_to_current_user(self, authorized_client: APIClientWithQueryCounter, user, single_tour):
+        path = reverse("tours-share", args=[single_tour.id])
+
+        share_data = {
+            "receiver_email": user.email,
+        }
+
+        response = authorized_client.post(path, data=share_data, query_limit=7)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
+        assert SharedPrivateTour.objects.count() == 0
+        assert response.json()["non_field_errors"][0] == "error_can_not_share_a_tour_to_yourself"
+
+    def test_can_not_share_not_private(self, authorized_client: APIClientWithQueryCounter, single_tour):
+        path = reverse("tours-share", args=[single_tour.id])
+        single_tour.is_private = False
+        single_tour.save()
+
+        second_user = make(User)
+        share_data = {
+            "receiver_email": second_user.email,
+        }
+
+        response = authorized_client.post(path, data=share_data, query_limit=7)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
+        assert SharedPrivateTour.objects.count() == 0
+        assert response.json()["non_field_errors"][0] == "error_can_share_only_private_tour"
+
+
+class TestGetSharedTours:
+    def test_unauthenticated_user_can_not_get_shared_tours(self, client: APIClientWithQueryCounter):
+        path = reverse("current-user-tours-shared")
+        response = client.get(path)
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
+
+    def test_get_shared_tours(self, authorized_client: APIClientWithQueryCounter, user, tours_list, expected_tours):
+        user_tour_one = make(UserTour, user=user, tour=tours_list[0])
+        user_tour_two = make(UserTour, user=user, tour=tours_list[2])
+        make(SharedPrivateTour, user_tour=user_tour_one)
+        make(SharedPrivateTour, user_tour=user_tour_two)
+
+        path = reverse("current-user-tours-shared")
+        response = authorized_client.get(path, query_limit=7)
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["results"] == expected_tours

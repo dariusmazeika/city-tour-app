@@ -7,7 +7,8 @@ from apps.reviews.models import Review
 from apps.reviews.serializers import ReviewSerializer
 from apps.sites.models import Site
 from apps.sites.serializers import SiteSerializer
-from apps.tours.models import Tour, UserTour, TourSite
+from apps.tours.models import Tour, UserTour, TourSite, SharedPrivateTour
+from apps.users.models import User
 
 
 class TourImageSerializer(serializers.Serializer):
@@ -29,7 +30,23 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
 
     class Meta:
         model = Tour
-        fields = "__all__"
+        fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "author",
+            "language",
+            "overview",
+            "title",
+            "price",
+            "source",
+            "is_audio",
+            "is_enabled",
+            "is_approved",
+            "sites",
+            "reviews",
+            "image",
+        )
 
 
 class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerializer):
@@ -37,7 +54,22 @@ class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerialize
 
     class Meta:
         model = Tour
-        exclude = ("sites",)
+        fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "author",
+            "language",
+            "overview",
+            "title",
+            "price",
+            "source",
+            "is_audio",
+            "is_enabled",
+            "is_approved",
+            "rating",
+            "image",
+        )
 
     def get_rating(self, obj):
         reviews = Review.objects.filter(tour=obj, is_approved=True)
@@ -58,7 +90,6 @@ class UserTourUpdateStatusSerializer(serializers.ModelSerializer):
         fields = ["status"]
 
     def validate(self, attrs):
-
         status_transitions = {
             UserTour.NEW: [UserTour.STARTED],
             UserTour.STARTED: [UserTour.FINISHED],
@@ -102,6 +133,7 @@ class BuyTourSerializer(serializers.Serializer):
 
 class CreateTourSerializer(serializers.ModelSerializer):
     sites_ids_ordered = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    is_private = serializers.BooleanField(required=False)
 
     class Meta:
         model = Tour
@@ -115,6 +147,7 @@ class CreateTourSerializer(serializers.ModelSerializer):
             "source",
             "is_audio",
             "sites",
+            "is_private",
         )
         read_only_fields = (
             "is_audio",
@@ -176,3 +209,44 @@ class CreateTourSerializer(serializers.ModelSerializer):
         TourSite.objects.bulk_create(tour_sites_to_create)
 
         return created_tour
+
+
+class SharePrivateTourSerializer(serializers.Serializer):
+    receiver_email = serializers.EmailField(max_length=255)
+
+    class Meta:
+        fields = ("receiver_email",)
+
+    def validate(self, attrs):
+        super().validate(attrs)
+        user_to_share_with_email = attrs["receiver_email"]
+        user_to_share_with = get_object_or_404(User, email=user_to_share_with_email)
+        attrs["user_to_share_with"] = user_to_share_with
+
+        tour_to_share = get_object_or_404(Tour, pk=self.context["tour_id"])
+        attrs["tour"] = tour_to_share
+
+        if not tour_to_share.is_private:
+            raise serializers.ValidationError("error_can_share_only_private_tour")
+
+        current_user = self.context["request"].user
+        if tour_to_share.author != current_user:
+            raise serializers.ValidationError("error_current_user_does_not_own_this_tour")
+
+        if user_to_share_with == current_user:
+            raise serializers.ValidationError("error_can_not_share_a_tour_to_yourself")
+
+        if UserTour.objects.filter(user=user_to_share_with, tour=tour_to_share).exists():
+            raise serializers.ValidationError("error_tour_is_already_owned_by_user")
+
+        return attrs
+
+    def create(self, validated_data):
+        current_user = self.context["request"].user
+        tour = validated_data.pop("tour")
+        user_to_share_with = validated_data.pop("user_to_share_with")
+
+        user_tour = UserTour.objects.create(tour=tour, user=user_to_share_with, price=0, status=UserTour.NEW)
+        SharedPrivateTour.objects.create(shared_by=current_user, user_tour=user_tour)
+
+        return validated_data
