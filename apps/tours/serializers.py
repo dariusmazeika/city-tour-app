@@ -1,4 +1,4 @@
-from django.db.models import F, Avg, Count, Case, When
+from django.db.models import Avg, Count, Case, When
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError, NotFound
@@ -38,7 +38,6 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
             "language",
             "overview",
             "title",
-            "price",
             "source",
             "is_audio",
             "is_enabled",
@@ -63,7 +62,6 @@ class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerialize
             "language",
             "overview",
             "title",
-            "price",
             "source",
             "is_audio",
             "is_enabled",
@@ -116,9 +114,6 @@ class BuyTourSerializer(serializers.Serializer):
         if current_user.owned_tours.filter(id=tour_to_buy.id).exists():
             raise ValidationError("error_tour_already_owned")
 
-        if current_user.balance < tour_to_buy.price:
-            raise ValidationError("error_wallet_balance_less_than_tour_price")
-
         attrs["tour"] = tour_to_buy
 
         return attrs
@@ -126,9 +121,7 @@ class BuyTourSerializer(serializers.Serializer):
     def create(self, validated_data):
         tour_to_buy = validated_data["tour"]
         current_user = self.context["request"].user
-        current_user.balance = F("balance") - tour_to_buy.price
-        current_user.save(update_fields=["balance"])
-        created_user_tour = UserTour.objects.create(tour=tour_to_buy, user=current_user, price=tour_to_buy.price)
+        created_user_tour = UserTour.objects.create(tour=tour_to_buy, user=current_user)
 
         return created_user_tour
 
@@ -145,7 +138,6 @@ class CreateTourSerializer(serializers.ModelSerializer):
             "language",
             "overview",
             "title",
-            "price",
             "source",
             "is_audio",
             "sites",
@@ -248,7 +240,7 @@ class SharePrivateTourSerializer(serializers.Serializer):
         tour = validated_data.pop("tour")
         user_to_share_with = validated_data.pop("user_to_share_with")
 
-        user_tour = UserTour.objects.create(tour=tour, user=user_to_share_with, price=0, status=UserTour.NEW)
+        user_tour = UserTour.objects.create(tour=tour, user=user_to_share_with, status=UserTour.NEW)
         SharedPrivateTour.objects.create(shared_by=current_user, user_tour=user_tour)
 
         return validated_data
