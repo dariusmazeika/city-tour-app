@@ -297,7 +297,6 @@ class TestCurrentUserToursEndpoint:
                 "language": tour.language,
                 "overview": tour.overview,
                 "title": tour.title,
-                "price": tour.price,
                 "source": tour.source,
                 "is_audio": tour.is_audio,
                 "is_enabled": tour.is_enabled,
@@ -315,7 +314,6 @@ class TestCurrentUserToursEndpoint:
                 "is_finished_once": user_tour_1.is_finished_once,
                 "tour": get_user_tour_data(user_tour_1),
                 "created_at": user_tour_1.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                "price": user_tour_1.price,
                 "status": user_tour_1.status,
             },
             {
@@ -323,7 +321,6 @@ class TestCurrentUserToursEndpoint:
                 "is_finished_once": user_tour_1.is_finished_once,
                 "tour": get_user_tour_data(user_tour_2),
                 "created_at": user_tour_2.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                "price": user_tour_2.price,
                 "status": user_tour_2.status,
             },
         ]

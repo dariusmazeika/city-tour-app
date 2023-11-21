@@ -19,7 +19,6 @@ class Tour(BaseModel):
     language = models.CharField(max_length=3)
     overview = models.TextField()
     title = models.CharField(max_length=255)
-    price = models.PositiveIntegerField()
     source = models.CharField(max_length=255)
     is_audio = models.BooleanField(default=False)
     is_enabled = models.BooleanField(default=False)
@@ -43,7 +42,6 @@ class UserTour(BaseModel):
     ]
     tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    price = models.PositiveIntegerField()
     status = models.CharField(max_length=8, choices=STATUSES, default=NEW)
     is_finished_once = models.BooleanField(default=False)
 

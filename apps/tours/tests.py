@@ -75,23 +75,15 @@ class TestBuyTour:
         single_tour: Tour,
         user: User,
     ):
-        UserTour.objects.create(tour=single_tour, user=user, price=single_tour.price)
+        UserTour.objects.create(tour=single_tour, user=user)
         response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
         assert response.json()["non_field_errors"][0] == "error_tour_already_owned"
 
-    @pytest.mark.parametrize("balance_difference", [(0, None), (1, None)])
     def test_tour_bought_successfully(
-        self,
-        authorized_client: APIClientWithQueryCounter,
-        single_tour: Tour,
-        user: User,
-        expected_tour_data: dict,
-        balance_difference: tuple,
+        self, authorized_client: APIClientWithQueryCounter, single_tour: Tour, user: User, expected_tour_data: dict
     ):
-        user.balance = single_tour.price + balance_difference[0]
-        user.save(update_fields=["balance"])
         response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]), query_limit=7)
         assert response.status_code == status.HTTP_201_CREATED, response.json()
 
@@ -100,39 +92,21 @@ class TestBuyTour:
         assert user_tour_from_db is not None
         assert user_tour_from_db.tour == single_tour
         assert user_tour_from_db.user == user
-        assert user_tour_from_db.price == single_tour.price
         assert user_tour_from_db.status == "New"
 
         # Check if user balance was updated
         user.refresh_from_db()
-        assert user.balance == balance_difference[0]
 
         expected_tour_data.pop("reviews", None)
         expected_tour_data.pop("sites", None)  # Tour will be serialized without sites
         expected_response_payload = {
             "id": user_tour_from_db.id,
             "created_at": user_tour_from_db.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "price": single_tour.price,
             "status": "New",
             "is_finished_once": False,
             "tour": expected_tour_data,
         }
         assert response.json() == expected_response_payload
-
-    def test_tour_price_greater_than_user_balance_response(
-        self,
-        authorized_client: APIClientWithQueryCounter,
-        single_tour: Tour,
-        user: User,
-    ):
-        user.balance = 1
-        user.save(update_fields=["balance"])
-        single_tour.price = 10
-        single_tour.save(update_fields=["price"])
-        response = authorized_client.post(reverse("tours-buy", args=[single_tour.id]))
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
-        assert response.json()["non_field_errors"][0] == "error_wallet_balance_less_than_tour_price"
 
 
 class TestTourFilterByCity:
@@ -218,7 +192,6 @@ class TestCreateTourEndpoint:
             "language": create_tour_request_data["language"],
             "overview": create_tour_request_data["overview"],
             "title": create_tour_request_data["title"],
-            "price": create_tour_request_data["price"],
             "source": create_tour_request_data["source"],
             "sites": list(
                 Site.objects.filter(id__in=create_tour_request_data["sites_ids_ordered"]).values_list("id", flat=True)
@@ -232,7 +205,6 @@ class TestCreateTourEndpoint:
         assert created_tour_from_db.language == expected_response_payload["language"]
         assert created_tour_from_db.overview == expected_response_payload["overview"]
         assert created_tour_from_db.title == expected_response_payload["title"]
-        assert created_tour_from_db.price == expected_response_payload["price"]
         assert created_tour_from_db.source == expected_response_payload["source"]
         assert created_tour_from_db.is_audio == expected_response_payload["is_audio"]
 
