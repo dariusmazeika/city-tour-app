@@ -1,3 +1,5 @@
+from django.db import transaction
+from django.db.models import F
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics, permissions, status
@@ -156,6 +158,7 @@ class GetUserToursViewSet(
         current_user = self.request.user
         return UserTour.objects.filter(user=current_user)
 
+    @transaction.atomic
     @action(detail=True, methods=["put"], url_path="update-status", serializer_class=UserTourUpdateStatusSerializer)
     def update_status(self, request, pk=None):
         user = self.request.user
@@ -164,6 +167,17 @@ class GetUserToursViewSet(
         request.data["status"] = request.data.get("status", "").capitalize()
         serializer = self.get_serializer(user_tour, data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        if request.data["status"] == "Finished":
+            if not user_tour.is_finished_once:
+                user_tour.is_finished_once = True
+                user_tour.tour.finished_count = F("finished_count") + 1
+                user_tour.tour.author.balance = F("balance") + 1
+
+                user_tour.save(update_fields=["is_finished_once"])
+                user_tour.tour.save(update_fields=["finished_count"])
+                user_tour.tour.author.save(update_fields=["balance"])
+
         serializer.save()
 
         return Response(serializer.data)

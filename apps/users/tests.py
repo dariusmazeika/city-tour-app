@@ -302,6 +302,7 @@ class TestCurrentUserToursEndpoint:
                 "is_audio": tour.is_audio,
                 "is_enabled": tour.is_enabled,
                 "is_approved": tour.is_approved,
+                "finished_count": tour.finished_count,
                 "author": tour.author,
                 "rating": None,
             }
@@ -311,6 +312,7 @@ class TestCurrentUserToursEndpoint:
         expected_response_payload = [
             {
                 "id": user_tour_1.id,
+                "is_finished_once": user_tour_1.is_finished_once,
                 "tour": get_user_tour_data(user_tour_1),
                 "created_at": user_tour_1.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "price": user_tour_1.price,
@@ -318,6 +320,7 @@ class TestCurrentUserToursEndpoint:
             },
             {
                 "id": user_tour_2.id,
+                "is_finished_once": user_tour_1.is_finished_once,
                 "tour": get_user_tour_data(user_tour_2),
                 "created_at": user_tour_2.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "price": user_tour_2.price,
@@ -391,12 +394,12 @@ class TestUpdateUserToursStatus:
         unchanged_user_tour = UserTour.objects.get(pk=user_tour.id)
         assert unchanged_user_tour.status == "Finished"
 
-    def test_update_status_writen_lowercase(self, authorized_client: APIClientWithQueryCounter, user):
-        user_tour = make(UserTour, tour=make(Tour), user=user, status="Started", id=1)
+    def test_update_status_written_lowercase(self, authorized_client: APIClientWithQueryCounter, user):
+        user_tour = make(UserTour, tour=make(Tour, author=user), user=user, status="Started", id=1)
         path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
         data = {"status": "finished"}
 
-        response = authorized_client.put(path, data, format="json")
+        response = authorized_client.put(path, data, format="json", query_limit=8)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
 
@@ -410,3 +413,50 @@ class TestUpdateUserToursStatus:
         response = authorized_client.put(path, data, format="json")
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_author_receives_royalties(self, authorized_client: APIClientWithQueryCounter, user):
+        assert user.balance == 0
+        user_tour = make(
+            UserTour,
+            tour=make(Tour, author=user, finished_count=0),
+            user=user,
+            status="Started",
+            is_finished_once=False,
+            id=1,
+        )
+
+        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        data = {"status": "finished"}
+
+        response = authorized_client.put(path, data, format="json", query_limit=8)
+
+        user.refresh_from_db()
+        user_tour.tour.refresh_from_db()
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert user.balance == 1
+        assert user_tour.tour.finished_count == 1
+
+    def test_author_does_not_receive_duplicated_royalties(self, authorized_client: APIClientWithQueryCounter, user):
+        assert user.balance == 0
+        user_tour = make(
+            UserTour,
+            tour=make(Tour, author=user, finished_count=1),
+            user=user,
+            status="Started",
+            is_finished_once=True,
+            id=1,
+        )
+        assert user_tour.tour.finished_count == 1
+
+        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        data = {"status": "finished"}
+
+        response = authorized_client.put(path, data, format="json", query_limit=8)
+
+        user_tour.tour.refresh_from_db()
+        user.refresh_from_db()
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert user.balance == 0
+        assert user_tour.tour.finished_count == 1

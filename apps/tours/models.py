@@ -26,6 +26,7 @@ class Tour(BaseModel):
     is_approved = models.BooleanField(default=False)
     is_private = models.BooleanField(default=True)
     sites = models.ManyToManyField(Site, through=TourSite)
+    finished_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.title}"
@@ -44,6 +45,7 @@ class UserTour(BaseModel):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     price = models.PositiveIntegerField()
     status = models.CharField(max_length=8, choices=STATUSES, default=NEW)
+    is_finished_once = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.tour}"
