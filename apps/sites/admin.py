@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.contrib.gis import admin as gis_admin
 
+from apps.sites.forms import LocationForm
 from apps.sites.models import Site, BaseSite, SiteImage, SiteAudio, SiteTag
 
 
@@ -8,8 +10,10 @@ class RelatedSites(admin.StackedInline):
     extra = 0
 
 
-class BaseSiteAdmin(admin.ModelAdmin):
+class BaseSiteAdmin(gis_admin.OSMGeoAdmin):
+    point_zoom = 16
     inlines = [RelatedSites]
+    form = LocationForm
 
 
 class ApprovalFilter(admin.SimpleListFilter):

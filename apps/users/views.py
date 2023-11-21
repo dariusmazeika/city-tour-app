@@ -156,7 +156,7 @@ class GetUserToursViewSet(
 
     def get_queryset(self):
         current_user = self.request.user
-        return UserTour.objects.filter(user=current_user)
+        return UserTour.objects.filter(user=current_user).select_related("tour")
 
     @transaction.atomic
     @action(detail=True, methods=["put"], url_path="update-status", serializer_class=UserTourUpdateStatusSerializer)

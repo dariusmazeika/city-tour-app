@@ -1,3 +1,4 @@
+from django.contrib.gis.db.models import MakeLine
 from django.db import models
 
 from apps.sites.models import Site
@@ -15,10 +16,10 @@ class TourSite(BaseModel):
 
 
 class Tour(BaseModel):
+    title = models.CharField(max_length=255)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_tours")
     language = models.CharField(max_length=3)
     overview = models.TextField()
-    title = models.CharField(max_length=255)
     source = models.CharField(max_length=255)
     is_audio = models.BooleanField(default=False)
     is_enabled = models.BooleanField(default=False)
@@ -29,6 +30,16 @@ class Tour(BaseModel):
 
     def __str__(self):
         return f"{self.title}"
+
+    @property
+    def distance(self) -> float | None:
+        if self.sites.count() > 1:
+            tour_route_line = (
+                self.sites.order_by("toursite__order").aggregate(line=MakeLine("base_site__location")).get("line", None)
+            )
+            tour_route_line.transform(3035)
+            return round(tour_route_line.length / 1000, 2)  # return length in km
+        return None
 
 
 class UserTour(BaseModel):

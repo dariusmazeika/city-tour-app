@@ -1,3 +1,4 @@
+from django.contrib.gis.geos import Point
 from model_bakery.baker import make
 import pytest
 
@@ -61,7 +62,7 @@ def get_city_data(city: City) -> dict:
 @pytest.fixture
 def tours_list_with_specific_tags():
     city = make(City, id=5)
-    base_site = make(BaseSite, city=city)
+    base_site = make(BaseSite, city=city, location=Point(10, 10))
     site1 = make(Site, base_site=base_site)
     site2 = make(Site, base_site=base_site)
     site3 = make(Site, base_site=base_site)

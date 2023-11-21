@@ -1,3 +1,4 @@
+from django.contrib.gis.geos import Point
 from django.urls import reverse
 from model_bakery.baker import make
 from rest_framework import status
@@ -80,6 +81,7 @@ class TestCityTourFilterByTag:
                 "finished_count": tours_list_with_specific_tags[0].finished_count,
                 "rating": None,
                 "author": None,
+                "distance": 0,
             },
             {
                 "id": tours_list_with_specific_tags[1].id,
@@ -96,6 +98,7 @@ class TestCityTourFilterByTag:
                 "finished_count": tours_list_with_specific_tags[1].finished_count,
                 "rating": None,
                 "author": None,
+                "distance": None,
             },
         ]
 
@@ -105,7 +108,7 @@ class TestCityTourFilterByTag:
         expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
         tags = "?tag_id=4"
         path = reverse("city-tours", args=[5]) + tags
-        response = client.get(path, query_limit=7)
+        response = client.get(path, query_limit=10)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert len(response.data["results"]) == 2
@@ -115,7 +118,7 @@ class TestCityTourFilterByTag:
         expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
         tags = "?tag_id=4&tag_id=5"
         path = reverse("city-tours", args=[5]) + tags
-        response = client.get(path, query_limit=7)
+        response = client.get(path, query_limit=10)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert len(response.data["results"]) == 2
@@ -126,9 +129,9 @@ class TestSitesFilterByCity:
     @staticmethod
     def get_sites_list() -> list:
         city = make(City, id=5)
-        base_site = make(BaseSite, city=city)
+        base_site = make(BaseSite, city=city, location=Point(10, 10))
         site1 = make(Site, base_site=base_site, is_approved=True)
-        site2 = make(Site, is_approved=True)
+        site2 = make(Site, is_approved=True, base_site__location=Point(10, 10))
         site3 = make(Site, base_site=base_site, is_approved=True)
         non_approved_site = make(Site, base_site=base_site, is_approved=False)
 
@@ -151,8 +154,8 @@ class TestSitesFilterByCity:
                     "id": get_sites_list[0].base_site.id,
                     "created_at": get_sites_list[0].base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "updated_at": get_sites_list[0].base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                    "longitude": get_sites_list[0].base_site.longitude,
-                    "latitude": get_sites_list[0].base_site.latitude,
+                    "longitude": get_sites_list[0].base_site.location.x,
+                    "latitude": get_sites_list[0].base_site.location.y,
                     "title": get_sites_list[0].base_site.title,
                     "city": get_sites_list[0].base_site.city.id,
                 },
@@ -171,8 +174,8 @@ class TestSitesFilterByCity:
                     "id": get_sites_list[2].base_site.id,
                     "created_at": get_sites_list[2].base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "updated_at": get_sites_list[2].base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                    "longitude": get_sites_list[2].base_site.longitude,
-                    "latitude": get_sites_list[2].base_site.latitude,
+                    "longitude": get_sites_list[2].base_site.location.x,
+                    "latitude": get_sites_list[2].base_site.location.y,
                     "title": get_sites_list[2].base_site.title,
                     "city": get_sites_list[2].base_site.city.id,
                 },

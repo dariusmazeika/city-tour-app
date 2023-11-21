@@ -13,6 +13,7 @@ class TourAdmin(admin.ModelAdmin):
     inlines = [TourSiteInline]
     list_filter = (ApprovalFilter,)
     list_display = ("id", "title", "is_approved")
+    readonly_fields = ("distance",)
 
 
 admin.site.register(Tour, TourAdmin)

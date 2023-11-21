@@ -1,3 +1,4 @@
+from django.contrib.gis.geos import Point
 from model_bakery.baker import make
 import pytest
 
@@ -27,8 +28,8 @@ def expected_tour_data(single_tour: Tour) -> dict:
                     "id": base_site.id,
                     "created_at": base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "updated_at": base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                    "longitude": base_site.longitude,
-                    "latitude": base_site.latitude,
+                    "longitude": base_site.location.x,
+                    "latitude": base_site.location.y,
                     "title": base_site.title,
                     "city": base_site.city_id,
                 },
@@ -48,6 +49,7 @@ def expected_tour_data(single_tour: Tour) -> dict:
         "author": single_tour.author_id,
         "rating": None,
         "finished_count": single_tour.finished_count,
+        "distance": None,
     }
     return expected_tour_data
 
@@ -73,8 +75,8 @@ def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
                     "id": base_site.id,
                     "created_at": base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "updated_at": base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                    "longitude": base_site.longitude,
-                    "latitude": base_site.latitude,
+                    "longitude": base_site.location.x,
+                    "latitude": base_site.location.y,
                     "title": base_site.title,
                     "city": base_site.city_id,
                 },
@@ -101,13 +103,14 @@ def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
         "is_approved": single_tour.is_approved,
         "finished_count": single_tour.finished_count,
         "author": single_tour.author_id,
+        "distance": None,
     }
     return expected_tour_data
 
 
 @pytest.fixture
 def single_tour(user) -> Tour:
-    base_site = make(BaseSite)
+    base_site = make(BaseSite, location=Point(10, 10))
     site = make(Site, base_site=base_site)
     tour = make(Tour, is_approved=True, is_enabled=True, author=user)
     make(TourSite, site=site, tour=tour, order=1)
@@ -133,6 +136,7 @@ def expected_tours(tours_list):
             "is_approved": tours_list[0].is_approved,
             "finished_count": tours_list[0].finished_count,
             "author": tours_list[0].author_id,
+            "distance": None,
         },
         {
             "id": tours_list[2].id,
@@ -149,6 +153,7 @@ def expected_tours(tours_list):
             "is_approved": tours_list[2].is_approved,
             "finished_count": tours_list[2].finished_count,
             "author": tours_list[0].author_id,
+            "distance": None,
         },
     ]
 
@@ -158,7 +163,7 @@ def expected_tours(tours_list):
 @pytest.fixture
 def tours_list(user):
     city = make(City, id=5)
-    base_site = make(BaseSite, city=city)
+    base_site = make(BaseSite, city=city, location=Point(10, 10))
     site = make(Site, base_site=base_site)
 
     tour1, tour3 = make(Tour, is_enabled=True, is_approved=True, author=user, _quantity=2)

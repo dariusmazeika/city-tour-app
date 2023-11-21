@@ -46,7 +46,13 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
             "reviews",
             "image",
             "finished_count",
+            "distance",
         )
+
+    read_only_fields = (
+        "sites",
+        "reviews",
+    )
 
 
 class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerializer):
@@ -69,6 +75,7 @@ class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerialize
             "rating",
             "image",
             "finished_count",
+            "distance",
         )
 
     def get_rating(self, obj):

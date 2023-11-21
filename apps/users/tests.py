@@ -304,6 +304,7 @@ class TestCurrentUserToursEndpoint:
                 "finished_count": tour.finished_count,
                 "author": tour.author,
                 "rating": None,
+                "distance": None,
             }
 
         user_tour_1 = make(UserTour, tour=make(Tour), user=user)

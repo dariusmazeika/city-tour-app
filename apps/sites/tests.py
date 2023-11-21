@@ -124,8 +124,8 @@ class TestCreateBaseSite:
 
         created_base_site = BaseSite.objects.first()
         assert created_base_site.city.id == base_site_data["city"]
-        assert created_base_site.longitude == base_site_data["longitude"]
-        assert created_base_site.latitude == base_site_data["latitude"]
+        assert created_base_site.location.x == base_site_data["longitude"]
+        assert created_base_site.location.y == base_site_data["latitude"]
         assert created_base_site.title == base_site_data["title"]
 
     def test_create_base_site_without_data_returns_bad_request(self, authorized_client: APIClientWithQueryCounter):
@@ -188,8 +188,8 @@ class TestCreateBaseSite:
 
             created_base_site = BaseSite.objects.first()
             assert created_base_site.city.id == base_site_and_image_data["city"]
-            assert created_base_site.longitude == base_site_and_image_data["longitude"]
-            assert created_base_site.latitude == base_site_and_image_data["latitude"]
+            assert created_base_site.location.x == base_site_and_image_data["longitude"]
+            assert created_base_site.location.y == base_site_and_image_data["latitude"]
             assert created_base_site.title == base_site_and_image_data["title"]
 
             created_site_image = SiteImage.objects.first()
@@ -330,8 +330,8 @@ class TestGetUserSites:
                     "created_at": user_site_one.base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "updated_at": user_site_one.base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "city": user_site_one.base_site.city.id,
-                    "longitude": user_site_one.base_site.longitude,
-                    "latitude": user_site_one.base_site.latitude,
+                    "longitude": user_site_one.base_site.location.x,
+                    "latitude": user_site_one.base_site.location.y,
                     "title": user_site_one.base_site.title,
                 },
             },
@@ -350,8 +350,8 @@ class TestGetUserSites:
                     "created_at": user_site_two.base_site.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "updated_at": user_site_two.base_site.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "city": user_site_two.base_site.city.id,
-                    "longitude": user_site_two.base_site.longitude,
-                    "latitude": user_site_two.base_site.latitude,
+                    "longitude": user_site_two.base_site.location.x,
+                    "latitude": user_site_two.base_site.location.y,
                     "title": user_site_two.base_site.title,
                 },
             },
