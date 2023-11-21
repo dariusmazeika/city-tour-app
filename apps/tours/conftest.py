@@ -48,6 +48,7 @@ def expected_tour_data(single_tour: Tour) -> dict:
         "is_approved": single_tour.is_approved,
         "author": single_tour.author_id,
         "rating": None,
+        "finished_count": single_tour.finished_count,
     }
     return expected_tour_data
 
@@ -100,6 +101,7 @@ def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
         "is_audio": single_tour.is_audio,
         "is_enabled": single_tour.is_enabled,
         "is_approved": single_tour.is_approved,
+        "finished_count": single_tour.finished_count,
         "author": single_tour.author_id,
     }
     return expected_tour_data
@@ -132,6 +134,7 @@ def expected_tours(tours_list):
             "is_audio": tours_list[0].is_audio,
             "is_enabled": tours_list[0].is_enabled,
             "is_approved": tours_list[0].is_approved,
+            "finished_count": tours_list[0].finished_count,
             "author": tours_list[0].author_id,
         },
         {
@@ -148,7 +151,8 @@ def expected_tours(tours_list):
             "is_audio": tours_list[2].is_audio,
             "is_enabled": tours_list[2].is_enabled,
             "is_approved": tours_list[2].is_approved,
-            "author": tours_list[2].author_id,
+            "finished_count": tours_list[2].finished_count,
+            "author": tours_list[0].author_id,
         },
     ]
 

@@ -46,6 +46,7 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
             "sites",
             "reviews",
             "image",
+            "finished_count",
         )
 
 
@@ -69,6 +70,7 @@ class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerialize
             "is_approved",
             "rating",
             "image",
+            "finished_count",
         )
 
     def get_rating(self, obj):
@@ -96,12 +98,12 @@ class UserTourUpdateStatusSerializer(serializers.ModelSerializer):
             UserTour.FINISHED: [UserTour.STARTED],
         }
         if attrs["status"].capitalize() not in status_transitions:
-            raise serializers.ValidationError("error_tour_status_does_not_exist.")
+            raise serializers.ValidationError("error_tour_status_does_not_exist")
 
         current_status = self.instance.status if self.instance else None
 
         if current_status and attrs["status"].capitalize() not in status_transitions.get(current_status, []):
-            raise serializers.ValidationError("error_status_transition_is_not_allowed.")
+            raise serializers.ValidationError("error_status_transition_is_not_allowed")
 
         return attrs
 

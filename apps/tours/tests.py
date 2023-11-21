@@ -114,6 +114,7 @@ class TestBuyTour:
             "created_at": user_tour_from_db.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "price": single_tour.price,
             "status": "New",
+            "is_finished_once": False,
             "tour": expected_tour_data,
         }
         assert response.json() == expected_response_payload
