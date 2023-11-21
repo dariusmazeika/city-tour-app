@@ -14,8 +14,12 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.sites.models import Site
 from apps.sites.serializers import SiteSerializer
-from apps.tours.models import Tour, UserTour
-from apps.tours.serializers import UserTourSerializer, UserTourUpdateStatusSerializer, TourWithoutSitesSerializer
+from apps.tours.models import UserTour, Tour
+from apps.tours.serializers import (
+    UserTourSerializer,
+    UserTourUpdateStatusSerializer,
+    TourWithoutSitesSerializer,
+)
 from apps.users.models import ActivationKey, PasswordKey, User
 from apps.users.serializers import (
     BasePasswordSerializer,
@@ -181,6 +185,29 @@ class GetUserToursViewSet(
         serializer.save()
 
         return Response(serializer.data)
+
+    @action(
+        detail=False,
+        methods=["get"],
+        serializer_class=UserTourSerializer,
+        url_path=r"owned-tours",
+    )
+    def owned_tours(self, request):
+        paginated_queryset = self.paginate_queryset(queryset=self.get_queryset())
+        serializer = self.get_serializer(paginated_queryset, many=True)
+        return self.get_paginated_response(data=serializer.data)
+
+    @action(
+        detail=False,
+        methods=["get"],
+        serializer_class=TourWithoutSitesSerializer,
+        url_path=r"created-tours",
+    )
+    def created_tours(self, request):
+        queryset = Tour.objects.filter(author=request.user)
+        paginated_queryset = self.paginate_queryset(queryset=queryset)
+        serializer = self.get_serializer(paginated_queryset, many=True)
+        return self.get_paginated_response(data=serializer.data)
 
     @action(detail=False, methods=["get"], url_path="shared", serializer_class=TourWithoutSitesSerializer)
     def shared(self, request, pk=None):

@@ -18,7 +18,7 @@ from apps.users.views import (
 )
 
 router = DefaultRouter()
-router.register("current-user/tours", viewset=GetUserToursViewSet, basename="current-user-tours")
+router.register("current-user", viewset=GetUserToursViewSet, basename="user-tours")
 router.register("current-user/created-sites", viewset=GetUserSitesViewSet, basename="current-user-created-sites")
 
 urlpatterns = [
