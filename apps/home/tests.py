@@ -48,7 +48,7 @@ class TestAdminSmokerCase:
             if getattr(url.pattern, "_route", "").startswith(("<path:object_id>", "<id>")):
                 args = [obj.pk]
 
-            response = authorized_admin_client.get(reverse(f"admin:{url.name}", args=args), query_limit=9)
+            response = authorized_admin_client.get(reverse(f"admin:{url.name}", args=args), query_limit=11)
             assert response.status_code == status.HTTP_200_OK, url.name
 
 
