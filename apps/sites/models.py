@@ -6,7 +6,7 @@ from apps.utils.models import BaseModel
 
 
 class Site(BaseModel):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, default="unknown_title")
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     base_site = models.ForeignKey("BaseSite", on_delete=models.CASCADE)
     overview = models.TextField()
