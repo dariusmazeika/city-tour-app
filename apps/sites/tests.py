@@ -64,7 +64,6 @@ class TestCreateSite:
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
 
         expected_error = {
-            "title": ["This field is required."],
             "overview": ["This field is required."],
             "language": ["This field is required."],
             "source": ["This field is required."],
