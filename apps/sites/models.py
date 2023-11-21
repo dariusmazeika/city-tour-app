@@ -1,3 +1,4 @@
+from django.contrib.gis.db.models import PointField
 from django.db import models
 
 from apps.locations.models import City
@@ -20,10 +21,9 @@ class Site(BaseModel):
 
 
 class BaseSite(BaseModel):
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
-    longitude = models.FloatField()
-    latitude = models.FloatField()
     title = models.CharField(max_length=255)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    location = PointField(null=False, blank=False)
 
     def __str__(self):
         return f"{self.title}"
