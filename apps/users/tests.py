@@ -286,7 +286,7 @@ class TestAuthentication:
 
 
 class TestCurrentUserToursEndpoint:
-    def test_get_returns_expected_tours(self, authorized_client: APIClientWithQueryCounter, user):
+    def test_get_returns_expected_owned_tours(self, authorized_client: APIClientWithQueryCounter, user):
         def get_user_tour_data(user_tour: UserTour) -> dict:
             tour = user_tour.tour
             return {
@@ -325,21 +325,64 @@ class TestCurrentUserToursEndpoint:
                 "status": user_tour_2.status,
             },
         ]
-        response = authorized_client.get(reverse("current-user-tours-list"), query_limit=9)
+        response = authorized_client.get(reverse("user-tours-owned-tours"), query_limit=9)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert response.json()["count"] == 2
         assert response.json()["results"] == expected_response_payload
 
-    def test_get_returns_empty_list_if_user_has_no_tours(self, authorized_client: APIClientWithQueryCounter):
-        response = authorized_client.get(reverse("current-user-tours-list"))
+    def test_get_returns_empty_list_if_user_has_no_owned_tours(self, authorized_client: APIClientWithQueryCounter):
+        response = authorized_client.get(reverse("user-tours-owned-tours"))
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert response.json()["count"] == 0
         assert response.json()["results"] == []
 
-    def test_unauthenticated_client_cannot_access_tours(self, client: APIClientWithQueryCounter):
-        response = client.get(reverse("current-user-tours-list"))
+    def test_unauthenticated_client_cannot_access_owned_tours(self, client: APIClientWithQueryCounter):
+        response = client.get(reverse("user-tours-owned-tours"))
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
+
+    def test_get_returns_expected_created_tours(self, authorized_client: APIClientWithQueryCounter, user):
+        tour_1 = make(Tour, author=user)
+
+        user_2 = make(User)
+        make(Tour, author=user_2)
+
+        expected_response_payload = [
+            {
+                "id": tour_1.id,
+                "created_at": tour_1.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": tour_1.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "finished_count": tour_1.finished_count,
+                "distance": None,
+                "language": tour_1.language,
+                "overview": tour_1.overview,
+                "title": tour_1.title,
+                "source": tour_1.source,
+                "image": None,
+                "rating": None,
+                "is_audio": tour_1.is_audio,
+                "is_enabled": tour_1.is_enabled,
+                "is_approved": tour_1.is_approved,
+                "author": tour_1.author.id,
+            },
+        ]
+        response = authorized_client.get(reverse("user-tours-created-tours"), query_limit=7)
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["count"] == 1
+        assert response.json()["results"] == expected_response_payload
+        assert Tour.objects.count() == 2
+
+    def test_get_returns_empty_list_if_user_has_no_created_tours(self, authorized_client: APIClientWithQueryCounter):
+        response = authorized_client.get(reverse("user-tours-created-tours"))
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert response.json()["count"] == 0
+        assert response.json()["results"] == []
+
+    def test_unauthenticated_client_cannot_access_created_tours(self, client: APIClientWithQueryCounter):
+        response = client.get(reverse("user-tours-created-tours"))
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
 
@@ -347,7 +390,7 @@ class TestCurrentUserToursEndpoint:
 class TestUpdateUserToursStatus:
     def test_update_status_unauthenticated_client(self, client: APIClientWithQueryCounter, user):
         user_tour = make(UserTour, tour=make(Tour), user=user, status="New", id=1)
-        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        path = reverse("user-tours-update-status", kwargs={"pk": user_tour.id})
         data = {"status": "Started"}
 
         response = client.put(path, data, format="json")
@@ -356,7 +399,7 @@ class TestUpdateUserToursStatus:
 
     def test_update_status_valid(self, authorized_client: APIClientWithQueryCounter, user):
         user_tour = make(UserTour, tour=make(Tour), user=user, status="New", id=1)
-        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        path = reverse("user-tours-update-status", kwargs={"pk": user_tour.id})
         data = {"status": "Started"}
 
         response = authorized_client.put(path, data, format="json")
@@ -369,7 +412,7 @@ class TestUpdateUserToursStatus:
     def test_update_status_invalid(self, authorized_client: APIClientWithQueryCounter, user):
         user_tour = make(UserTour, tour=make(Tour), user=user, status="New", id=1)
 
-        url = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        url = reverse("user-tours-update-status", kwargs={"pk": user_tour.id})
         data = {"status": "InvalidStatus"}
 
         response = authorized_client.put(url, data, format="json")
@@ -382,7 +425,7 @@ class TestUpdateUserToursStatus:
     def test_update_status_transition_is_not_allowed(self, authorized_client: APIClientWithQueryCounter, user):
         user_tour = make(UserTour, tour=make(Tour), user=user, status="Finished", id=1)
 
-        url = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        url = reverse("user-tours-update-status", kwargs={"pk": user_tour.id})
         data = {"status": "New"}
 
         response = authorized_client.put(url, data, format="json")
@@ -394,7 +437,7 @@ class TestUpdateUserToursStatus:
 
     def test_update_status_written_lowercase(self, authorized_client: APIClientWithQueryCounter, user):
         user_tour = make(UserTour, tour=make(Tour, author=user), user=user, status="Started", id=1)
-        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        path = reverse("user-tours-update-status", kwargs={"pk": user_tour.id})
         data = {"status": "finished"}
 
         response = authorized_client.put(path, data, format="json", query_limit=8)
@@ -405,7 +448,7 @@ class TestUpdateUserToursStatus:
         assert updated_user_tour.status == "Finished" == response.data["status"]
 
     def test_update_status_nonexistent_tour(self, authorized_client: APIClientWithQueryCounter, user):
-        path = reverse("current-user-tours-update-status", kwargs={"pk": 10000})
+        path = reverse("user-tours-update-status", kwargs={"pk": 10000})
         data = {"status": "Started"}
 
         response = authorized_client.put(path, data, format="json")
@@ -423,7 +466,7 @@ class TestUpdateUserToursStatus:
             id=1,
         )
 
-        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        path = reverse("user-tours-update-status", kwargs={"pk": user_tour.id})
         data = {"status": "finished"}
 
         response = authorized_client.put(path, data, format="json", query_limit=8)
@@ -447,7 +490,7 @@ class TestUpdateUserToursStatus:
         )
         assert user_tour.tour.finished_count == 1
 
-        path = reverse("current-user-tours-update-status", kwargs={"pk": user_tour.id})
+        path = reverse("user-tours-update-status", kwargs={"pk": user_tour.id})
         data = {"status": "finished"}
 
         response = authorized_client.put(path, data, format="json", query_limit=8)

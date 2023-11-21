@@ -78,7 +78,7 @@ class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerialize
             "distance",
         )
 
-    def get_rating(self, obj):
+    def get_rating(self, obj: Tour) -> float | None:
         reviews = Review.objects.filter(tour=obj, is_approved=True)
         return reviews.aggregate(Avg("rating"))["rating__avg"]
 

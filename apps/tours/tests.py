@@ -345,7 +345,7 @@ class TestShareTour:
 
 class TestGetSharedTours:
     def test_unauthenticated_user_can_not_get_shared_tours(self, client: APIClientWithQueryCounter):
-        path = reverse("current-user-tours-shared")
+        path = reverse("user-tours-shared")
         response = client.get(path)
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED, response.json()
@@ -356,7 +356,7 @@ class TestGetSharedTours:
         make(SharedPrivateTour, user_tour=user_tour_one)
         make(SharedPrivateTour, user_tour=user_tour_two)
 
-        path = reverse("current-user-tours-shared")
+        path = reverse("user-tours-shared")
         response = authorized_client.get(path, query_limit=9)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
