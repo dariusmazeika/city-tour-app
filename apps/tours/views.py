@@ -10,6 +10,7 @@ from apps.tours.serializers import (
     BuyTourSerializer,
     UserTourSerializer,
     CreateTourSerializer,
+    SharePrivateTourSerializer,
 )
 
 
@@ -36,3 +37,13 @@ class ToursViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Cr
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
+    @transaction.atomic
+    @action(detail=True, methods=["post"], serializer_class=SharePrivateTourSerializer)
+    def share(self, request, pk):
+        serializer = SharePrivateTourSerializer(data=request.data, context={"request": request, "tour_id": pk})
+
+        serializer.is_valid(raise_exception=True)
+        shared = serializer.save()
+
+        return Response(data=SharePrivateTourSerializer(shared).data, status=status.HTTP_201_CREATED)

@@ -12,8 +12,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.sites.models import Site
 from apps.sites.serializers import SiteSerializer
-from apps.tours.models import UserTour
-from apps.tours.serializers import UserTourSerializer, UserTourUpdateStatusSerializer
+from apps.tours.models import Tour, UserTour
+from apps.tours.serializers import UserTourSerializer, UserTourUpdateStatusSerializer, TourWithoutSitesSerializer
 from apps.users.models import ActivationKey, PasswordKey, User
 from apps.users.serializers import (
     BasePasswordSerializer,
@@ -166,6 +166,21 @@ class GetUserToursViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["get"], url_path="shared", serializer_class=TourWithoutSitesSerializer)
+    def shared(self, request, pk=None):
+        current_user = self.request.user
+        queryset = Tour.objects.filter(
+            usertour__user=current_user, usertour__shared_private_tour__isnull=False, is_enabled=True
+        )
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 

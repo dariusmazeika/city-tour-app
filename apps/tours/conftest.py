@@ -30,7 +30,7 @@ def expected_tour_data(single_tour: Tour) -> dict:
                     "longitude": base_site.longitude,
                     "latitude": base_site.latitude,
                     "title": base_site.title,
-                    "city": base_site.city.id,
+                    "city": base_site.city_id,
                 },
             }
         ],
@@ -46,7 +46,7 @@ def expected_tour_data(single_tour: Tour) -> dict:
         "is_audio": single_tour.is_audio,
         "is_enabled": single_tour.is_enabled,
         "is_approved": single_tour.is_approved,
-        "author": None,
+        "author": single_tour.author_id,
         "rating": None,
     }
     return expected_tour_data
@@ -76,7 +76,7 @@ def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
                     "longitude": base_site.longitude,
                     "latitude": base_site.latitude,
                     "title": base_site.title,
-                    "city": base_site.city.id,
+                    "city": base_site.city_id,
                 },
             }
         ],
@@ -100,55 +100,55 @@ def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
         "is_audio": single_tour.is_audio,
         "is_enabled": single_tour.is_enabled,
         "is_approved": single_tour.is_approved,
-        "author": None,
+        "author": single_tour.author_id,
     }
     return expected_tour_data
 
 
 @pytest.fixture
-def single_tour() -> Tour:
+def single_tour(user) -> Tour:
     base_site = make(BaseSite)
     site = make(Site, base_site=base_site)
-    tour = make(Tour, is_approved=True, is_enabled=True)
+    tour = make(Tour, is_approved=True, is_enabled=True, author=user)
     make(TourSite, site=site, tour=tour, order=1)
 
     return tour
 
 
 @pytest.fixture
-def expected_tours(get_tours_list):
+def expected_tours(tours_list):
     expected_tour_list_data = [
         {
-            "id": get_tours_list[0].id,
+            "id": tours_list[0].id,
             "image": None,
-            "created_at": get_tours_list[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "updated_at": get_tours_list[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "language": get_tours_list[0].language,
-            "overview": get_tours_list[0].overview,
-            "title": get_tours_list[0].title,
-            "price": get_tours_list[0].price,
+            "created_at": tours_list[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "updated_at": tours_list[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "language": tours_list[0].language,
+            "overview": tours_list[0].overview,
+            "title": tours_list[0].title,
+            "price": tours_list[0].price,
             "rating": None,
-            "source": get_tours_list[0].source,
-            "is_audio": get_tours_list[0].is_audio,
-            "is_enabled": get_tours_list[0].is_enabled,
-            "is_approved": get_tours_list[0].is_approved,
-            "author": None,
+            "source": tours_list[0].source,
+            "is_audio": tours_list[0].is_audio,
+            "is_enabled": tours_list[0].is_enabled,
+            "is_approved": tours_list[0].is_approved,
+            "author": tours_list[0].author_id,
         },
         {
-            "id": get_tours_list[2].id,
+            "id": tours_list[2].id,
             "image": None,
-            "created_at": get_tours_list[2].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "updated_at": get_tours_list[2].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "language": get_tours_list[2].language,
-            "overview": get_tours_list[2].overview,
-            "title": get_tours_list[2].title,
-            "price": get_tours_list[2].price,
+            "created_at": tours_list[2].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "updated_at": tours_list[2].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "language": tours_list[2].language,
+            "overview": tours_list[2].overview,
+            "title": tours_list[2].title,
+            "price": tours_list[2].price,
             "rating": None,
-            "source": get_tours_list[2].source,
-            "is_audio": get_tours_list[2].is_audio,
-            "is_enabled": get_tours_list[2].is_enabled,
-            "is_approved": get_tours_list[2].is_approved,
-            "author": None,
+            "source": tours_list[2].source,
+            "is_audio": tours_list[2].is_audio,
+            "is_enabled": tours_list[2].is_enabled,
+            "is_approved": tours_list[2].is_approved,
+            "author": tours_list[2].author_id,
         },
     ]
 
@@ -156,14 +156,13 @@ def expected_tours(get_tours_list):
 
 
 @pytest.fixture
-def get_tours_list():
+def tours_list(user):
     city = make(City, id=5)
     base_site = make(BaseSite, city=city)
     site = make(Site, base_site=base_site)
 
-    tour1 = make(Tour, is_enabled=True, is_approved=True)
+    tour1, tour3 = make(Tour, is_enabled=True, is_approved=True, author=user, _quantity=2)
     tour2 = make(Tour, is_enabled=True, is_approved=True)
-    tour3 = make(Tour, is_enabled=True, is_approved=True)
     not_enabled_tour = make(Tour, is_enabled=False, is_approved=True)
     not_approved_tour = make(Tour, is_enabled=False, is_approved=True)
 

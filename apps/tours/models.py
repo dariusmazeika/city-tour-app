@@ -24,6 +24,7 @@ class Tour(BaseModel):
     is_audio = models.BooleanField(default=False)
     is_enabled = models.BooleanField(default=False)
     is_approved = models.BooleanField(default=False)
+    is_private = models.BooleanField(default=True)
     sites = models.ManyToManyField(Site, through=TourSite)
 
     def __str__(self):
@@ -46,3 +47,11 @@ class UserTour(BaseModel):
 
     def __str__(self):
         return f"{self.tour}"
+
+
+class SharedPrivateTour(BaseModel):
+    shared_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="shared_by_user", null=True)
+    user_tour = models.OneToOneField(UserTour, on_delete=models.CASCADE, related_name="shared_private_tour")
+
+    def __str__(self) -> str:
+        return f"{self.shared_by} {self.user_tour}"
