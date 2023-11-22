@@ -17,7 +17,7 @@ def create_tour(user):
 
 @pytest.fixture
 def review_data(user, create_tour):
-    return {"text": "some text with over 20 symbols", "rating": 5, "reviewer": user.id, "tour": create_tour.id}
+    return {"text": "some text with over 20 symbols", "rating": 5, "tour": create_tour.id, "is_approved": True}
 
 
 @pytest.fixture
@@ -26,5 +26,5 @@ def review_data_no_text(user, create_tour):
 
 
 @pytest.fixture
-def review(user, create_tour):
-    return Review.objects.create(tour=create_tour, reviewer=user, text="some text with over 20 symbols", rating=5)
+def create_review(user, create_tour):
+    return make(Review, tour=create_tour, text="some text with over 20 symbols", rating=5, is_approved=True)

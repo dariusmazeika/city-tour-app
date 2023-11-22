@@ -4,7 +4,6 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError, NotFound
 
 from apps.reviews.models import Review
-from apps.reviews.serializers import ReviewSerializer
 from apps.sites.models import Site
 from apps.sites.serializers import SiteSerializer
 from apps.tours.models import Tour, UserTour, TourSite, SharedPrivateTour
@@ -25,7 +24,6 @@ class TourImageSerializer(serializers.Serializer):
 
 
 class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
-    reviews = ReviewSerializer(many=True, read_only=True)
     sites = SiteSerializer(many=True, read_only=True)
     is_owned = serializers.BooleanField(read_only=True)
     rating = serializers.SerializerMethodField(read_only=True)
@@ -46,7 +44,6 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
             "is_approved",
             "is_owned",
             "sites",
-            "reviews",
             "image",
             "finished_count",
             "distance",

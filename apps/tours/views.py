@@ -2,9 +2,12 @@ from django.db import transaction
 from django.db.models import Exists, OuterRef, Prefetch
 from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+from apps.reviews.models import Review
+from apps.reviews.serializers import ReviewSerializer
 from apps.sites.models import Site
 from apps.tours.models import Tour, UserTour
 from apps.tours.serializers import (
@@ -62,3 +65,13 @@ class ToursViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Cr
         shared = serializer.save()
 
         return Response(data=SharePrivateTourSerializer(shared).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["get"], serializer_class=ReviewSerializer, url_path="reviews")
+    def reviews(self, request, pk):
+        tour = get_object_or_404(Tour, id=pk)
+
+        queryset = Review.objects.filter(is_approved=True, tour=tour).select_related("reviewers")
+
+        paginated_queryset = self.paginate_queryset(queryset=queryset)
+        serializer_data = self.get_serializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer_data.data)
