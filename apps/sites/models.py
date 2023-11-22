@@ -17,7 +17,7 @@ class Site(BaseModel):
     tags = models.ManyToManyField("SiteTag", related_name="tags")
 
     def __str__(self):
-        return f"{self.base_site.city}: {self.base_site}"
+        return f"{self.base_site.city}: {self.title}"
 
 
 class BaseSite(BaseModel):

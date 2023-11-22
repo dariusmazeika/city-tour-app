@@ -51,11 +51,6 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
             "distance",
         )
 
-    read_only_fields = (
-        "sites",
-        "reviews",
-    )
-
 
 class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerializer):
     rating = serializers.SerializerMethodField(read_only=True)
