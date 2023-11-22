@@ -325,7 +325,7 @@ class TestCurrentUserToursEndpoint:
                 "status": user_tour_2.status,
             },
         ]
-        response = authorized_client.get(reverse("user-tours-owned-tours"), query_limit=9)
+        response = authorized_client.get(reverse("user-tours-owned-tours"), query_limit=11)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert response.json()["count"] == 2
@@ -365,6 +365,7 @@ class TestCurrentUserToursEndpoint:
                 "is_audio": tour_1.is_audio,
                 "is_enabled": tour_1.is_enabled,
                 "is_approved": tour_1.is_approved,
+                "is_owned": tour_1 in user.owned_tours.all(),
                 "author": tour_1.author.id,
             },
         ]
