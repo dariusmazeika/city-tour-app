@@ -22,6 +22,17 @@ class TestGetTours:
         expected_tour_data.pop("rating")
         assert expected_tour_data == response.json()
 
+    def test_tour_sites_returned_ordered(self, client: APIClientWithQueryCounter):
+        tour = make(Tour, is_private=False, is_enabled=True, is_approved=True)
+        tour_site_1 = make(TourSite, tour=tour, order=2)
+        tour_site_2 = make(TourSite, tour=tour, order=1)
+        tour_site_3 = make(TourSite, tour=tour, order=0)
+        response = client.get(reverse("tours-detail", args=[tour.id]), query_limit=7)
+
+        assert response.json()["sites"][0]["id"] == tour_site_3.site_id
+        assert response.json()["sites"][1]["id"] == tour_site_2.site_id
+        assert response.json()["sites"][2]["id"] == tour_site_1.site_id
+
     def test_get_not_existing_tour_returns_not_found(self, client: APIClientWithQueryCounter):
         not_existing_tour_id = 100
         path = reverse("tours-detail", args=[not_existing_tour_id])

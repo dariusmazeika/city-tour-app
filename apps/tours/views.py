@@ -1,10 +1,11 @@
 from django.db import transaction
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Prefetch
 from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+from apps.sites.models import Site
 from apps.tours.models import Tour, UserTour
 from apps.tours.serializers import (
     TourSerializer,
@@ -17,7 +18,6 @@ from apps.tours.serializers import (
 
 class ToursViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.CreateModelMixin):
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    queryset = Tour.objects.filter(is_enabled=True, is_approved=True)
     serializer_class = TourSerializer
 
     def get_serializer_class(self):
@@ -28,7 +28,9 @@ class ToursViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Cr
     def get_queryset(self):
         current_user = self.request.user
         queryset = (
-            Tour.objects.prefetch_related("sites")
+            Tour.objects.prefetch_related(
+                Prefetch("sites", queryset=Site.objects.order_by("toursite__order")), "sites__base_site"
+            )
             .annotate(is_owned=Exists(UserTour.objects.filter(user_id=current_user.id, tour=OuterRef("pk"))))
             .filter(is_enabled=True, is_approved=True)
         )
