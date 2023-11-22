@@ -294,22 +294,6 @@ class TestShareTour:
         assert shared_tour.user_tour.user.email == share_data["receiver_email"]
         assert shared_tour.shared_by == single_tour.author
 
-    def test_can_not_share_not_your_created_tour(self, authorized_client: APIClientWithQueryCounter, single_tour):
-        path = reverse("tours-share", args=[single_tour.id])
-        second_user = make(User)
-        tour_creator = make(User)
-        single_tour.author = tour_creator
-        single_tour.save()
-        share_data = {
-            "receiver_email": second_user.email,
-        }
-
-        response = authorized_client.post(path, data=share_data, query_limit=7)
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
-        assert SharedPrivateTour.objects.count() == 0
-        assert response.json()["non_field_errors"][0] == "error_current_user_does_not_own_this_tour"
-
     def test_can_not_share_tour_if_receiver_has_it(self, authorized_client: APIClientWithQueryCounter, single_tour):
         path = reverse("tours-share", args=[single_tour.id])
         second_user = make(User)
@@ -336,22 +320,6 @@ class TestShareTour:
         assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
         assert SharedPrivateTour.objects.count() == 0
         assert response.json()["non_field_errors"][0] == "error_can_not_share_a_tour_to_yourself"
-
-    def test_can_not_share_not_private(self, authorized_client: APIClientWithQueryCounter, single_tour):
-        path = reverse("tours-share", args=[single_tour.id])
-        single_tour.is_private = False
-        single_tour.save()
-
-        second_user = make(User)
-        share_data = {
-            "receiver_email": second_user.email,
-        }
-
-        response = authorized_client.post(path, data=share_data, query_limit=7)
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST, response.json()
-        assert SharedPrivateTour.objects.count() == 0
-        assert response.json()["non_field_errors"][0] == "error_can_share_only_private_tour"
 
 
 class TestGetSharedTours:

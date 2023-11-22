@@ -226,13 +226,7 @@ class SharePrivateTourSerializer(serializers.Serializer):
         tour_to_share = get_object_or_404(Tour, pk=self.context["tour_id"])
         attrs["tour"] = tour_to_share
 
-        if not tour_to_share.is_private:
-            raise serializers.ValidationError("error_can_share_only_private_tour")
-
         current_user = self.context["request"].user
-        if tour_to_share.author != current_user:
-            raise serializers.ValidationError("error_current_user_does_not_own_this_tour")
-
         if user_to_share_with == current_user:
             raise serializers.ValidationError("error_can_not_share_a_tour_to_yourself")
 
