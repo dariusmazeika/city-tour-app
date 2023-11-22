@@ -8,7 +8,7 @@ from apps.tours.models import Tour, TourSite
 
 
 @pytest.fixture
-def expected_tour_data(single_tour: Tour) -> dict:
+def expected_tour_data(single_tour: Tour, user) -> dict:
     site = single_tour.sites.first()
     base_site = site.base_site
     expected_tour_data = {
@@ -36,6 +36,7 @@ def expected_tour_data(single_tour: Tour) -> dict:
             }
         ],
         "image": None,
+        "is_owned": single_tour in user.owned_tours.all(),
         "reviews": [],
         "created_at": single_tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "updated_at": single_tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
@@ -55,7 +56,7 @@ def expected_tour_data(single_tour: Tour) -> dict:
 
 
 @pytest.fixture
-def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
+def expected_tour_data_with_1_review(single_tour: Tour, user) -> dict:
     site = single_tour.sites.first()
     base_site = site.base_site
     expected_tour_data = {
@@ -92,6 +93,7 @@ def expected_tour_data_with_1_review(single_tour: Tour) -> dict:
             }
         ],
         "image": None,
+        "is_owned": single_tour in user.owned_tours.all(),
         "created_at": single_tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "updated_at": single_tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "language": single_tour.language,
@@ -119,11 +121,12 @@ def single_tour(user) -> Tour:
 
 
 @pytest.fixture
-def expected_tours(tours_list):
+def expected_tours(tours_list, user):
     expected_tour_list_data = [
         {
             "id": tours_list[0].id,
             "image": None,
+            "is_owned": tours_list[0] in user.owned_tours.all(),
             "created_at": tours_list[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "updated_at": tours_list[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "language": tours_list[0].language,
@@ -141,6 +144,7 @@ def expected_tours(tours_list):
         {
             "id": tours_list[2].id,
             "image": None,
+            "is_owned": tours_list[2] in user.owned_tours.all(),
             "created_at": tours_list[2].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "updated_at": tours_list[2].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "language": tours_list[2].language,

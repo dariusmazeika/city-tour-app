@@ -5,6 +5,7 @@ from rest_framework import status
 
 from apps.locations.models import City
 from apps.sites.models import BaseSite, Site
+from apps.users.models import User
 from apps.utils.tests_query_counter import APIClientWithQueryCounter
 
 
@@ -64,11 +65,12 @@ class TestGetCities:
 
 class TestCityTourFilterByTag:
     @staticmethod
-    def expected_tours(tours_list_with_specific_tags):
+    def expected_tours(tours_list_with_specific_tags, user: User):
         expected_tour_list_data = [
             {
                 "id": tours_list_with_specific_tags[0].id,
                 "image": None,
+                "is_owned": tours_list_with_specific_tags[0] in user.owned_tours.all(),
                 "created_at": tours_list_with_specific_tags[0].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tours_list_with_specific_tags[0].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "language": tours_list_with_specific_tags[0].language,
@@ -86,6 +88,7 @@ class TestCityTourFilterByTag:
             {
                 "id": tours_list_with_specific_tags[1].id,
                 "image": None,
+                "is_owned": tours_list_with_specific_tags[1] in user.owned_tours.all(),
                 "created_at": tours_list_with_specific_tags[1].created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tours_list_with_specific_tags[1].updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "language": tours_list_with_specific_tags[1].language,
@@ -104,8 +107,8 @@ class TestCityTourFilterByTag:
 
         return expected_tour_list_data
 
-    def test_get_tours_by_one_tag(self, client: APIClientWithQueryCounter, tours_list_with_specific_tags):
-        expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
+    def test_get_tours_by_one_tag(self, client: APIClientWithQueryCounter, tours_list_with_specific_tags, user):
+        expected_tours_list = self.expected_tours(tours_list_with_specific_tags, user)
         tags = "?tag_id=4"
         path = reverse("city-tours", args=[5]) + tags
         response = client.get(path, query_limit=10)
@@ -114,8 +117,10 @@ class TestCityTourFilterByTag:
         assert len(response.data["results"]) == 2
         assert expected_tours_list == response.json()["results"]
 
-    def test_filter_tours_by_multiple_tags(self, client: APIClientWithQueryCounter, tours_list_with_specific_tags):
-        expected_tours_list = self.expected_tours(tours_list_with_specific_tags)
+    def test_filter_tours_by_multiple_tags(
+        self, client: APIClientWithQueryCounter, tours_list_with_specific_tags, user
+    ):
+        expected_tours_list = self.expected_tours(tours_list_with_specific_tags, user)
         tags = "?tag_id=4&tag_id=5"
         path = reverse("city-tours", args=[5]) + tags
         response = client.get(path, query_limit=10)

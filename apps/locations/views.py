@@ -1,3 +1,4 @@
+from django.db.models import OuterRef, Exists
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
@@ -8,7 +9,7 @@ from apps.locations.models import Country
 from apps.locations.serializers import CitySerializer, CountrySerializer
 from apps.sites.models import Site
 from apps.sites.serializers import SiteSerializer
-from apps.tours.models import Tour
+from apps.tours.models import Tour, UserTour
 from apps.tours.serializers import TourWithoutSitesSerializer
 from apps.utils.pagination import CustomPagination
 
@@ -28,8 +29,12 @@ class CityViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Lis
     def tours(self, request, pk):
         city = get_object_or_404(City, id=pk)
         tag_list = self.request.query_params.getlist("tag_id", [])
-
-        queryset = Tour.objects.filter(is_enabled=True, is_approved=True)
+        current_user = self.request.user
+        queryset = (
+            Tour.objects.prefetch_related("sites")
+            .annotate(is_owned=Exists(UserTour.objects.filter(user_id=current_user.id, tour=OuterRef("pk"))))
+            .filter(is_enabled=True, is_approved=True)
+        )
 
         if tag_list:
             queryset = queryset.filter(

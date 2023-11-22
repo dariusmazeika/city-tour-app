@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Exists, OuterRef
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics, permissions, status
@@ -204,7 +204,12 @@ class GetUserToursViewSet(
         url_path=r"created-tours",
     )
     def created_tours(self, request):
-        queryset = Tour.objects.filter(author=request.user)
+        current_user = self.request.user
+        queryset = (
+            Tour.objects.prefetch_related("sites")
+            .annotate(is_owned=Exists(UserTour.objects.filter(user_id=current_user.id, tour=OuterRef("pk"))))
+            .filter(author=request.user)
+        )
         paginated_queryset = self.paginate_queryset(queryset=queryset)
         serializer = self.get_serializer(paginated_queryset, many=True)
         return self.get_paginated_response(data=serializer.data)
@@ -212,10 +217,11 @@ class GetUserToursViewSet(
     @action(detail=False, methods=["get"], url_path="shared", serializer_class=TourWithoutSitesSerializer)
     def shared(self, request, pk=None):
         current_user = self.request.user
-        queryset = Tour.objects.filter(
-            usertour__user=current_user, usertour__shared_private_tour__isnull=False, is_enabled=True
+        queryset = (
+            Tour.objects.prefetch_related("sites")
+            .annotate(is_owned=Exists(UserTour.objects.filter(user_id=current_user.id, tour=OuterRef("pk"))))
+            .filter(usertour__user=current_user, usertour__shared_private_tour__isnull=False, is_enabled=True)
         )
-
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

@@ -27,6 +27,7 @@ class TourImageSerializer(serializers.Serializer):
 class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     sites = SiteSerializer(many=True, read_only=True)
+    is_owned = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Tour
@@ -42,6 +43,7 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
             "is_audio",
             "is_enabled",
             "is_approved",
+            "is_owned",
             "sites",
             "reviews",
             "image",
@@ -57,6 +59,7 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
 
 class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerializer):
     rating = serializers.SerializerMethodField(read_only=True)
+    is_owned = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Tour
@@ -72,6 +75,7 @@ class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerialize
             "is_audio",
             "is_enabled",
             "is_approved",
+            "is_owned",
             "rating",
             "image",
             "finished_count",

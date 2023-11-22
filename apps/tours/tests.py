@@ -94,12 +94,12 @@ class TestBuyTour:
         assert user_tour_from_db.tour == single_tour
         assert user_tour_from_db.user == user
         assert user_tour_from_db.status == "New"
-
         # Check if user balance was updated
         user.refresh_from_db()
 
         expected_tour_data.pop("reviews", None)
         expected_tour_data.pop("sites", None)  # Tour will be serialized without sites
+        expected_tour_data.pop("is_owned", None)
         expected_response_payload = {
             "id": user_tour_from_db.id,
             "created_at": user_tour_from_db.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
@@ -355,9 +355,11 @@ class TestGetSharedTours:
         user_tour_two = make(UserTour, user=user, tour=tours_list[2])
         make(SharedPrivateTour, user_tour=user_tour_one)
         make(SharedPrivateTour, user_tour=user_tour_two)
+        expected_tours[0]["is_owned"] = True
+        expected_tours[1]["is_owned"] = True
 
         path = reverse("user-tours-shared")
-        response = authorized_client.get(path, query_limit=9)
+        response = authorized_client.get(path, query_limit=11)
 
         assert response.status_code == status.HTTP_200_OK, response.json()
         assert response.json()["results"] == expected_tours
