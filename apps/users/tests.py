@@ -304,7 +304,7 @@ class TestCurrentUserToursEndpoint:
                 "finished_count": tour.finished_count,
                 "author": tour.author,
                 "rating": None,
-                "distance": None,
+                "distance": 0,
             }
 
         user_tour_1 = make(UserTour, tour=make(Tour), user=user)
@@ -355,7 +355,7 @@ class TestCurrentUserToursEndpoint:
                 "created_at": tour_1.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": tour_1.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "finished_count": tour_1.finished_count,
-                "distance": None,
+                "distance": 0,
                 "language": tour_1.language,
                 "overview": tour_1.overview,
                 "title": tour_1.title,

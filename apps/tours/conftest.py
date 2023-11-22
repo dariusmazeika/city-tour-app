@@ -50,7 +50,7 @@ def expected_tour_data(single_tour: Tour, user) -> dict:
         "author": single_tour.author_id,
         "rating": None,
         "finished_count": single_tour.finished_count,
-        "distance": None,
+        "distance": 0,
     }
     return expected_tour_data
 
@@ -105,7 +105,7 @@ def expected_tour_data_with_1_review(single_tour: Tour, user) -> dict:
         "is_approved": single_tour.is_approved,
         "finished_count": single_tour.finished_count,
         "author": single_tour.author_id,
-        "distance": None,
+        "distance": 0,
     }
     return expected_tour_data
 
@@ -139,7 +139,7 @@ def expected_tours(tours_list, user):
             "is_approved": tours_list[0].is_approved,
             "finished_count": tours_list[0].finished_count,
             "author": tours_list[0].author_id,
-            "distance": None,
+            "distance": 0,
         },
         {
             "id": tours_list[2].id,
@@ -157,7 +157,7 @@ def expected_tours(tours_list, user):
             "is_approved": tours_list[2].is_approved,
             "finished_count": tours_list[2].finished_count,
             "author": tours_list[0].author_id,
-            "distance": None,
+            "distance": 0,
         },
     ]
 
