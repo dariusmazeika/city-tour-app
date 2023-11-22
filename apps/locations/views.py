@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.db.models import OuterRef, Exists
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets
@@ -40,6 +41,10 @@ class CityViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Lis
             queryset = queryset.filter(
                 toursite__site__base_site__city=city, toursite__site__tags__id__in=tag_list
             ).distinct()
+
+            queryset = queryset.annotate(overlap_count=Count("toursite__site__tags"))
+            queryset = queryset.order_by("-overlap_count")
+
         else:
             queryset = queryset.filter(toursite__site__base_site__city=city).distinct()
 

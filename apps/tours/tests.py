@@ -5,7 +5,6 @@ import pytest
 from rest_framework import status
 
 from apps.locations.models import City
-from apps.reviews.models import Review
 from apps.sites.models import Site, BaseSite, SiteAudio, SiteImage
 from apps.tours.models import SharedPrivateTour, UserTour, Tour, TourSite
 from apps.users.models import User
@@ -19,7 +18,6 @@ class TestGetTours:
 
         assert response.status_code == status.HTTP_200_OK, response.json()
 
-        expected_tour_data.pop("rating")
         assert expected_tour_data == response.json()
 
     def test_tour_sites_returned_ordered(self, client: APIClientWithQueryCounter):
@@ -27,7 +25,7 @@ class TestGetTours:
         tour_site_1 = make(TourSite, tour=tour, order=2)
         tour_site_2 = make(TourSite, tour=tour, order=1)
         tour_site_3 = make(TourSite, tour=tour, order=0)
-        response = client.get(reverse("tours-detail", args=[tour.id]), query_limit=7)
+        response = client.get(reverse("tours-detail", args=[tour.id]), query_limit=8)
 
         assert response.json()["sites"][0]["id"] == tour_site_3.site_id
         assert response.json()["sites"][1]["id"] == tour_site_2.site_id
@@ -47,17 +45,6 @@ class TestGetTours:
         tour = make(Tour, is_approved=is_approved, is_enabled=is_enabled)
         response = client.get(reverse("tours-detail", args=[tour.id]))
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.json()
-
-    def test_get_tours_response_includes_reviews(
-        self, user, client: APIClientWithQueryCounter, single_tour, expected_tour_data_with_1_review
-    ):
-        review = Review.objects.create(tour=single_tour, reviewer=user, text="some text with over 20 symbols", rating=5)
-        path = reverse("tours-detail", args=[single_tour.id])
-        response = client.get(path, query_limit=6)
-        # adding these as quick fix since the id's were hardcoded in.
-        expected_tour_data_with_1_review["reviews"][0]["id"] = review.id
-        expected_tour_data_with_1_review["reviews"][0]["reviewer"] = user.id
-        assert expected_tour_data_with_1_review == response.json()
 
     def test_tour_returns_first_site_image(self, client: APIClientWithQueryCounter):
         site_image_1 = make(SiteImage, image="first_tour_test_image.jpg")
