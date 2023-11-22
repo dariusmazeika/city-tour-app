@@ -19,7 +19,7 @@ class TestCreateReview:
         assert review_count == 1
         assert created_review.text == review_data["text"]
         assert created_review.rating == review_data["rating"]
-        assert created_review.reviewer.id == review_data["reviewer"]
+        assert created_review.reviewer_id == user.id
         assert created_review.is_approved is False
 
     def test_create_review_no_text(self, user, create_tour, authorized_client, review_data_no_text):
@@ -37,8 +37,11 @@ class TestCreateReview:
         assert created_review.reviewer.id == review_data_no_text["reviewer"]
         assert created_review.is_approved is True
 
-    def test_create_review_already_reviewed(self, user, create_tour, review, authorized_client, review_data):
+    def test_create_review_already_reviewed(self, user, create_tour, authorized_client, review_data):
         make(UserTour, user=user, tour=create_tour, status=UserTour.FINISHED)
+
+        response = authorized_client.post(reverse("review-list"), review_data, format="json")
+        assert response.status_code == status.HTTP_201_CREATED, response.json()
 
         response = authorized_client.post(reverse("review-list"), review_data, format="json")
 

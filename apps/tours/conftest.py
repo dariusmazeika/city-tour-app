@@ -37,7 +37,6 @@ def expected_tour_data(single_tour: Tour, user) -> dict:
         ],
         "image": None,
         "is_owned": single_tour in user.owned_tours.all(),
-        "reviews": [],
         "created_at": single_tour.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "updated_at": single_tour.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "language": single_tour.language,

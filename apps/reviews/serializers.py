@@ -6,13 +6,17 @@ from apps.tours.models import UserTour
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    reviewer_name = serializers.ReadOnlyField(source="reviewer.first_name", read_only=True)
+
     class Meta:
         model = Review
-        fields = ["id", "text", "rating", "reviewer", "tour"]
+        fields = ["id", "text", "rating", "reviewer_name", "tour", "is_approved"]
+        read_only_fields = ["reviewer_name", "is_approved"]
 
     def validate(self, attrs):
         validated_data = super().validate(attrs)
         user = self.context["request"].user
+        validated_data["reviewer_id"] = user.id
         tour = attrs["tour"]
 
         user_tour = (
