@@ -28,6 +28,7 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     sites = SiteSerializer(many=True, read_only=True)
     is_owned = serializers.BooleanField(read_only=True)
+    rating = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Tour
@@ -49,7 +50,18 @@ class TourSerializer(serializers.ModelSerializer, TourImageSerializer):
             "image",
             "finished_count",
             "distance",
+            "rating",
         )
+
+    read_only_fields = (
+        "sites",
+        "reviews",
+        "rating",
+    )
+
+    def get_rating(self, obj: Tour) -> float | None:
+        reviews = Review.objects.filter(tour=obj, is_approved=True)
+        return reviews.aggregate(Avg("rating"))["rating__avg"]
 
 
 class TourWithoutSitesSerializer(serializers.ModelSerializer, TourImageSerializer):

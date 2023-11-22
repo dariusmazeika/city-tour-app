@@ -129,6 +129,20 @@ class TestCityTourFilterByTag:
         assert len(response.data["results"]) == 2
         assert expected_tours_list == response.json()["results"]
 
+    def test_get_tours_returns_filtered_by_tag_count(
+        self, client: APIClientWithQueryCounter, tours_list_with_specific_tags, user
+    ):
+        expected_tours_list = self.expected_tours(tours_list_with_specific_tags, user)
+        tags = "?tag_id=4&tag_id=5"
+        path = reverse("city-tours", args=[5]) + tags
+        response = client.get(path, query_limit=9)
+
+        assert response.status_code == status.HTTP_200_OK, response.json()
+        assert len(response.json()["results"]) == 2
+        assert expected_tours_list == response.json()["results"]
+        assert response.json()["results"][0]["id"] == tours_list_with_specific_tags[0].id
+        assert response.json()["results"][1]["id"] == tours_list_with_specific_tags[1].id
+
 
 class TestSitesFilterByCity:
     @staticmethod
