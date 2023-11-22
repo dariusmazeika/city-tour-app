@@ -101,7 +101,7 @@ class TestCityTourFilterByTag:
                 "finished_count": tours_list_with_specific_tags[1].finished_count,
                 "rating": None,
                 "author": None,
-                "distance": None,
+                "distance": 0,
             },
         ]
 
