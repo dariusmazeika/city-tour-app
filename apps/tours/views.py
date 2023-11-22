@@ -70,7 +70,7 @@ class ToursViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Cr
     def reviews(self, request, pk):
         tour = get_object_or_404(Tour, id=pk)
 
-        queryset = Review.objects.filter(is_approved=True, tour=tour).select_related("reviewers")
+        queryset = Review.objects.filter(is_approved=True, tour=tour).select_related("reviewer")
 
         paginated_queryset = self.paginate_queryset(queryset=queryset)
         serializer_data = self.get_serializer(paginated_queryset, many=True)
